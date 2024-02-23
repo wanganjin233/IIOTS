@@ -1,0 +1,71 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IMEC.WebRMS.Services
+@using IIOTS.Models
+@using IIOTS.Util
+@using IIOTS.WebRMS.Models
+@using MQTTnet
+@using MQTTnet.Protocol 
+@inject IFreeSql freeSql
+@inject NavigationManager NavigationManager
+@page "/Tags/{GID}"
+
+@code {
+
+    /// <summary>
+    /// Tag组ID
+    /// </summary>
+    [Parameter]
+    public string? GID { get; set; } 
+    IEnumerable<TagConfigEntity> selectedRows;
+    bool editBoxVisible = false;
+    List<TagConfigEntity> TagConfigs = new List<TagConfigEntity>();
+    /// <summary>
+    ///初始化
+    /// </summary>
+    /// <returns></returns>
+    protected override Task OnInitializedAsync()
+    {
+        GetPage();
+        return base.OnInitializedAsync();
+    }
+    private void GetPage()
+    {
+        TagConfigs= freeSql
+        .Select<TagConfigEntity>()
+        .Where(p => p.GID.ToString() == GID) 
+        .ToList(); 
+    }
+}
+<div>
+    <Modal Title="BasicModal"
+           @bind-Visible="@editBoxVisible">
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+    </Modal>
+    <Button OnClick="@(()=>{ editBoxVisible = true; })" Type="primary" Style="margin-bottom:16px">
+        添加
+    </Button>
+    <Table TItem="TagConfigEntity"  
+           DataSource="@TagConfigs"
+           ScrollX="max-content"
+           RowKey="x=>x.Id">
+        <Selection Key="@(context.Id.ToString())" />
+        <PropertyColumn Title="ID" Property="c=>c.Id" Sortable />
+        <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
+        <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable Sortable />
+        <PropertyColumn Title="更新模式" Property="c=>c.UpdateMode" Sortable />
+        <PropertyColumn Title="站号" Property="c=>c.StationNumber" Sortable />
+        <PropertyColumn Title="数据类型" Property="c=>c.DataType" Sortable />
+        <PropertyColumn Title="数据长度" Property="c=>c.DataLength" Sortable />
+        <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
+        <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Sortable />
+        <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
+        <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable />
+        <PropertyColumn Title="顺序" Property="c=>c.Sort" Sortable />
+        <PropertyColumn Title="编码" Property="c=>c.Coding" Sortable /> 
+        <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+
+    </Table>
+</div>

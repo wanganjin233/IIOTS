@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "IIOTS.Driver.ModebusTcp": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:64808;http://localhost:64810"
+    }
+  }
+}

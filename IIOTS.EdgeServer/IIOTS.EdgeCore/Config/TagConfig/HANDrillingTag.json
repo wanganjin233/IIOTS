@@ -1,0 +1,807 @@
+[
+  {
+    "TagName": "knifeID",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TT",
+    "ClientAccess": "OR",
+    "Description": "刀号"
+  },
+  {
+    "TagName": "ServiceLife",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TB",
+    "ClientAccess": "OR",
+    "Description": "已使用寿命"
+  },
+  {
+    "TagName": "knives_type_QTY",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TE",
+    "ClientAccess": "OR",
+    "Description": "当前类型刀数量"
+  },
+  {
+    "TagName": "speed",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TS",
+    "ClientAccess": "OR",
+    "Description": "转速"
+  },
+  {
+    "TagName": "Feed_speed",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TF",
+    "ClientAccess": "OR",
+    "Description": "进刀速"
+  },
+  {
+    "TagName": "return_speed",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TR",
+    "ClientAccess": "OR",
+    "Description": "退刀速"
+  },
+  {
+    "TagName": "Tool_path",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TD",
+    "ClientAccess": "OR",
+    "Description": "刀径"
+  },
+  {
+    "TagName": "Hole_limit",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentTool/TN",
+    "ClientAccess": "OR",
+    "Description": "孔限"
+  },
+  {
+    "TagName": "UserName",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineEmployer/CNCUserName",
+    "ClientAccess": "OR",
+    "Description": "用户名"
+  },
+  {
+    "TagName": "UserLevel",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineEmployer/CNCUserLevel",
+    "ClientAccess": "OR",
+    "Description": "用户级"
+  },
+  {
+    "TagName": "UserLogin",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineEmployer/UserLogin",
+    "ClientAccess": "OR",
+    "Description": "用户上机时间"
+  },
+  {
+    "TagName": "UserLoginout",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineEmployer/UserLoginout",
+    "ClientAccess": "OR",
+    "Description": "用户下机时间"
+  },
+  {
+    "TagName": "Spindle",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindle",
+    "ClientAccess": "OR",
+    "Description": "轴状态"
+  },
+  {
+    "TagName": "MachineStatus",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineStatus",
+    "ClientAccess": "RW",
+    "Description": "机器状态:1运行 2,4待机 3,5报警"
+  },
+  {
+    "TagName": "Screen",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Screen",
+    "ClientAccess": "OR",
+    "Description": "屏幕显示"
+  },
+  {
+    "TagName": "ProgramName",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ProgramName",
+    "ClientAccess": "OR",
+    "Description": "程序名"
+  },
+  {
+    "TagName": "FileName",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/FileName",
+    "ClientAccess": "OR",
+    "Description": "当前批正在加工的程序名"
+  },
+  {
+    "TagName": "AllCounter",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/AllCounter",
+    "ClientAccess": "OR",
+    "Description": "总孔数"
+  },
+  {
+    "TagName": "DrillCounter",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/DrillCounter",
+    "ClientAccess": "OR",
+    "Description": "已钻孔"
+  },
+  {
+    "TagName": "PNLs",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/PNLs",
+    "ClientAccess": "OR",
+    "Description": "完成叠数"
+  },
+  {
+    "TagName": "Runs",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/Runs",
+    "ClientAccess": "OR",
+    "Description": "完成趟数"
+  },
+  {
+    "TagName": "RunTime",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/RunTime",
+    "ClientAccess": "OR",
+    "Description": "已运行时间"
+  },
+  {
+    "TagName": "Percent",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentJob/Percent",
+    "ClientAccess": "OR",
+    "Description": "完成率"
+  },
+  {
+    "TagName": "Splindle",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/BrokenTool/Splindle",
+    "ClientAccess": "OR",
+    "Description": "断刀的轴"
+  },
+  {
+    "TagName": "Cutter_Diameter",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/BrokenTool/TD",
+    "ClientAccess": "OR",
+    "Description": "断刀刀径"
+  },
+  {
+    "TagName": "Broken_Dlade_Number",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/BrokenTool/TT",
+    "ClientAccess": "OR",
+    "Description": "断刀刀号"
+  },
+  {
+    "TagName": "ToolLenError_Splindle",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolLenError/Splindle",
+    "ClientAccess": "OR",
+    "Description": "测刀异常轴号"
+  },
+  {
+    "TagName": "ToolLenError_TD",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolLenError/TD",
+    "ClientAccess": "OR",
+    "Description": "刀径Repeat1"
+  },
+  {
+    "TagName": "ToolLenError_TT",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolLenError/TT",
+    "ClientAccess": "OR",
+    "Description": "刀号Repeat1"
+  },
+  {
+    "TagName": "ToolDiaError_Splindle",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolDiaError/Splindle",
+    "ClientAccess": "OR",
+    "Description": "测刀异常轴号Repeat1"
+  },
+  {
+    "TagName": "ToolDiaError_TD",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolDiaError/TD",
+    "ClientAccess": "OR",
+    "Description": "刀径Repeat2"
+  },
+  {
+    "TagName": "ToolDiaError_TT",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ToolDiaError/TT",
+    "ClientAccess": "OR",
+    "Description": "刀号Repeat2"
+  },
+  {
+    "TagName": "AlarmEvent_action",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/AlarmEvent/action",
+    "ClientAccess": "OR",
+    "Description": "异常状态"
+  },
+  {
+    "TagName": "AlarmEvent_BeginTime",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/AlarmEvent/BeginTime",
+    "ClientAccess": "OR",
+    "Description": "异常开始时间"
+  },
+  {
+    "TagName": "AlarmEvent_Code",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/AlarmEvent/Code",
+    "ClientAccess": "RW",
+    "Description": "异常代码"
+  },
+  {
+    "TagName": "AlarmEvent_EndTime",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/AlarmEvent/EndTime",
+    "ClientAccess": "OR",
+    "Description": "结束时间"
+  },
+  {
+    "TagName": "AlarmEvent_Text",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/AlarmEvent/Text",
+    "ClientAccess": "OR",
+    "Description": "异常信息"
+  },
+  {
+    "TagName": "Spindles_Spindle1_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴1状态"
+  },
+  {
+    "TagName": "Spindles_Spindle1_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴1测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle1_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴1测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle1_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴1测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle1_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴1运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle1_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle1/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴1运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Spindle2_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴2状态"
+  },
+  {
+    "TagName": "Spindles_Spindle2_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴2测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle2_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴2测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle2_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴2测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle2_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴2运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle2_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle2/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴2运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Spindle3_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴3状态"
+  },
+  {
+    "TagName": "Spindles_Spindle3_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴3测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle3_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴3测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle3_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴3测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle3_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴3运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle3_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle3/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴3运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Spindle4_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴4状态"
+  },
+  {
+    "TagName": "Spindles_Spindle4_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴4测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle4_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴4测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle4_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴4测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle4_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴4运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle4_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle4/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴4运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Spindle5_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴5状态"
+  },
+  {
+    "TagName": "Spindles_Spindle5_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴5测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle5_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴5测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle5_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴5测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle5_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴5运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle5_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle5/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴5运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Spindle6_Enable",
+    "DataType": "Boole",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/Enable",
+    "ClientAccess": "OR",
+    "Description": "轴6状态"
+  },
+  {
+    "TagName": "Spindles_Spindle6_MeasureDia",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/MeasureDia",
+    "ClientAccess": "OR",
+    "Description": "轴6测刀刀径"
+  },
+  {
+    "TagName": "Spindles_Spindle6_MeasureLen",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/MeasureLen",
+    "ClientAccess": "OR",
+    "Description": "轴6测刀刀长"
+  },
+  {
+    "TagName": "Spindles_Spindle6_Runout",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/Runout",
+    "ClientAccess": "OR",
+    "Description": "轴6测刀偏摆"
+  },
+  {
+    "TagName": "Spindles_Spindle6_WorkTimes",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/WorkTimes",
+    "ClientAccess": "OR",
+    "Description": "轴6运行时间"
+  },
+  {
+    "TagName": "Spindles_Spindle6_WorkTimesStr",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Spindle6/WorkTimesStr",
+    "ClientAccess": "OR",
+    "Description": "轴6运行时间Repeat1"
+  },
+  {
+    "TagName": "Spindles_Count",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Spindles/Count",
+    "ClientAccess": "OR",
+    "Description": "轴数"
+  },
+  {
+    "TagName": "WorkTime",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/WorkTime",
+    "ClientAccess": "OR",
+    "Description": "累计工作时间"
+  },
+  {
+    "TagName": "OperationTime",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/OperationTime",
+    "ClientAccess": "OR",
+    "Description": "累计开机时间"
+  },
+  {
+    "TagName": "Duty",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Duty",
+    "ClientAccess": "OR",
+    "Description": "稼动率"
+  },
+  {
+    "TagName": "FAX_X",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/FAX_X",
+    "ClientAccess": "OR",
+    "Description": "FAX_X坐标"
+  },
+  {
+    "TagName": "FAX_Y",
+    "DataType": "Float",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/FAX_Y",
+    "ClientAccess": "OR",
+    "Description": "FAX_Y坐标"
+  },
+  {
+    "TagName": "ShowDialog",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ShowDialog",
+    "ClientAccess": "RW",
+    "Description": "显示_信息弹窗提示"
+  },
+  {
+    "TagName": "MacCode",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MacCode",
+    "ClientAccess": "OR",
+    "Description": "设备编号"
+  },
+  {
+    "TagName": "MachineMode",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/MachineMode",
+    "ClientAccess": "OR",
+    "Description": "自动模式为0手动模式为1"
+  },
+  {
+    "TagName": "LOT",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/LotCode",
+    "ClientAccess": "RW",
+    "Description": "lot号"
+  },
+  {
+    "TagName": "PNL_QTY",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/QTY",
+    "ClientAccess": "RW",
+    "Description": "上机数量"
+  },
+  {
+    "TagName": "Start",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/Start",
+    "ClientAccess": "OR",
+    "Description": "上机完成标志为_正常为0_1为上机完成_2为允许下发_"
+  },
+  {
+    "TagName": "End",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/End",
+    "ClientAccess": "RW",
+    "Description": "下机信号_正常为0_1为下机_"
+  },
+  {
+    "TagName": "RECI0001",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/Action",
+    "ClientAccess": "RW",
+    "Description": "写入完成信号点位"
+  },
+  {
+    "TagName": "RECI0002",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/Lot",
+    "ClientAccess": "RW",
+    "Description": "批号"
+  },
+  {
+    "TagName": "RECI0003",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/WipEntity",
+    "ClientAccess": "RW",
+    "Description": "工单料号"
+  },
+  {
+    "TagName": "RECI0004",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/Msg",
+    "ClientAccess": "OR",
+    "Description": "异常描述"
+  },
+  {
+    "TagName": "RECI0005",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/PgmAndDia/Pgm",
+    "ClientAccess": "RW",
+    "Description": "程序文件的路径"
+  },
+  {
+    "TagName": "RECI0006",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[0]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径0"
+  },
+  {
+    "TagName": "RECI0007",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[1]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径1"
+  },
+  {
+    "TagName": "RECI0008",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[2]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径2"
+  },
+  {
+    "TagName": "RECI0009",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[3]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径3"
+  },
+  {
+    "TagName": "RECI0010",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[4]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径4"
+  },
+  {
+    "TagName": "RECI0011",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[5]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径5"
+  },
+  {
+    "TagName": "RECI0012",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[6]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径6"
+  },
+  {
+    "TagName": "RECI0013",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[7]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径7"
+  },
+  {
+    "TagName": "RECI0014",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[8]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径8"
+  },
+  {
+    "TagName": "RECI0015",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Pgm[9]",
+    "ClientAccess": "RW",
+    "Description": "Pgm文件的路径9"
+  },
+  {
+    "TagName": "RECI0016",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[0]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径0"
+  },
+  {
+    "TagName": "RECI0017",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[1]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径1"
+  },
+  {
+    "TagName": "RECI0018",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[2]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径2"
+  },
+  {
+    "TagName": "RECI0019",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[3]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径3"
+  },
+  {
+    "TagName": "RECI0020",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[4]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径4"
+  },
+  {
+    "TagName": "RECI0021",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[5]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径5"
+  },
+  {
+    "TagName": "RECI0022",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[6]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径6"
+  },
+  {
+    "TagName": "RECI0023",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[7]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径7"
+  },
+  {
+    "TagName": "RECI0024",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[8]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径8"
+  },
+  {
+    "TagName": "RECI0025",
+    "DataType": "String",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Dia[9]",
+    "ClientAccess": "RW",
+    "Description": "Dia文件的路径9"
+  },
+  {
+    "TagName": "Tag006",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/NewRecipe",
+    "ClientAccess": "RW",
+    "Description": "下发表示位"
+  },
+  {
+    "TagName": "Tag007",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/Result",
+    "ClientAccess": "OR",
+    "Description": "设备接收表示位"
+  },
+  {
+    "TagName": "Tag005",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/CurrentWipEntity/NewRequest",
+    "ClientAccess": "OR",
+    "Description": "配方请求"
+  },
+  {
+    "TagName": "DrillHoleNum",
+    "DataType": "Uint",
+    "Address": "ns=2;s=HANSCNC/DrillMachine/ProgramDiagnosis/DrillHoleNum",
+    "ClientAccess": "OR",
+    "Description": "刀号"
+  }
+]

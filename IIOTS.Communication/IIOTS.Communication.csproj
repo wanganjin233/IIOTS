@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IIOTS.Enum\IIOTS.Enum.csproj" />
+    <ProjectReference Include="..\IIOTS.Interface\IIOTS.Interface.csproj" />
+    <ProjectReference Include="..\IIOTS.Util\IIOTS.Util.csproj" />
+  </ItemGroup>
+</Project>

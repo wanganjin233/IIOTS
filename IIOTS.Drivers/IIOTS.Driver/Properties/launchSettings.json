@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "IIOTS.Driver": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54014;http://localhost:54017"
+    }
+  }
+}

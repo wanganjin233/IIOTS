@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IIOTS.Communication\IIOTS.Communication.csproj" />
+    <ProjectReference Include="..\..\IIOTS.Models\IIOTS.Models.csproj" />
+    <ProjectReference Include="..\..\IIOTS.Util\IIOTS.Util.csproj" />
+  </ItemGroup>
+</Project>

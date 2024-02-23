@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "IIOTS.EdgeDriver": {
+      "commandName": "Project",
+      "commandLineArgs": "127.0.0.1:1024 127.0.0.1:1025 HLCHANDrilling 121312313",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json"
+}

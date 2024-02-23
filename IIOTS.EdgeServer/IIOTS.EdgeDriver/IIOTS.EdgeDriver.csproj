@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings> 
+		<UserSecretsId>dotnet-IIOTS.EdgeDriver-3a04fc50-266d-432e-94a8-28de965f1827</UserSecretsId>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0-rc.2.23479.6" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.Fins\IIOTS.Driver.Fins.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.MC3E\IIOTS.Driver.MC3E.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.ModbusRtu\IIOTS.Driver.ModbusRtu.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.ModbusTcp\IIOTS.Driver.ModbusTcp.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.OPCUA\IIOTS.Driver.OPCUA.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Models\IIOTS.Models.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CEE.DefaultRecipe": {
+      "commandName": "Project",
+      "commandLineArgs": "127.0.0.1:10000\r\nM-ME-OL-010",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "IIOTS.Driver.MC3E": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54018;http://localhost:54019"
+    }
+  }
+}

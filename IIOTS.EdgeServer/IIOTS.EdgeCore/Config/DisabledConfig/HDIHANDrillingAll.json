@@ -1,0 +1,601 @@
+{
+  "Name": "HDIHANDrilling",
+  "Description": "HDI钻机",
+  "Operations": [ "IIOTS.EdgeDriver" ],
+  "EquConfigs": [
+    {
+      "EQU": "H-ME-MD-017",
+      "ConnectionString": "opc.tcp://10.164.198.17:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机017",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-018",
+      "ConnectionString": "opc.tcp://10.164.198.18:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机018",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-019",
+      "ConnectionString": "opc.tcp://10.164.198.19:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机019",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-020",
+      "ConnectionString": "opc.tcp://10.164.198.20:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机020",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-021",
+      "ConnectionString": "opc.tcp://10.164.198.21:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机021",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-022",
+      "ConnectionString": "opc.tcp://10.164.198.22:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机022",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-023",
+      "ConnectionString": "opc.tcp://10.164.198.23:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机023",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-024",
+      "ConnectionString": "opc.tcp://10.164.198.24:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机024",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-025",
+      "ConnectionString": "opc.tcp://10.164.198.25:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机025",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-026",
+      "ConnectionString": "opc.tcp://10.164.198.26:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机026",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-027",
+      "ConnectionString": "opc.tcp://10.164.198.27:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机027",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-028",
+      "ConnectionString": "opc.tcp://10.164.198.28:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机028",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-029",
+      "ConnectionString": "opc.tcp://10.164.198.29:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机029",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-030",
+      "ConnectionString": "opc.tcp://10.164.198.30:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机030",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-031",
+      "ConnectionString": "opc.tcp://10.164.198.31:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机031",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-032",
+      "ConnectionString": "opc.tcp://10.164.198.32:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机032",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-033",
+      "ConnectionString": "opc.tcp://10.164.198.33:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机033",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-034",
+      "ConnectionString": "opc.tcp://10.164.198.34:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机034",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-035",
+      "ConnectionString": "opc.tcp://10.164.198.35:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机035",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-036",
+      "ConnectionString": "opc.tcp://10.164.198.36:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机036",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-037",
+      "ConnectionString": "opc.tcp://10.164.198.37:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机037",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-038",
+      "ConnectionString": "opc.tcp://10.164.198.38:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机038",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-039",
+      "ConnectionString": "opc.tcp://10.164.198.39:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机039",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-040",
+      "ConnectionString": "opc.tcp://10.164.198.40:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机040",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-041",
+      "ConnectionString": "opc.tcp://10.164.198.41:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机041",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-042",
+      "ConnectionString": "opc.tcp://10.164.198.42:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机042",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-043",
+      "ConnectionString": "opc.tcp://10.164.198.43:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机043",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-044",
+      "ConnectionString": "opc.tcp://10.164.198.44:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机044",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-045",
+      "ConnectionString": "opc.tcp://10.164.198.45:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机045",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-046",
+      "ConnectionString": "opc.tcp://10.164.198.46:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机046",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-047",
+      "ConnectionString": "opc.tcp://10.164.198.47:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机047",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-048",
+      "ConnectionString": "opc.tcp://10.164.198.48:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机048",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-049",
+      "ConnectionString": "opc.tcp://10.164.198.49:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机049",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-050",
+      "ConnectionString": "opc.tcp://10.164.198.50:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机050",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-051",
+      "ConnectionString": "opc.tcp://10.164.198.51:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机051",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-052",
+      "ConnectionString": "opc.tcp://10.164.198.52:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机052",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-053",
+      "ConnectionString": "opc.tcp://10.164.198.53:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机053",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-054",
+      "ConnectionString": "opc.tcp://10.164.198.54:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机054",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-055",
+      "ConnectionString": "opc.tcp://10.164.198.55:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机055",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-056",
+      "ConnectionString": "opc.tcp://10.164.198.56:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机056",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-057",
+      "ConnectionString": "opc.tcp://10.164.198.57:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机057",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-058",
+      "ConnectionString": "opc.tcp://10.164.198.58:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机058",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-059",
+      "ConnectionString": "opc.tcp://10.164.198.59:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机059",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-060",
+      "ConnectionString": "opc.tcp://10.164.198.60:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机060",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-061",
+      "ConnectionString": "opc.tcp://10.164.198.61:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机061",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-062",
+      "ConnectionString": "opc.tcp://10.164.198.62:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机062",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-063",
+      "ConnectionString": "opc.tcp://10.164.198.63:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机063",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-064",
+      "ConnectionString": "opc.tcp://10.164.198.64:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机064",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-065",
+      "ConnectionString": "opc.tcp://10.164.198.65:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机065",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-066",
+      "ConnectionString": "opc.tcp://10.164.198.66:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机066",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-067",
+      "ConnectionString": "opc.tcp://10.164.198.67:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机067",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-068",
+      "ConnectionString": "opc.tcp://10.164.198.68:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机068",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-069",
+      "ConnectionString": "opc.tcp://10.164.198.69:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机069",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-070",
+      "ConnectionString": "opc.tcp://10.164.198.70:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机070",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-071",
+      "ConnectionString": "opc.tcp://10.164.198.71:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机071",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-072",
+      "ConnectionString": "opc.tcp://10.164.198.72:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机072",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-073",
+      "ConnectionString": "opc.tcp://10.164.198.73:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机073",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-074",
+      "ConnectionString": "opc.tcp://10.164.198.74:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机074",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-075",
+      "ConnectionString": "opc.tcp://10.164.198.75:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机075",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-076",
+      "ConnectionString": "opc.tcp://10.164.198.76:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机076",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-077",
+      "ConnectionString": "opc.tcp://10.164.198.77:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机077",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-078",
+      "ConnectionString": "opc.tcp://10.164.198.78:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机078",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-079",
+      "ConnectionString": "opc.tcp://10.164.198.79:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机079",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-080",
+      "ConnectionString": "opc.tcp://10.164.198.80:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机080",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-081",
+      "ConnectionString": "opc.tcp://10.164.198.81:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机081",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-082",
+      "ConnectionString": "opc.tcp://10.164.198.82:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机082",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-083",
+      "ConnectionString": "opc.tcp://10.164.198.83:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机083",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-084",
+      "ConnectionString": "opc.tcp://10.164.198.84:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机084",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-085",
+      "ConnectionString": "opc.tcp://10.164.198.85:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机085",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-086",
+      "ConnectionString": "opc.tcp://10.164.198.86:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机086",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-087",
+      "ConnectionString": "opc.tcp://10.164.198.87:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机087",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-088",
+      "ConnectionString": "opc.tcp://10.164.198.88:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机088",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-089",
+      "ConnectionString": "opc.tcp://10.164.198.89:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机089",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    },
+    {
+      "EQU": "H-ME-MD-090",
+      "ConnectionString": "opc.tcp://10.164.198.90:62548;1:1",
+      "DriverType": "OPCUA",
+      "Description": "钻机090",
+      "ScanRate": 100,
+      "TagConfigPath": "HANDrillingTag"
+    }
+  ]
+}
+
+    

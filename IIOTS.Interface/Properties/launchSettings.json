@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "IIOTS.Interface": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62287;http://localhost:62288"
+    }
+  }
+}

@@ -1,0 +1,169 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IMEC.WebRMS.Services
+@using IIOTS.Models
+@using IIOTS.Util
+@using IIOTS.WebRMS.Models
+@using MQTTnet
+@using MQTTnet.Protocol
+@using System.Collections.Concurrent
+@inject IFreeSql freeSql
+@inject NavigationManager NavigationManager
+@inject IMqttClientService MqttClientService
+@page "/RealTimeTags/{edgeId}/{ProgressId}/{equ}"
+
+@code {
+    /// <summary>
+    /// 节点id
+    /// </summary>
+    [Parameter]
+    public string? edgeId { get; set; }
+    /// <summary>
+    /// 进程id
+    /// </summary>
+    [Parameter]
+    public string? ProgressId { get; set; }
+    /// <summary>
+    /// 设备编码
+    /// </summary>
+    [Parameter]
+    public string? equ { get; set; }
+    IEnumerable<IIOTS.Models.Tag> selectedRows;
+    bool editBoxVisible = false;
+    ConcurrentDictionary<string, IIOTS.Models.Tag> tags = new();
+
+    /// <summary>
+    ///初始化
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        GetPage();
+        MqttClientService.Subscribe(new MqttTopicFilterBuilder()
+          .WithTopic($"ValueChange/{equ}/#")
+        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
+        .Build());
+        MqttClientService.ApplicationMessageReceived += ApplicationMessageReceived;
+        await InvokeAsync(() => base.StateHasChanged());
+        await base.OnInitializedAsync();
+    }
+
+    private async void ApplicationMessageReceived(string topic, string msg)
+    {
+        if (tags.ContainsKey(topic) && msg.TryToObject<IIOTS.Models.Tag>(out var tag))
+        {
+            tags[topic] = tag;
+            await InvokeAsync(() => base.StateHasChanged());
+        }
+    }
+    public void Dispose()
+    {
+        MqttClientService.ApplicationMessageReceived -= ApplicationMessageReceived;
+        MqttClientService.UnSubscribe($"ValueChange/{equ}/#");
+        MqttClientService.Dispose();
+        GC.SuppressFinalize(this);
+    }
+    private void GetPage()
+    {
+        List<TagConfigEntity> tagConfigs = freeSql.Select<EquConfigEntity>()
+          .IncludeMany(p => p.TagGroupEntity.TagConfigEntitys)
+          .Where(p => p.EQU == equ)
+          .ToList()
+          .Select(p => p.TagGroupEntity.TagConfigEntitys)
+          .First()
+          .ToList();
+        foreach (var tagConfig in tagConfigs)
+        {
+            tags[$"ValueChange/{equ}/{tagConfig.TagName}"] = new IIOTS.Models.Tag
+                {
+                    TagName = tagConfig.TagName,
+                    Address = tagConfig.Address,
+                    ClientAccess = tagConfig.ClientAccess,
+                    Coding = tagConfig.Coding,
+                    EngUnits = tagConfig.EngUnits,
+                    Sort = tagConfig.Sort,
+                    DataLength = tagConfig.DataLength,
+                    DataType = tagConfig.DataType,
+                    UpdateMode = tagConfig.UpdateMode,
+                    Magnification = tagConfig.Magnification,
+                    Description = tagConfig.Description,
+                    StationNumber = (byte)tagConfig.StationNumber
+                };
+        }
+
+    }
+    public Operate<string> WriteTagValue = new Operate<string>() { Id = string.Empty, Content = string.Empty };
+    public void WriteTag(string tagName)
+    {
+        MqttClientService.Publish($"EdgeCore/all/Equ/WriteTag"
+            , new Operate<IIOTS.Models.Tag>()
+                {
+                    Id = equ,
+                    Content = new IIOTS.Models.Tag
+                    {
+                        TagName = tagName,
+                        Value = WriteTagValue.Content
+                    }
+                }.ToJson()
+            , false);
+    }
+}
+<div>
+    <Modal Title="写值"
+           @bind-Visible="@editBoxVisible"
+           OnOk="()=>WriteTag(WriteTagValue.Id)"
+           OnCancel="@(()=>{ editBoxVisible = false; })">
+        <Input Placeholder="输入值" @bind-Value="@WriteTagValue.Content" />
+    </Modal> 
+    <Table TItem="IIOTS.Models.Tag"
+           @bind-SelectedRows="selectedRows"
+           ScrollX="max-content"
+           DataSource="@tags.Values"
+           RowKey="x=>x.TagName">
+        <Selection Key="@(context.TagName)" />
+        <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
+        <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable  Sortable />
+        <PropertyColumn Title="站号" Property="c=>c.StationNumber" Filterable Sortable />
+        <PropertyColumn Title="更新方式" Property="c=>c.UpdateMode" Filterable Sortable />
+        <PropertyColumn Title="数据类型" Property="c=>c.DataType" Filterable Sortable />
+        <PropertyColumn Title="数据长度" Property="c=>c.DataLength"  Sortable />
+        <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Filterable Sortable />
+        <ActionColumn Title="当前值" >
+            <Space> 
+                <SpaceItem>
+                    <Button Disabled="context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR"
+                            Type="@ButtonType.Link" OnClick="@(()=>{
+                                            WriteTagValue.Id=context.TagName;
+                                            WriteTagValue.Content=string.Empty;
+                                            editBoxVisible = true;
+                                            })">
+                        @if (context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR)
+                        {
+                            <Icon Type="edit" Theme="outline" />
+                        }
+                        else
+                        {
+                            <Icon Type="edit" Theme="fill" />
+                        }
+                    </Button>
+                </SpaceItem>
+
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <PropertyColumn Property="c=>c.Value" Sortable />
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+        <PropertyColumn Title="旧值" Property="c=>c.OldValue" Sortable />
+        <PropertyColumn Title="转换值" Property="c=>c.ZoomValue" Sortable />
+        <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
+        <PropertyColumn Title="质量戳" Property="c=>c.Quality" Sortable />
+        <PropertyColumn Title="变化时间" Property="c=>c.ChangeTime" Format="yyyy-MM-dd HH:mm:ss" Sortable /> 
+        <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
+        <PropertyColumn Title="顺序" Property="c=>c.Sort" Filterable Sortable />
+        <PropertyColumn Title="编码" Property="c=>c.Coding" Filterable Sortable />
+        <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable/>
+
+    </Table>
+</div>

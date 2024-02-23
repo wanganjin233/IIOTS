@@ -1,0 +1,290 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IMEC.WebRMS.Services
+@using IIOTS.Enum
+@using IIOTS.Models
+@using IIOTS.Util
+@using IIOTS.WebRMS.Models
+@using MQTTnet
+@using MQTTnet.Protocol
+@using IIOTS.WebRMS.Extensions
+@using System.Collections.Concurrent
+@inject IMqttClientService MqttClientService
+@inject NavigationManager NavigationManager
+@inject IFreeSql freeSql
+@implements IDisposable
+@page "/Driver/{edgeId}/{ProgressId}/{ClientType}"
+
+@code {
+    /// <summary>
+    /// 进程类型
+    /// </summary>
+    [Parameter]
+    public string ClientType { get; set; }
+    /// <summary>
+    /// 节点ID
+    /// </summary>
+    [Parameter]
+    public string edgeId { get; set; }
+    /// <summary>
+    /// 进程ID
+    /// </summary>
+    [Parameter]
+    public string ProgressId { get; set; }
+    /// <summary>
+    ///初始化
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPage();
+        MqttClientService.Subscribe(new MqttTopicFilterBuilder()
+       .WithTopic($"DriverStateChange/#")
+       .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
+       .Build());
+        MqttClientService.ApplicationMessageReceived += ApplicationMessageReceived;
+        await InvokeAsync(() => base.StateHasChanged());
+        await base.OnInitializedAsync();
+    }
+    private ConcurrentDictionary<string, bool> DriverState = new();
+    private async void ApplicationMessageReceived(string topic, string msg)
+    {
+        DriverState[topic.Split("/").Last()] = msg.ToObject<bool>();
+        await InvokeAsync(() => base.StateHasChanged());
+    }
+    public void Dispose()
+    {
+        MqttClientService.ApplicationMessageReceived -= ApplicationMessageReceived;
+        MqttClientService.UnSubscribe($"DriverStateChange/#");
+        MqttClientService.Dispose();
+        GC.SuppressFinalize(this);
+    }
+    #region 页面展示
+    private List<EquConfigEntity> EquConfigEntitys = new List<EquConfigEntity>();
+    int _pageIndex = 1;
+    int _pageSize = 10;
+    long _total = 0;
+    bool tableLoad = true;
+    /// <summary>
+    /// 页面刷新
+    /// </summary>
+    private async Task GetPage()
+    {
+        tableLoad = true;
+        EquConfigEntitys = await freeSql
+        .Select<EquConfigEntity>()
+        .LeftJoin(p => p.TagGroupEntity.Id == p.TagGroupId)
+        .Where(p => p.ProgressId.ToString() == ProgressId)
+        .Count(out _total)
+        .Page(_pageIndex, _pageSize)
+        .ToListAsync();
+        tableLoad = false;
+    }
+
+    #endregion
+    #region 删除弹窗
+    bool _detectBoxVisible = false;
+    bool _detectBoxLoading = false;
+    long actionId;
+    /// <summary>
+    /// 删除驱动组
+    /// </summary>
+    /// <param name="equConfigEntity"></param>
+    /// <returns></returns>
+    private async Task Detect(EquConfigEntity equConfigEntity)
+    {
+        var deleteAffrows = await freeSql
+         .Delete<EquConfigEntity>(equConfigEntity)
+         .ExecuteAffrowsAsync();
+        await GetPage();
+    }
+    #endregion
+    #region 增加修改操作
+    EquConfigEntity EquConfig = new();
+    bool _editBoxVisible = false;
+    bool _editBoxLoading = false;
+    private async Task AddOrEquConfig()
+    {
+        EquConfig.ProgressId = long.Parse(ProgressId);
+        await freeSql
+        .InsertOrUpdate<EquConfigEntity>()
+        .SetSource(EquConfig)
+        .ExecuteAffrowsAsync();
+        await GetPage();
+    }
+    #endregion
+    /// <summary>
+    /// 获取启动时间
+    /// </summary>
+    /// <param name="equConfig"></param>
+    /// <returns></returns>
+    private void UpdateIsUse(EquConfigEntity equConfig, bool isUse)
+    {
+        equConfig.IsUse = isUse;
+        var progressConfig = freeSql
+            .Select<ProgressConfigEntity>()
+            .Where(p => p.Id == equConfig.ProgressId)
+            .First();
+        if (isUse)
+        {
+            List<TagConfig> tags = freeSql
+            .Select<TagConfigEntity>()
+            .Where(p => p.GID == equConfig.TagGroupEntity.Id)
+            .ToList()
+            .ToTag();
+            MqttClientService.Publish($"EdgeCore/{progressConfig.Gname}/Equ/DeployEqu;{equConfig.EQU}", new Operate<EquConfig>()
+                {
+                    Id = $"{progressConfig.Id}_{progressConfig.ClientType}",
+                    Content = new EquConfig()
+                    {
+                        Enable = true,
+                        ConnectionString = equConfig.ConnectionString,
+                        Description = equConfig.Description ?? string.Empty,
+                        EQU = equConfig.EQU,
+                        DriverType = equConfig.TagGroupEntity.DriverType,
+                        ScanRate = equConfig.ScanRate,
+                        Tags = tags
+                    }
+                }.ToJson()
+          , true);
+        }
+        else
+        {
+            MqttClientService.Publish($"EdgeCore/{progressConfig.Gname}/Equ/DeployEqu;{equConfig.EQU}", new Operate<EquConfig>()
+                {
+                    Id = $"{progressConfig.Id}_{progressConfig.ClientType}",
+                    Content = new EquConfig()
+                    {
+                        Enable = false,
+                        EQU = equConfig.EQU
+                    }
+                }.ToJson()
+          , true);
+        }
+        freeSql
+        .Update<EquConfigEntity>()
+        .Where(p => p.Id == equConfig.Id)
+        .Set(p => p.IsUse, isUse)
+        .ExecuteAffrows();
+    }
+}
+<div>
+    <Modal Maximizable=true Title="添加进程"
+           Visible="@_editBoxVisible"
+           OnOk="async()=>{
+                        _editBoxLoading=true;
+                        await AddOrEquConfig();
+                        _editBoxLoading=false;
+                        _editBoxVisible = false;
+                   }"
+           OnCancel="@(()=>{ _editBoxVisible = false; })"
+           ConfirmLoading="@_editBoxLoading">
+        <Form Model="@EquConfig">
+            <FormItem Label="设备编号">
+                <Input @bind-Value="@context.EQU" />
+            </FormItem>
+            <FormItem Label="连接字符串">
+                <Input @bind-Value="@context.ConnectionString" />
+            </FormItem>
+            <FormItem Label="点位组">
+                @code {
+        private void SelectTagGroup(TagGroupEntity tagGroup)
+        {
+            EquConfig.TagGroupId = tagGroup.Id;
+            EquConfig.TagGroupEntity = tagGroup;
+        }
+                }
+                <Input Disabled @bind-Value="@EquConfig.TagGroupEntity.TagGName" />
+                <IIOTS.WebRMS.Pages.Dashboard.DriverConfig.TagList IsDisabled="true"
+                                                                  SelectTagGroup="@SelectTagGroup" />
+            </FormItem>
+            <FormItem Label="扫描周期">
+                <AntDesign.InputNumber DefaultValue="100" @bind-Value="context.ScanRate" />
+            </FormItem>
+            <FormItem Label="备注">
+                <Input @bind-Value="@context.Description" />
+            </FormItem>
+        </Form>
+    </Modal>
+    <Button OnClick="@(()=>{EquConfig=new(); _editBoxVisible = true; })" Type="primary" Style="margin-bottom:16px">
+        添加设备驱动
+    </Button>
+    <Table TItem="EquConfigEntity"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize"
+           Total="(int)_total"
+           OnPageIndexChange="GetPage"
+           OnPageSizeChange="GetPage"
+           ScrollX="max-content"
+           DataSource="@EquConfigEntitys"
+           Size="TableSize.Small"
+           RowKey="x=>x.Id"
+           Loading="@tableLoad">
+        <Selection Key="@(context.Id.ToString())" />
+        <PropertyColumn Title="设备号" Property="c=>c.EQU" Sortable Filterable />
+        <PropertyColumn Title="驱动类型" Property="c=>c.TagGroupEntity.DriverType" Sortable />
+        <PropertyColumn Title="点位组" Property="c=>c.TagGroupEntity.TagGName" Sortable />
+        <PropertyColumn Title="运行状态" Property="c=>c.EQU">
+            @{
+                bool state = DriverState.GetValueOrDefault(context.EQU);
+                var color = state ? "green" : "red";
+                <Tag Color="@color">@(state ? "在线" : "离线")</Tag>
+            }
+        </PropertyColumn> 
+        <PropertyColumn Title="启用" Property="c=>c.IsUse">
+            <Switch Value="context.IsUse"
+                    ValueChanged="@(p=>{tableLoad=true;
+                                     UpdateIsUse(context,p);
+                                     tableLoad=false;
+                                     })">
+            </Switch>
+        </PropertyColumn>
+        <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+        <PropertyColumn Title="连接字符串" Property="c=>c.ConnectionString" Sortable />
+        <PropertyColumn Title="扫描周期" Property="c=>c.ScanRate" Sortable />
+        <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
+        <ActionColumn Title="操作">
+            <Space>
+                <SpaceItem>
+                    <Button Block
+                            Type="@ButtonType.Primary"
+                            OnClick="@(()=>{
+                                            NavigationManager.NavigateTo($"/RealTimeTags/{edgeId}/{ProgressId}_{ClientType}/{context.EQU}");
+                                        })">
+                        查看点位
+                    </Button>
+                </SpaceItem>
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <Button Block
+                            Type="@ButtonType.Primary"
+                            OnClick="@(()=>{
+                                            EquConfig=context.DeepClone();
+                                            _editBoxVisible = true;
+                                        })">
+                        编辑
+                    </Button>
+                </SpaceItem>
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <Popconfirm Title="确认删除？"
+                                OnConfirm="@(async()=>{
+                                                 tableLoad=true;
+                                                 await Detect(context);
+                                                 tableLoad=false;
+                                              })">
+                        <Button Danger
+                                Type="@ButtonType.Primary"
+                                OnClick="@(()=>{
+                                                _detectBoxVisible = true;
+                                                })">
+                            删除
+                        </Button>
+                    </Popconfirm>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</div>
