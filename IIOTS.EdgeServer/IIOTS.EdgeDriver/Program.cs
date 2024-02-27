@@ -1,12 +1,12 @@
-using IIOTS.EdgeDriver; 
+using IIOTS.EdgeDriver;
 using IIOTS.Models;
 using IIOTS.Util;
-using NetMQ.Sockets; 
-var builder = Host.CreateApplicationBuilder(args); 
+using NetMQ.Sockets;
+var builder = Host.CreateApplicationBuilder(args);
 var progressLoginInfo = new ProgressLoginInfo()
 {
     ClientType = "IIOTS.EdgeDriver",
-    Name = args[2] 
+    Name = args[2]
 };
 Config.Identifier = progressLoginInfo.ClientId;
 new IdHelperBootstrapper()

@@ -57,36 +57,34 @@ namespace IIOTS.EdgeDriver
                     Task.Delay(5000, stoppingToken).Wait();
                 }
             }, TaskCreationOptions.LongRunning);
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                //接收主题名
-                string topic = subscriber.ReceiveFrameString();
+            subscriber.ReceiveReady += (o, v) =>
+            {  //接收主题名
+                string topic = v.Socket.ReceiveFrameString();
                 //接收信息
-                string message = subscriber.ReceiveFrameString();
-                ThreadPool.QueueUserWorkItem(p =>
+                string message = v.Socket.ReceiveFrameString();
+                try
                 {
-                    try
+                    //消息处理方法
+                    HandlerResult result = handler.ExecuteHandler(topic, message);
+                    switch (result.MsgType)
                     {
-                        //消息处理方法
-                        HandlerResult result = handler.ExecuteHandler(topic, message);
-                        switch (result.MsgType)
-                        {
-                            case Enum.MsgTypeEnum.Request:
-                                publisher.PubQueue(result.Router, result.Data);
-                                break;
-                            case Enum.MsgTypeEnum.Response:
-                                result.SetResponse();
-                                break;
-                            case Enum.MsgTypeEnum.Execute:
-                                break;
-                        }
+                        case Enum.MsgTypeEnum.Request:
+                            _logger.LogTrace($"{topic}回复请求【{result.Router}】【{result.Data}】");
+                            publisher.Send(result.Router, result.Data);
+                            break;
+                        case Enum.MsgTypeEnum.Response:
+                            result.SetResponse();
+                            break;
+                        case Enum.MsgTypeEnum.Execute:
+                            break;
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogError($"处理失败，错误信息：【{e.Message}】");
-                    }
-                });
-            }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"处理失败，错误信息：【{e.Message}】");
+                }
+            };
+            new NetMQPoller() { subscriber }.Run();
         }
     }
 }

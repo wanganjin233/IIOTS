@@ -10,7 +10,6 @@ using IIOTS.Models;
 using System.Text;
 using MQTTnet.Server;
 using IIOTS.EdgeCore.Command;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace IIOTS.EdgeCore.Service
 {
@@ -104,7 +103,7 @@ namespace IIOTS.EdgeCore.Service
             mqttClient.ApplicationMessageReceivedAsync += async (e) =>
             {
                 await Task.Run(() =>
-                { 
+                {
                     string? message = e.ApplicationMessage.ConvertPayloadToString();
                     if (e.ApplicationMessage.Topic == "EdgeCore/all/Equ/WriteTag")
                     {
@@ -127,7 +126,7 @@ namespace IIOTS.EdgeCore.Service
                         try
                         {
                             if (!string.IsNullOrEmpty(message))
-                            {   
+                            {
                                 List<string> routers = e.ApplicationMessage.Topic.Split("/").ToList();
                                 routers.RemoveAt(1);
                                 handler.ExecuteHandler(string.Join("/", routers), message);
@@ -138,7 +137,7 @@ namespace IIOTS.EdgeCore.Service
 
                             _logger.LogError($"处理失败，错误信息：【{e.Message}】");
                         }
-                    } 
+                    }
                 }
                 , cancellationToken);
             };
@@ -171,13 +170,21 @@ namespace IIOTS.EdgeCore.Service
                         string clientId = driverLoginInfo.ClientId;
                         ThreadPool.QueueUserWorkItem(p =>
                         {
-                            _logger.LogTrace($"检测客户端【{clientId}】心跳");
-                            long workerId = publisher.CheckActive(clientId);
-                            if (workerId != 0)
+                            try
                             {
-                                _logger.LogTrace($"接收到客户端【{clientId}】心跳");
-                                _progressManage.RefreshHeartBeat(clientId);
-                                publisher.ConfirmActive(clientId, workerId);
+                                _logger.LogTrace($"检测客户端【{clientId}】心跳");
+                                long workerId = publisher.CheckActive(clientId);
+                                _logger.LogTrace($"接收到客户端【{workerId}】心跳");
+                                if (workerId != 0)
+                                {
+                                    _progressManage.RefreshHeartBeat(clientId);
+                                    publisher.ConfirmActive(clientId, workerId);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                _logger.LogError($"检测客户端超时");
+
                             }
                         });
                     }
@@ -185,103 +192,92 @@ namespace IIOTS.EdgeCore.Service
                 }
             }, TaskCreationOptions.LongRunning);
         }
-        /// <summary>
-        /// ZeroMQ接收处理
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        private async Task ZeroMQHandler(CancellationToken cancellationToken = default)
-        {
-            await Task.Factory.StartNew(() =>
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-
-                    //接收主题名
-                    string topic = subscriber.ReceiveFrameString();
-                    //接收信息
-                    string message = subscriber.ReceiveFrameString();
-                    //点位变化主题发送至MQTT
-                    if (topic.StartsWith("ValueChange"))
-                    {
-                        mqttClient.PublishStringAsync(topic, message, MqttQualityOfServiceLevel.ExactlyOnce, true, cancellationToken);
-                    }
-                    else if (topic.StartsWith("DriverStateChange"))
-                    {
-                        mqttClient.PublishAsync(new MqttApplicationMessage()
-                        {
-                            Topic = topic,
-                            PayloadSegment = Encoding.UTF8.GetBytes(message),
-                            QualityOfServiceLevel = MqttQualityOfServiceLevel.AtMostOnce,
-                            Retain = true,
-                            MessageExpiryInterval = 10
-                        });
-                    }
-                    else
-                    {
-                        ThreadPool.QueueUserWorkItem(p =>
-                        {
-                            try
-                            { 
-                                //消息处理方法
-                                HandlerResult result = handler.ExecuteHandler(topic, message);
-                                switch (result.MsgType)
-                                {
-                                    case Enum.MsgTypeEnum.Request:
-                                        publisher.PubQueue(result.Router, result.Data);
-                                        break;
-                                    case Enum.MsgTypeEnum.Response:
-                                        result.SetResponse();
-                                        break;
-                                    case Enum.MsgTypeEnum.Execute:
-                                        break;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                _logger.LogError($"处理失败，错误信息：【{e.Message}】");
-                            }
-                        });
-                    }
-
-                }
-            }, TaskCreationOptions.LongRunning);
-        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Task ConnectMqttTask = ConnectMqtt(stoppingToken);
-            await ConnectMqttTask.ContinueWith(t =>
-            {
-                Task.Factory.StartNew(async () =>
-                {
-                    while (!stoppingToken.IsCancellationRequested)
-                    {
-                        try
-                        {
-                            EdgeLoginInfo edgeLogin = _progressManage.EdgeLoginInfo;
-                            await mqttClient.PublishStringAsync($"EdgeLoginInfo/{_progressManage.EdgeLoginInfo.EdgeID}"
-                             , new EdgeLoginInfo()
+            Task task = ConnectMqtt(stoppingToken);
+            await task.ContinueWith(async t =>
+             {
+                 _ = Task.Factory.StartNew(async () =>
+                  {
+                      while (!stoppingToken.IsCancellationRequested)
+                      {
+                          try
+                          {
+                              EdgeLoginInfo edgeLogin = _progressManage.EdgeLoginInfo;
+                              await mqttClient.PublishStringAsync($"EdgeLoginInfo/{_progressManage.EdgeLoginInfo.EdgeID}"
+                               , new EdgeLoginInfo()
+                               {
+                                   EdgeID = edgeLogin.EdgeID,
+                                   StartTime = edgeLogin.StartTime,
+                                   State = edgeLogin.State,
+                                   ProgressLoginInfos = _progressManage.ProgressRunList(),
+                               }.ToJson()
+                               , MqttQualityOfServiceLevel.ExactlyOnce
+                               , true
+                               , stoppingToken);
+                          }
+                          finally
+                          {
+                              await Task.Delay(10000);
+                          }
+                      }
+                  }, TaskCreationOptions.LongRunning);
+                 subscriber.ReceiveReady += (o, v) =>
+                 {
+                     //接收主题名
+                     string topic = v.Socket.ReceiveFrameString();
+                     //接收信息
+                     string message = v.Socket.ReceiveFrameString();
+                     //点位变化主题发送至MQTT
+                     if (topic.StartsWith("ValueChange"))
+                     {
+                         mqttClient.PublishAsync(new MqttApplicationMessage()
+                         {
+                             Topic = topic,
+                             PayloadSegment = Encoding.UTF8.GetBytes(message),
+                             QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
+                             Retain = true
+                         }, stoppingToken);
+                     }
+                     else if (topic.StartsWith("DriverStateChange"))
+                     {
+                         mqttClient.PublishAsync(new MqttApplicationMessage()
+                         {
+                             Topic = topic,
+                             PayloadSegment = Encoding.UTF8.GetBytes(message),
+                             QualityOfServiceLevel = MqttQualityOfServiceLevel.AtMostOnce,
+                             Retain = true,
+                             MessageExpiryInterval = 10
+                         }, stoppingToken);
+                     }
+                     else
+                     {
+                         try
+                         {
+                             //消息处理方法
+                             HandlerResult result = handler.ExecuteHandler(topic, message);
+                             switch (result.MsgType)
                              {
-                                 EdgeID = edgeLogin.EdgeID,
-                                 StartTime = edgeLogin.StartTime,
-                                 State = edgeLogin.State,
-                                 ProgressLoginInfos = _progressManage.ProgressRunList(),
-                             }.ToJson()
-                             , MqttQualityOfServiceLevel.ExactlyOnce
-                             , true
-                             , stoppingToken);
-                        }
-                        finally
-                        {
-                            await Task.Delay(10000);
-                        }
-                    }
-                }, TaskCreationOptions.LongRunning);
-                Task CheckProgressActiveTask = CheckProgressActive(stoppingToken);
-                Task ZeroMQHandlerTask = ZeroMQHandler(stoppingToken);
-                Task.WaitAll([CheckProgressActiveTask, ZeroMQHandlerTask], cancellationToken: stoppingToken);
-            }, stoppingToken);
+                                 case Enum.MsgTypeEnum.Request:
+                                     publisher.Send(result.Router, result.Data);
+                                     break;
+                                 case Enum.MsgTypeEnum.Response:
+                                     result.SetResponse();
+                                     break;
+                                 case Enum.MsgTypeEnum.Execute:
+                                     break;
+                             }
+                         }
+                         catch (Exception e)
+                         {
+                             _logger.LogError($"主题【{topic}】内容【{message}】处理失败，错误信息：【{e.Message}】");
+                         }
+                     }
+                 };
+                 new NetMQPoller() { subscriber }.RunAsync();
+                 await CheckProgressActive(stoppingToken);
+             }, stoppingToken);
         }
     }
 }

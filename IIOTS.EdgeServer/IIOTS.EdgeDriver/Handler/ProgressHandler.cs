@@ -13,6 +13,7 @@ namespace IIOTS.EdgeDriver.Handler
     {
         private readonly ILogger<ProgressHandler> logger = loggerFactory.CreateLogger<ProgressHandler>();
 
+        private readonly TaskQueue taskQueue = new(TimeSpan.FromMilliseconds(500));
         /// <summary>
         /// 加载进程配置信息
         /// </summary>
@@ -22,7 +23,7 @@ namespace IIOTS.EdgeDriver.Handler
             logger.LogInformation($"加载配置文件【{progressConfig.Name}】【{progressConfig.Description}】共需要启动【{progressConfig.EquConfigs.Count}】驱动");
             foreach (var equInfo in progressConfig.EquConfigs)
             {
-                AddEqu(equInfo);
+                taskQueue.Enqueue(() => AddEqu(equInfo));
             }
         }
         /// <summary>

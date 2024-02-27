@@ -1,5 +1,4 @@
 using IIOTS.CommUtil;
-using IIOTS.Models.Driver;
 
 namespace CEE.DefaultRecipe
 {
