@@ -41,7 +41,7 @@ namespace IIOTS.EdgeCore.Command
                                 }
                             }
                         }
-                        publisher.PubQueue($"{progressLogin.ClientId}/{className}/SetConfig", progressConfig);
+                        publisher.Send($"{progressLogin.ClientId}/{className}/SetConfig", progressConfig);
                         return;
                     }
                 }
@@ -51,7 +51,7 @@ namespace IIOTS.EdgeCore.Command
                 var progressLogins = progressManage.GetAllProgress().FindAll(p => p.Name == progressLogin.Name);
                 foreach (var _progressLogin in progressLogins)
                 {
-                    publisher.PubQueue($"{_progressLogin.ClientId}/{className}/SetConfig", _progressLogin.progressConfig);
+                    publisher.Send($"{_progressLogin.ClientId}/{className}/SetConfig", _progressLogin.progressConfig);
                 } 
             }
         }

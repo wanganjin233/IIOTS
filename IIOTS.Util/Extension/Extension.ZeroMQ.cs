@@ -18,10 +18,7 @@ namespace IIOTS.Util
         /// 接收回应数据的阻塞词典
         /// </summary>
         private static readonly UsingLock<Dictionary<string, ResetEventData>> zeroAutoResetEvent = new([]);
-        /// <summary>
-        /// 用于ZeroMQ的发布信息队列
-        /// </summary>
-        private static readonly TaskQueue zeroTaskQueue = new();
+
         /// <summary>
         /// 释放接收阻塞
         /// </summary>
@@ -52,18 +49,18 @@ namespace IIOTS.Util
         /// <param name="publisherSocket"></param>
         /// <param name="topic"></param>
         /// <param name="obj"></param>
-        public static void PubQueue(this PublisherSocket publisherSocket,
+        public static void Send(this PublisherSocket publisherSocket,
             string? topic,
             object? obj)
         {
             if (topic != null)
             {
-                zeroTaskQueue.Enqueue(() =>
-            {
-                publisherSocket
-                 .SendMoreFrame(topic)
-                 .SendFrame(obj?.ToJson() ?? "");
-            });
+                lock (publisherSocket)
+                {
+                    publisherSocket
+                        .SendMoreFrame(topic)
+                        .SendFrame(obj?.ToJson() ?? "");
+                }
             }
         }
         /// <summary>
@@ -84,10 +81,11 @@ namespace IIOTS.Util
             {
                 zeroAutoResetEvent.Data.TryAdd(id, autoReset);
             }
-            publisherSocket.PubQueue($"{topic}/{Config.Identifier}/Request/{id}", obj);
+            publisherSocket.Send($"{topic}/{Config.Identifier}/Request/{id}", obj);
             T? result = default;
-            if (autoReset.WaitOne(3000))
-            { 
+            bool waitResult = autoReset.WaitOne(3000);
+            if (waitResult)
+            {
                 result = autoReset.Data.ToObject<T>();
             }
             using (zeroAutoResetEvent.Write())
@@ -95,6 +93,10 @@ namespace IIOTS.Util
                 zeroAutoResetEvent.Data.Remove(id, out _);
             }
             autoReset.Dispose();
+            if (!waitResult)
+            {
+                throw new Exception("请求超时");
+            }
             return result;
 
         }

@@ -27,7 +27,7 @@ namespace IIOTS.EdgeCore.Command
         /// <returns></returns>
         public static void ConfirmActive(this PublisherSocket publisher, string clientId, long workerId)
         {
-            publisher.PubQueue($"{clientId}/{className}/ConfirmActive", workerId);
+            publisher.Send($"{clientId}/{className}/ConfirmActive", workerId);
         }
     }
 }

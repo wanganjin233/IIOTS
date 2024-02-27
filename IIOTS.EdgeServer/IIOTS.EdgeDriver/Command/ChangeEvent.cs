@@ -13,7 +13,7 @@ namespace IIOTS.EdgeDriver.Command
         /// <param name="progressLogin"></param>
         public static void ValueChange(this PublisherSocket publisher, string equ, Tag tag)
         {
-            publisher.PubQueue(string.Join("/", ["ValueChange", equ, tag.TagName]), tag);
+            publisher.Send(string.Join("/", ["ValueChange", equ, tag.TagName]), tag);
         }
         /// <summary>
         /// 设备状态变化事件
@@ -22,7 +22,7 @@ namespace IIOTS.EdgeDriver.Command
         /// <param name="progressLogin"></param>
         public static void DriverStateChange(this PublisherSocket publisher, string equ, bool DriverState)
         {
-            publisher.PubQueue(string.Join("/", ["DriverStateChange", equ]), DriverState);
+            publisher.Send(string.Join("/", ["DriverStateChange", equ]), DriverState);
         }
     }
 }

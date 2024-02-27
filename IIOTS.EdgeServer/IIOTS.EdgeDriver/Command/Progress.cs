@@ -17,7 +17,7 @@ namespace IIOTS.EdgeDriver.Command
         /// <param name="progressLogin"></param>
         public static void LoginEdgeCore(this PublisherSocket publisher, ProgressLoginInfo progressLogin)
         {
-            publisher.PubQueue($"EdgeCore/{className}/Login", progressLogin);
+            publisher.Send($"EdgeCore/{className}/Login", progressLogin);
         }
         /// <summary>
         /// 发送心跳
@@ -26,7 +26,7 @@ namespace IIOTS.EdgeDriver.Command
         /// <param name="clientId"></param>
         public static void HeartBeat(this PublisherSocket publisher, string clientId)
         {
-            publisher.PubQueue($"EdgeCore/{className}/HeartBeat", clientId);
+            publisher.Send($"EdgeCore/{className}/HeartBeat", clientId);
         }
     }
 }
