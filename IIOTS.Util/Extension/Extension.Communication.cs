@@ -56,6 +56,7 @@ namespace IIOTS.Util
         {
             try
             {
+                //根据长度类型确认长度字节数
                 int DataLengthType = communicationInfo.DataLengthType switch
                 {
                     LengthTypeEnum.Byte => 1,
@@ -67,29 +68,41 @@ namespace IIOTS.Util
                     LengthTypeEnum.ReUint => 4,
                     _ => throw new NotImplementedException()
                 };
-                List<byte[]> buffers = new();
+                //接收的数据组
+                List<byte[]> buffers = [];
                 while (true)
                 {
-                    //接收阻塞 
+                    //接收Bytes
                     byte[] buffer = receive();
-                    if (!buffer.Any())
-                        return null;//断开信号 
+                    //长度为0断开信号 
+                    if (buffer.Length == 0)
+                        return null;
+                    //添加接收的bytes到缓存
                     receiveBuffer = receiveBuffer.AddBytes(buffer);
                     while (true)
                     {
+                        //查询头第一个字节位置
                         int headIndex = receiveBuffer.IndexOf(communicationInfo.HeadBytes[0]);
                         if (headIndex == -1)
                         {
-                            receiveBuffer = Array.Empty<byte>();
+                            //未找到头清空缓存并退出循环
+                            receiveBuffer = [];
                             break;
                         }
                         else
                         {
-                            receiveBuffer = receiveBuffer.Skip(headIndex).ToArray();
+                            //查找报文头位置
                             int headBytesIndex = receiveBuffer.IndexOf(communicationInfo.HeadBytes);
                             if (headBytesIndex > -1)
                             {
+                                //找到头删除在头报文之前的bytes
                                 receiveBuffer = receiveBuffer.Skip(headBytesIndex).ToArray();
+                                //缓存长度小于长度标识报文位置和标识类型长度则跳出
+                                if (receiveBuffer.Length < communicationInfo.DataLengthLocation + DataLengthType)
+                                {
+                                    break;
+                                }
+                                //根据类型报文长度标识位置获取报文长度加 补充长度（如Rtu校验，未计算在长度内）
                                 int length = communicationInfo.DataLengthType switch
                                 {
                                     LengthTypeEnum.Byte => receiveBuffer[communicationInfo.DataLengthLocation],
@@ -117,20 +130,25 @@ namespace IIOTS.Util
                                                                                     .HiloExchange()),
                                     _ => throw new NotImplementedException()
                                 } + communicationInfo.LengthReplenish;
-                                if (receiveBuffer.Length >= communicationInfo.HeadBytes.Length + DataLengthType + length + communicationInfo.EndBytes.Length)
+                                //接收的长度大于或等于 报文长度标识位置+数据长度字节数+报文长度标识+尾字节长度则开始解析报文内容
+                                if (receiveBuffer.Length >= communicationInfo.DataLengthLocation + DataLengthType + length + communicationInfo.EndBytes.Length)
                                 {
-                                    byte[] bytes = receiveBuffer
-                                            .Skip(communicationInfo.HeadBytes.Length + DataLengthType)
-                                            .Take(length).ToArray();
-                                    if (receiveBuffer.Equalsbytes(communicationInfo.EndBytes, communicationInfo.HeadBytes.Length + DataLengthType + length))
+                                    //校验尾字节
+                                    if (receiveBuffer.Equalsbytes(communicationInfo.EndBytes, communicationInfo.DataLengthLocation + DataLengthType + length))
                                     {
+                                        //截取报文内容
+                                        byte[] bytes = receiveBuffer
+                                                .Skip(communicationInfo.DataLengthLocation + DataLengthType)
+                                                .Take(length).ToArray();
+                                        //校验通过删除报文内容
                                         receiveBuffer = receiveBuffer
-                                            .Skip(communicationInfo.DataLengthLocation + DataLengthType + length)
+                                            .Skip(communicationInfo.DataLengthLocation + DataLengthType + length + communicationInfo.EndBytes.Length)
                                             .ToArray();
                                         buffers.Add(bytes);
                                     }
                                     else
                                     {
+                                        //不通过则跳过头部分
                                         receiveBuffer = receiveBuffer
                                             .Skip(communicationInfo.HeadBytes.Length)
                                             .ToArray();
@@ -143,15 +161,18 @@ namespace IIOTS.Util
                             }
                             else
                             {
+                                //未找到报文头并且缓存长度大于报文头则截取报文头长度缓存
                                 if (receiveBuffer.Length > communicationInfo.HeadBytes.Length)
+                                {
                                     receiveBuffer = receiveBuffer
                                         .TakeLast(communicationInfo.HeadBytes.Length)
                                         .ToArray();
+                                }
                                 break;
                             }
                         }
                     }
-                    if (buffers.Any())
+                    if (buffers.Count != 0)
                     {
                         return buffers;
                     }

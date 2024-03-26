@@ -1,7 +1,7 @@
 using AntDesign;
 using AntDesign.ProLayout;
-using IMEC.WebRMS;
-using IMEC.WebRMS.Services; 
+using IIOTS.WebRMS;
+using IIOTS.WebRMS.Services; 
 using Microsoft.AspNetCore.Components;
 LocaleProvider.DefaultLanguage = "zh-CN";
 var builder = WebApplication.CreateBuilder(args);

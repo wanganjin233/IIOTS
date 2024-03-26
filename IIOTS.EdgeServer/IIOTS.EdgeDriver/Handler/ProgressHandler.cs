@@ -23,7 +23,8 @@ namespace IIOTS.EdgeDriver.Handler
             logger.LogInformation($"加载配置文件【{progressConfig.Name}】【{progressConfig.Description}】共需要启动【{progressConfig.EquConfigs.Count}】驱动");
             foreach (var equInfo in progressConfig.EquConfigs)
             {
-                taskQueue.Enqueue(() => AddEqu(equInfo));
+                AddEqu(equInfo);
+                Thread.Sleep(100);
             }
         }
         /// <summary>

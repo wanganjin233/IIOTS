@@ -27,14 +27,15 @@ namespace IIOTS.Communication
         /// 数据长度位置
         /// </summary>
         public int DataLengthLocation { get; set; } = -1;
+
         /// <summary>
         /// 数据长度类型
         /// </summary>
-        public LengthTypeEnum DataLengthType { get; set; } = LengthTypeEnum.Byte;
+        public LengthTypeEnum DataLengthType { get; set; } = LengthTypeEnum.Byte; 
         /// <summary>
         /// 缓存
         /// </summary>
-        private byte[] ReceiveBuffer { set; get; } = Array.Empty<byte>();
+        private byte[] ReceiveBuffer { set; get; } = [];
         /// <summary>
         /// 长度补充
         /// </summary>
@@ -292,9 +293,11 @@ namespace IIOTS.Communication
         /// </summary>
         public void Close()
         {
+            clientSocket?.Shutdown(SocketShutdown.Both);
             clientSocket?.Close();
             clientSocket?.Dispose();
             clientSocket = null;
+            ReceiveBuffer = [];
             DisconnectEvent?.Invoke();
             GC.Collect();
         }

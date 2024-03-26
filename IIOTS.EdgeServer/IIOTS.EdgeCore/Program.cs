@@ -1,4 +1,3 @@
-using IIOTS.EdgeCore;
 using IIOTS.EdgeCore.Extension;
 using IIOTS.EdgeCore.Manage;
 using IIOTS.EdgeCore.Service;

@@ -34,6 +34,9 @@
     <ProjectReference Include="..\IIOTS.EdgeDriver\IIOTS.EdgeDriver.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Config\DisabledConfig\HDIHANDrillingAll.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

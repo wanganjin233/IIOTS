@@ -21,6 +21,10 @@
         /// <summary>
         /// OPCUA协议
         /// </summary>
-        OPCUA
+        OPCUA,
+        /// <summary>
+        /// 西门子S7协议
+        /// </summary>
+        S7
     }
 }

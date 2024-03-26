@@ -1,6 +1,6 @@
 ﻿@using System.ComponentModel
 @using AntDesign.TableModels
-@using IMEC.WebRMS.Services
+@using IIOTS.WebRMS.Services
 @using IIOTS.Enum
 @using IIOTS.Models
 @using IIOTS.Util
@@ -78,13 +78,13 @@
            RowKey="x=>x.Id"
            ScrollX="max-content"
            Loading="@tableLoad">
-         <Selection Hidden="IsDisabled" Key="@(context.Id.ToString())" />
+        <Selection Hidden="IsDisabled" Key="@(context.Id.ToString())" />
         <PropertyColumn Title="设备组" Property="c=>c.EQU" Sortable />
         <PropertyColumn Title="工厂" Property="c=>c.Factory" Sortable />
         <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
         <PropertyColumn Title="创建时间" Property="c=>c.CreatTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
         <ActionColumn Title="操作">
-             @if (IsDisabled)
+            @if (IsDisabled)
             {
                 <Space>
                     <SpaceItem>
@@ -120,6 +120,14 @@
                 </Space>
                 <Space>
                     <SpaceItem>
+                        <Button Type="@ButtonType.Primary"
+                                OnClick="@(()=>{NavigationManager.NavigateTo($"/Flow/d895c002f4f1994d");})">
+                            流程编辑
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
                         <Popconfirm Title="确认删除？"
                                     OnConfirm="@(async()=>{
                                                  tableLoad=true;
@@ -127,11 +135,11 @@
                                                  tableLoad=false;
                                               })">
                             <Button Danger Type="@ButtonType.Primary">
-                                 删除
-                             </Button>
-                         </Popconfirm>
-                     </SpaceItem>
-                 </Space>
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                </Space>
             }
 
         </ActionColumn>

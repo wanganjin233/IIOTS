@@ -1,76 +1,15 @@
 ﻿@using System.ComponentModel
 @using AntDesign.TableModels
-@using IMEC.WebRMS.Services
+@using IIOTS.WebRMS.Services
 @using IIOTS.Enum
 @using IIOTS.Models
 @using IIOTS.Util
 @using IIOTS.WebRMS.Models
-@using MQTTnet
-@using MQTTnet.Protocol
-@inject IFreeSql freeSql
-@inject NavigationManager NavigationManager
 @page "/TagList"
 
-@code {
-    [Parameter]
-    public EventCallback<TagGroupEntity> SelectTagGroup { get; set; }
-    [Parameter]
-    public bool IsDisabled { get; set; } = false;
-    List<TagGroupEntity> tagGroupEntities = new List<TagGroupEntity>();
-    /// <summary>
-    ///初始化
-    /// </summary>
-    /// <returns></returns>
-    protected override async Task OnInitializedAsync()
-    {
-        await GetPage();
-        await base.OnInitializedAsync();
-    }
-    bool tableLoad = true;
-    /// <summary>
-    /// 页面刷新
-    /// </summary>
-    private async Task GetPage()
-    {
-        tableLoad = true;
-        tagGroupEntities = await freeSql
-        .Select<TagGroupEntity>()
-        .ToListAsync();
-        tableLoad = false;
-    }
-    #region 增加修改操作
-    private TagGroupEntity tagGroupEntitie = new();
-    bool _editBoxVisible = false;
-    bool _editBoxLoading = false;
-    private async Task AddOrUpdateTagGroup()
-    {
-        await freeSql
-        .InsertOrUpdate<TagGroupEntity>()
-        .SetSource(tagGroupEntitie)
-        .ExecuteAffrowsAsync();
-        await GetPage();
-    }
-    #endregion
-    #region 删除弹窗
-    /// <summary>
-    /// 删除进程
-    /// </summary>
-    /// <param name="id"></param>
-    private async Task Detect(TagGroupEntity tagGroup)
-    {
-        if (freeSql
-            .GetRepository<TagGroupEntity>()
-            .DeleteCascadeByDatabase(p => p.Id == tagGroup.Id)
-            .Count > 0)
-        {
-            await GetPage();
-        }
-    }
-    #endregion
-}
 <div>
     @if (!IsDisabled)
-    {
+    { 
         <Button OnClick="@(()=>{
                             tagGroupEntitie=new();
                             _editBoxVisible = true;
@@ -125,61 +64,60 @@
            ScrollX="max-content"
            Loading="@tableLoad">
         <Selection Hidden="IsDisabled" Key="@(context.Id.ToString())" />
+        <ActionColumn Hidden="!IsDisabled" Title="操作">
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary"
+                            OnClick="async()=>await SelectTagGroup.InvokeAsync(context)">
+                        选择
+                    </Button>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
         <PropertyColumn Title="组名" Property="c=>c.TagGName" Sortable />
         <PropertyColumn Title="驱动类型" Property="c=>c.DriverType" Sortable />
         <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
         <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
-        <ActionColumn Title="操作">
-            @if (IsDisabled)
-            {
-                <Space>
-                    <SpaceItem>
-                        <Button Type="@ButtonType.Primary"
-                                OnClick="@(async()=>{
-                            await SelectTagGroup.InvokeAsync(context);
-                            })">
-                            选择
-                        </Button>
-                    </SpaceItem>
-                </Space>
-            }
-            else
-            {
-                <Space>
-                    <SpaceItem>
-                        <Button Type="@ButtonType.Primary"
-                                OnClick="@(()=>{ NavigationManager.NavigateTo($"/Tags/{context.Id}");})">
-                            点位配置
-                        </Button>
-                    </SpaceItem>
-                </Space>
-                <Space>
-                    <SpaceItem>
-                        <Button Type="@ButtonType.Primary"
-                                OnClick="@(()=>{
-                                        tagGroupEntitie=context.DeepClone();
-                                        _editBoxVisible = true;
-                                        })">
-                            编辑
-                        </Button>
-                    </SpaceItem>
-                </Space>
-                <Space>
-                    <SpaceItem>
-                        <Popconfirm Title="确认删除？"
-                                    OnConfirm="@(async()=>{
+        <ActionColumn Hidden="IsDisabled" Title="操作">
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary"
+                            OnClick="()=>Edit(context)">
+                        编辑
+                    </Button>
+                </SpaceItem>
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary"
+                            OnClick="@(()=>{ NavigationManager.NavigateTo($"/Tags/{context.Id}");})">
+                        点位配置
+                    </Button>
+                </SpaceItem>
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Primary"
+                            OnClick="@(()=>{  NavigationManager.NavigateTo($"/Flow/{context.FlowId??"new"}");})">
+                        流程编辑
+                    </Button>
+                </SpaceItem>
+            </Space>
+            <Space>
+                <SpaceItem>
+                    <Popconfirm Title="确认删除？"
+                                OnConfirm="@(async()=>{
                                                  tableLoad=true;
                                                  await Detect(context );
                                                  tableLoad=false;
                                               })">
-                            <Button Danger Type="@ButtonType.Primary">
-                                删除
-                            </Button>
-                        </Popconfirm>
-                    </SpaceItem>
-                </Space>
-            }
-
+                        <Button Danger Type="@ButtonType.Primary">
+                            删除
+                        </Button>
+                    </Popconfirm>
+                </SpaceItem>
+            </Space>
         </ActionColumn>
+
     </Table>
 </div>

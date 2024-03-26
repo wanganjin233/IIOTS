@@ -6,7 +6,7 @@ using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System.Collections.Concurrent;
 
-namespace IMEC.WebRMS.Services
+namespace IIOTS.WebRMS.Services
 {
     public interface IMqttClientService : IDisposable
     {
@@ -50,7 +50,7 @@ namespace IMEC.WebRMS.Services
             _MqttClient.ApplicationMessageReceivedAsync += MqttClient_ApplicationMessageReceivedAsync;
             AsyncHelper.RunSync(() => _MqttClient.ConnectAsync(new MqttClientOptionsBuilder()
                 .WithTcpServer(MQTTIP, MQTTPort)
-                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
+                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500) 
                 .Build()));
         }
 

@@ -57,7 +57,7 @@ namespace IIOTS.EdgeCore.Service
             while (!stoppingToken.IsCancellationRequested)
             {
                 #region 检测进程状态   
-                await Task.Delay(cycleTime, stoppingToken);
+                await Task.Delay(cycleTime);
                 //获取没有运行的进程
                 var needRuns = _progressManage.ProgressNotRunList();
                 //启动进程

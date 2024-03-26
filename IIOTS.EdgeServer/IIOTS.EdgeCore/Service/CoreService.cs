@@ -127,7 +127,7 @@ namespace IIOTS.EdgeCore.Service
                         {
                             if (!string.IsNullOrEmpty(message))
                             {
-                                List<string> routers = e.ApplicationMessage.Topic.Split("/").ToList();
+                                List<string> routers = [.. e.ApplicationMessage.Topic.Split("/")];
                                 routers.RemoveAt(1);
                                 handler.ExecuteHandler(string.Join("/", routers), message);
                             }
@@ -138,8 +138,8 @@ namespace IIOTS.EdgeCore.Service
                             _logger.LogError($"处理失败，错误信息：【{e.Message}】");
                         }
                     }
-                }
-                , cancellationToken);
+
+                });
             };
             _progressManage.UpdateDriverState(false);
             string willMessage = _progressManage.EdgeLoginInfo.ToJson();
@@ -165,6 +165,7 @@ namespace IIOTS.EdgeCore.Service
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    Task.Delay(5000).Wait();
                     foreach (var driverLoginInfo in _progressManage.GetAllProgress())
                     {
                         string clientId = driverLoginInfo.ClientId;
@@ -188,96 +189,102 @@ namespace IIOTS.EdgeCore.Service
                             }
                         });
                     }
-                    Task.Delay(5000, cancellationToken).Wait();
                 }
             }, TaskCreationOptions.LongRunning);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Task task = ConnectMqtt(stoppingToken);
-            await task.ContinueWith(async t =>
-             {
-                 _ = Task.Factory.StartNew(async () =>
+            ConnectMqtt(stoppingToken).Wait();
+
+            _ = Task.Factory.StartNew(async () =>
+              {
+                  while (!stoppingToken.IsCancellationRequested)
                   {
-                      while (!stoppingToken.IsCancellationRequested)
+                      try
                       {
-                          try
+                          EdgeLoginInfo edgeLogin = _progressManage.EdgeLoginInfo;
+                          lock (mqttClient)
                           {
-                              EdgeLoginInfo edgeLogin = _progressManage.EdgeLoginInfo;
-                              await mqttClient.PublishStringAsync($"EdgeLoginInfo/{_progressManage.EdgeLoginInfo.EdgeID}"
-                               , new EdgeLoginInfo()
-                               {
-                                   EdgeID = edgeLogin.EdgeID,
-                                   StartTime = edgeLogin.StartTime,
-                                   State = edgeLogin.State,
-                                   ProgressLoginInfos = _progressManage.ProgressRunList(),
-                               }.ToJson()
-                               , MqttQualityOfServiceLevel.ExactlyOnce
-                               , true
-                               , stoppingToken);
-                          }
-                          finally
-                          {
-                              await Task.Delay(10000);
+                              mqttClient.PublishAsync(new MqttApplicationMessage()
+                              {
+                                  Topic = $"EdgeLoginInfo/{_progressManage.EdgeLoginInfo.EdgeID}",
+                                  PayloadSegment = Encoding.UTF8.GetBytes(new EdgeLoginInfo()
+                                  {
+                                      EdgeID = edgeLogin.EdgeID,
+                                      StartTime = edgeLogin.StartTime,
+                                      State = edgeLogin.State,
+                                      ProgressLoginInfos = _progressManage.ProgressRunList(),
+                                  }.ToJson()),
+                                  QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
+                                  Retain = true
+                              }, stoppingToken).Wait();
                           }
                       }
-                  }, TaskCreationOptions.LongRunning);
-                 subscriber.ReceiveReady += (o, v) =>
-                 {
-                     //接收主题名
-                     string topic = v.Socket.ReceiveFrameString();
-                     //接收信息
-                     string message = v.Socket.ReceiveFrameString();
-                     //点位变化主题发送至MQTT
-                     if (topic.StartsWith("ValueChange"))
-                     {
-                         mqttClient.PublishAsync(new MqttApplicationMessage()
-                         {
-                             Topic = topic,
-                             PayloadSegment = Encoding.UTF8.GetBytes(message),
-                             QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
-                             Retain = true
-                         }, stoppingToken);
-                     }
-                     else if (topic.StartsWith("DriverStateChange"))
-                     {
-                         mqttClient.PublishAsync(new MqttApplicationMessage()
-                         {
-                             Topic = topic,
-                             PayloadSegment = Encoding.UTF8.GetBytes(message),
-                             QualityOfServiceLevel = MqttQualityOfServiceLevel.AtMostOnce,
-                             Retain = true,
-                             MessageExpiryInterval = 10
-                         }, stoppingToken);
-                     }
-                     else
-                     {
-                         try
-                         {
-                             //消息处理方法
-                             HandlerResult result = handler.ExecuteHandler(topic, message);
-                             switch (result.MsgType)
-                             {
-                                 case Enum.MsgTypeEnum.Request:
-                                     publisher.Send(result.Router, result.Data);
-                                     break;
-                                 case Enum.MsgTypeEnum.Response:
-                                     result.SetResponse();
-                                     break;
-                                 case Enum.MsgTypeEnum.Execute:
-                                     break;
-                             }
-                         }
-                         catch (Exception e)
-                         {
-                             _logger.LogError($"主题【{topic}】内容【{message}】处理失败，错误信息：【{e.Message}】");
-                         }
-                     }
-                 };
-                 new NetMQPoller() { subscriber }.RunAsync();
-                 await CheckProgressActive(stoppingToken);
-             }, stoppingToken);
+                      finally
+                      {
+                          await Task.Delay(10000);
+                      }
+                  }
+              }, TaskCreationOptions.LongRunning);
+            subscriber.ReceiveReady += async (o, v) =>
+            {
+                //接收主题名
+                string topic = v.Socket.ReceiveFrameString();
+                //接收信息
+                string message = v.Socket.ReceiveFrameString();
+
+                try
+                {
+                    //点位变化主题发送至MQTT
+                    if (topic.StartsWith("ValueChange"))
+                    {
+                        await mqttClient.PublishAsync(new MqttApplicationMessage()
+                        {
+                            Topic = topic,
+                            PayloadSegment = Encoding.UTF8.GetBytes(message),
+                            QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
+                            Retain = true
+                        });
+                    }
+                    else if (topic.StartsWith("DriverStateChange"))
+                    { 
+                        await mqttClient.PublishAsync(new MqttApplicationMessage()
+                        {
+                            Topic = topic,
+                            PayloadSegment = Encoding.UTF8.GetBytes(message),
+                            QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
+                            Retain = true,
+                            MessageExpiryInterval = 10
+                        });
+                    }
+                    else
+                    {
+                        await Task.Run(() =>
+                          {
+                              //消息处理方法
+                              HandlerResult result = handler.ExecuteHandler(topic, message);
+                              switch (result.MsgType)
+                              {
+                                  case Enum.MsgTypeEnum.Request:
+                                      publisher.Send(result.Router, result.Data);
+                                      break;
+                                  case Enum.MsgTypeEnum.Response:
+                                      result.SetResponse();
+                                      break;
+                                  case Enum.MsgTypeEnum.Execute:
+                                      break;
+                              }
+                          });
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"主题【{topic}】内容【{message}】处理失败，错误信息：【{e.Message}】");
+                }
+            };
+            new NetMQPoller() { subscriber }.RunAsync();
+            await CheckProgressActive(stoppingToken);
         }
     }
 }

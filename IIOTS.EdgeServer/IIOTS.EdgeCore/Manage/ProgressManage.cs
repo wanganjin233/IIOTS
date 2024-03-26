@@ -212,7 +212,8 @@ namespace IIOTS.EdgeCore.Manage
             using (_EdgeLoginInfo.Read())
             {
                 return _EdgeLoginInfo.Data?.ProgressLoginInfos
-                    .Where(p => DateTime.Now - p.HeartbeatTime > timeSpan)
+                    .Where(p => DateTime.Now - p.HeartbeatTime > timeSpan
+                     )
                     .ToList() ?? [];
             }
         }

@@ -19,6 +19,11 @@ namespace IIOTS.WebRMS.Models
         [Column(Name = "Description")]
         public string? Description { get; set; }
         /// <summary>
+        /// 流程ID
+        /// </summary>
+        [Column(Name = "FlowId")]
+        public string? FlowId { get; set; }
+        /// <summary>
         /// 驱动类型
         /// </summary> 
         [Column(Name = "DriverType", IsNullable = false, MapType = typeof(string))]

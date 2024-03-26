@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x86</Platforms>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper.SqlBuilder" Version="2.0.78" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0-rc.2.23480.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver.Fins\IIOTS.Driver.Fins.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver.MC3E\IIOTS.Driver.MC3E.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver.ModbusRtu\IIOTS.Driver.ModbusRtu.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver.ModbusTcp\IIOTS.Driver.ModbusTcp.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver.OPCUA\IIOTS.Driver.OPCUA.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Drivers.S7\IIOTS.Driver.S7.csproj" />
+    <ProjectReference Include="..\IIOTS.Drivers\IIOTS.Driver\IIOTS.Driver.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="MesIp.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MesIp.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="S7.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MC3E.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OpcUa.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ModbusRtu.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fins.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="modbusTcp.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MesIp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

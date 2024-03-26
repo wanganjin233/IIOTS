@@ -2,7 +2,7 @@
 using IIOTS.Util;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace IMEC.WebRMS
+namespace IIOTS.WebRMS
 {
     public static class HostExtensions
     {

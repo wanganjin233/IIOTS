@@ -1,4 +1,4 @@
-﻿namespace IMEC.WebRMS
+﻿namespace IIOTS.WebRMS
 {
     public class DatabaseOptions
     {

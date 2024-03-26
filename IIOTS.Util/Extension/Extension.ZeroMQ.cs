@@ -95,7 +95,7 @@ namespace IIOTS.Util
             autoReset.Dispose();
             if (!waitResult)
             {
-                throw new Exception("请求超时");
+                //throw new Exception("请求超时");
             }
             return result;
 

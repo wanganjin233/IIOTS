@@ -52,7 +52,7 @@ namespace IIOTS.Driver
         /// <summary>
         /// 点位组
         /// </summary>
-        protected ConcurrentBag<TagGroup> TagGroups = new();
+        protected ConcurrentBag<TagGroup> TagGroups = [];
         /// <summary>
         /// 全部点位
         /// </summary>
@@ -61,12 +61,6 @@ namespace IIOTS.Driver
         /// 全部点位
         /// </summary>
         public List<TagProcess> AllTags => AllTagDic.Values.ToList();
-        /// <summary>
-        /// 一个字的数据地址长度 
-        /// 西门子 2
-        /// 三菱，欧姆龙，ModbusTcp 1
-        /// </summary> 
-        public virtual ushort WordLength => 1;
         /// <summary>
         /// 写入
         /// </summary>
@@ -122,7 +116,7 @@ namespace IIOTS.Driver
             foreach (var tagGByStationNumber in tags.GroupBy(p => p.StationNumber))
             {
                 foreach (var tagGByBit in tagGByStationNumber.GroupBy(p => p.IsBit))
-                {
+                { 
                     foreach (var tagGByTypeNeume in tagGByBit.GroupBy(p => p.Type))
                     {
                         TagGroup tagGroup = new()
@@ -153,7 +147,10 @@ namespace IIOTS.Driver
                             {
                                 TagGroups.Add(tagGroup);
                                 CreationReadCommand(tagGroup);
-                                tagGroup = new TagGroup();
+                                tagGroup = new()
+                                {
+                                    IsBit = tagGByBit.Key
+                                };
                                 tagGroup.Tags.Add(tag);
                                 endTag = GetEndPosition(tag);
                             }
@@ -221,46 +218,51 @@ namespace IIOTS.Driver
                 {
                     bool state = true;
                     while (IsRun)
-                    {
-
+                    { 
                         foreach (var tagGroup in TagGroups)
                         {
-                            if (tagGroup.Command == null)
+                            try
                             {
-                                continue;
-                            }
-                            byte[]? BodyByte = SendCommand(tagGroup.Command);
-                            if (BodyByte != null)
-                            {
-                                tagGroup.Tags.ForEach(p =>
+                                if (tagGroup.Command == null)
                                 {
-                                    int skipIndex;
-                                    if (tagGroup.IsBit)
+                                    continue;
+                                }
+                                byte[]? BodyByte = SendCommand(tagGroup.Command);
+                                if (BodyByte != null)
+                                {
+                                    tagGroup.Tags.ForEach(p =>
                                     {
-                                        if (p.BitLocation != -1)
+                                        int skipIndex;
+                                        if (tagGroup.IsBit)
                                         {
-                                            skipIndex = (int)(p.Location - tagGroup.StartAddress) * 16 + p.BitLocation;
+                                            if (p.BitLocation != -1)
+                                            {
+                                                skipIndex = (int)(p.Location - tagGroup.StartAddress) * 16 + p.BitLocation;
+                                            }
+                                            else
+                                            {
+                                                skipIndex = (int)(p.Location - tagGroup.StartAddress);
+                                            }
                                         }
                                         else
                                         {
-                                            skipIndex = (int)(p.Location - tagGroup.StartAddress);
+                                            skipIndex = (int)(p.Location - tagGroup.StartAddress) * 2;
                                         }
-                                    }
-                                    else
-                                    {
-                                        skipIndex = (int)(p.Location - tagGroup.StartAddress) * 2;
-                                    }
-                                   ((TagProcess)p).UpdateValue = BodyByte
-                                    .Skip(skipIndex)
-                                    .Take(p.DataLength)
-                                    .ToArray();
-                                });
-                                state = true;
+                                       ((TagProcess)p).UpdateValue = BodyByte
+                                        .Skip(skipIndex)
+                                        .Take(p.DataLength)
+                                        .ToArray();
+                                    });
+                                    state = true;
+                                }
+                                else
+                                {
+                                    state = false;
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                state = false;
-                                break;
+                            catch (Exception)
+                            { 
                             }
                         }
 

@@ -5,6 +5,10 @@ namespace IIOTS.Models
     public class Tag : TagConfig
     {
         /// <summary>
+        /// 西门子DB块
+        /// </summary>
+        public ushort DbBlock { get; set; }
+        /// <summary>
         /// 旧值
         /// </summary>
         public virtual object? OldValue { get; set; }

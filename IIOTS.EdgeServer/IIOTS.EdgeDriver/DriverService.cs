@@ -28,7 +28,7 @@ namespace IIOTS.EdgeDriver
             subscriber.Subscribe($"{_driverSignInInfo.ClientId}");
             var handler = new Handler<IHandler>(_driverSignInInfo.ClientId, loggerFactory, publisher, AutoResetEvent);
             //等待1秒防止Publisher未连接
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(1000);
             _logger.LogInformation($"发送登录信息【{_driverSignInInfo.ClientId}】");
             //发送登录信息
             publisher.LoginEdgeCore(_driverSignInInfo);
@@ -54,35 +54,40 @@ namespace IIOTS.EdgeDriver
                             publisher.DriverStateChange(driver.Key, driver.Value.DriverState);
                         });
                     }
-                    Task.Delay(5000, stoppingToken).Wait();
+                    Task.Delay(5000).Wait();
                 }
             }, TaskCreationOptions.LongRunning);
-            subscriber.ReceiveReady += (o, v) =>
+            subscriber.ReceiveReady += async (o, v) =>
             {  //接收主题名
                 string topic = v.Socket.ReceiveFrameString();
                 //接收信息
                 string message = v.Socket.ReceiveFrameString();
-                try
-                {
-                    //消息处理方法
-                    HandlerResult result = handler.ExecuteHandler(topic, message);
-                    switch (result.MsgType)
-                    {
-                        case Enum.MsgTypeEnum.Request:
-                            _logger.LogTrace($"{topic}回复请求【{result.Router}】【{result.Data}】");
-                            publisher.Send(result.Router, result.Data);
-                            break;
-                        case Enum.MsgTypeEnum.Response:
-                            result.SetResponse();
-                            break;
-                        case Enum.MsgTypeEnum.Execute:
-                            break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError($"处理失败，错误信息：【{e.Message}】");
-                }
+                await Task.Run(() =>
+                   {
+
+
+                       try
+                       {
+                           //消息处理方法
+                           HandlerResult result = handler.ExecuteHandler(topic, message);
+                           switch (result.MsgType)
+                           {
+                               case Enum.MsgTypeEnum.Request:
+                                   _logger.LogTrace($"{topic}回复请求【{result.Router}】【{result.Data}】");
+                                   publisher.Send(result.Router, result.Data);
+                                   break;
+                               case Enum.MsgTypeEnum.Response:
+                                   result.SetResponse();
+                                   break;
+                               case Enum.MsgTypeEnum.Execute:
+                                   break;
+                           }
+                       }
+                       catch (Exception e)
+                       {
+                           _logger.LogError($"处理失败，错误信息：【{e.Message}】");
+                       }
+                   });
             };
             new NetMQPoller() { subscriber }.Run();
         }
