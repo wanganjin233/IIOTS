@@ -1,119 +1,31 @@
-﻿@namespace IMEC.WebControl.Pages.Dashboard.NodePanel
-@using System.Text.RegularExpressions
-@using IMEC.WebRMS.Services
+﻿@using System.Text.RegularExpressions
 @using IIOTS.Models
-@using IIOTS.Util
-@using IIOTS.WebRMS.Models
-@using MQTTnet
-@using MQTTnet.Client
-@using MQTTnet.Protocol
 @using System.Collections.Concurrent
-@using AntDesign.Charts
 @using Title = AntDesign.Charts.Title
-@implements IDisposable
-@inject IFreeSql freeSql
-@inject NavigationManager NavigationManager
-@inject IMqttClientService MqttClientService
 @page "/"
-
-@code {
-    /// <summary>
-    /// 边缘节点信息
-    /// </summary>
-    private ConcurrentDictionary<string, EdgeLoginInfo> edgeLoginInfos = new();
-
-    /// <summary>
-    ///初始化
-    /// </summary>
-    /// <returns></returns>
-    protected override Task OnInitializedAsync()
-    {
-        MqttClientService.Subscribe(new MqttTopicFilterBuilder()
-           .WithTopic($"EdgeLoginInfo/#")
-           .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce)
-           .Build());
-        MqttClientService.ApplicationMessageReceived += ApplicationMessageReceived;
-
-        InvokeAsync(() => base.StateHasChanged());
-        return base.OnInitializedAsync();
-    }
-
-    private async void ApplicationMessageReceived(string topic, string msg)
-    {
-        EdgeLoginInfo? edgeLoginInfo = msg.ToObject<EdgeLoginInfo>();
-        List<EdgeLoginInfo> edges = new();
-        List<NodeInfosEntity>? listedgeLoginInfo = await freeSql
-        .Select<NodeInfosEntity>()
-        .ToListAsync();
-        // foreach (var Nodes in listedgeLoginInfo)
-        // {
-        //     EdgeLoginInfo? edgeLoginInfo1 = new();
-        //     edgeLoginInfo1.EdgeID = Nodes.EdgeID;
-        //     edgeLoginInfo1.IPNo = Nodes.IPNo;
-        //     edgeLoginInfos.TryAdd(Nodes.EdgeID, edgeLoginInfo1);
-        // }
-       data1= [
-            new { type = "在线", value = GetRunEdges().Count },
-     new { type = "离线", value = GetStopEdges().Count }
-
-       ];
-        if (edgeLoginInfo != null && edgeLoginInfo.EdgeID != null)
-        {
-            edgeLoginInfos[edgeLoginInfo.EdgeID] = edgeLoginInfo;
-            await InvokeAsync(() => base.StateHasChanged());
-        }
-    }
-    public void Dispose()
-    {
-        MqttClientService.ApplicationMessageReceived -= ApplicationMessageReceived;
-        MqttClientService.UnSubscribe($"EdgeLoginInfo/#");
-        MqttClientService.Dispose();
-        GC.SuppressFinalize(this);
-    }
-    /// <summary>
-    /// 获取运行的节点
-    /// </summary>
-    /// <returns></returns>
-    private Dictionary<string, EdgeLoginInfo> GetRunEdges()
-    {
-        return edgeLoginInfos.Where(p => p.Value.State).ToDictionary();
-    }
-    /// <summary>
-    /// 获取停止的节点
-    /// </summary>
-    /// <returns></returns>
-    private Dictionary<string, EdgeLoginInfo> GetStopEdges()
-    {
-        return edgeLoginInfos.Where(p => !p.Value.State).ToDictionary();
-    }
-    object[] data1 = [];
-    private RenderFragment Info(string title, string value, bool bordered = false)
-    {
-        return @<div class="headerInfo">
-        <span>@title</span>
-        <p>@value</p>
-        @if (bordered) {
-        <em />
-    }
-    </div>
-    ;
-    }
-   
-}
 <PageContainer Title="节点面板">
     <Content>
         <Card>
             <Row Gutter="24">
                 <AntDesign.Col Sm="8" Xs="24">
-                    @Info("部署节点", $"{edgeLoginInfos.Count}", true)
+                    <div class="headerInfo">
+                        <span>部署节点</span>
+                        <p>@edgeLoginInfos.Count</p>
+                    </div>
                 </AntDesign.Col>
                 <AntDesign.Col Sm="8" Xs="24">
-                    @Info("在线节点", $"{GetRunEdges().Count()}", true)
+                    <div class="headerInfo">
+                        <span>在线节点</span>
+                        <p>@GetRunEdges().Count()</p>
+                    </div>
                 </AntDesign.Col>
                 <AntDesign.Col Sm="8" Xs="24">
-                    @Info("在线率", ((double)GetRunEdges().Count() / edgeLoginInfos.Count).ToString("0.0%"))
+                    <div class="headerInfo">
+                        <span>在线率</span>
+                        <p>@(((double)GetRunEdges().Count() / edgeLoginInfos.Count).ToString("0.0%"))</p>
+                    </div>
                 </AntDesign.Col>
-            </Row>  
+            </Row>
         </Card>
         <Table TItem="EdgeLoginInfo"
                ScrollX="max-content"
