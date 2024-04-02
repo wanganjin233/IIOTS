@@ -1,5 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
-using IIOTS.Enum; 
+using IIOTS.Enum;
 
 namespace IIOTS.WebRMS.Models
 {
@@ -11,8 +11,8 @@ namespace IIOTS.WebRMS.Models
         /// <summary>
         /// 组名
         /// </summary>
-        [Column(Name = "TagGName")]
-        public string? TagGName { get; set; }
+        [Column(Name = "TagGName", IsNullable = false)]
+        public string TagGName { get; set; } = string.Empty;
         /// <summary>
         /// 备注
         /// </summary>

@@ -1,11 +1,17 @@
 ﻿using IIOTS.Util;
 using IIOTS.WebRMS.Models;
 using Microsoft.AspNetCore.Components;
+using Blazored.LocalStorage;
+using Microsoft.JSInterop;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
 {
     public partial class TagList
     {
+        [Inject]
+        private ILocalStorageService localStorage { get; set; } = default!;
+        [Inject]
+        private IJSRuntime JSRuntime { get; set; } = default!;
         [Inject]
         private IFreeSql FreeSql { get; set; } = default!;
         [Inject]
@@ -42,11 +48,14 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
         bool _editBoxLoading = false;
         private async Task AddOrUpdateTagGroup()
         {
-            await FreeSql
+            if (await FreeSql
             .InsertOrUpdate<TagGroupEntity>()
             .SetSource(tagGroupEntitie)
-            .ExecuteAffrowsAsync();
-            await GetPage();
+            .ExecuteAffrowsAsync() > 0)
+            {
+                await GetPage();
+            }
+
         }
         #endregion
         #region 删除弹窗
@@ -75,6 +84,62 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
             tagGroupEntitie = tagGroup.DeepClone() ?? new();
             _editBoxVisible = true;
         }
+        #region 删除弹窗
+        /// <summary>
+        ///流程编辑
+        /// </summary>
+        /// <param name="id"></param>
+        private async Task EditFlow(TagGroupEntity tagGroup)
+        {
+            string? token = await NodeRedApi.GetTokenAsync();
+            string? localStorageToken = await localStorage.GetItemAsync<string>("auth-tokens-nodeRed");
+            if (token != null && (!localStorageToken?.Contains(token) ?? true))
+            {
+                await localStorage.SetItemAsync("auth-tokens-nodeRed", new
+                {
+                    access_token = token,
+                    expires_in = 604800,
+                    token_type = "Bearer"
+                });
+            }
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "editor-language", "zh-CN");
+            string? flow = null;
+            if (tagGroup.FlowId == null)
+            {
+                tagGroup.FlowId = await NodeRedApi.CreateFlowAsync(tagGroup.TagGName);
+                if (tagGroup.FlowId != null)
+                {
+                    flow = tagGroup.FlowId;
+                    await FreeSql
+                     .Update<TagGroupEntity>()
+                     .SetSource(tagGroup)
+                     .ExecuteAffrowsAsync();
+                }
+            }
+            else
+            {
+                flow = await NodeRedApi.GetFlowAsync(tagGroup.FlowId);
+                if (await NodeRedApi.GetFlowAsync(tagGroup.FlowId) != null)
+                {
+                    flow = tagGroup.FlowId;
+                }
+            }
+            if (flow != null)
+            {
+                List<string>? tabFlowIds = await NodeRedApi.GetTabFlowIdsAsync();
+                if (tabFlowIds == null)
+                {
+                    return;
+                }
+                else
+                {
+                    var hiddenTabs = tabFlowIds.ToDictionary(p => p, _ => true);
+                    await localStorage.SetItemAsync("hiddenTabs", hiddenTabs);
+                    NavigationManager.NavigateTo($"/Flow/{tagGroup.FlowId}");
+                }
+            }
+        }
+        #endregion 
         #endregion
     }
 }

@@ -9,7 +9,7 @@
 
 <div>
     @if (!IsDisabled)
-    { 
+    {
         <Button OnClick="@(()=>{
                             tagGroupEntitie=new();
                             _editBoxVisible = true;
@@ -89,7 +89,7 @@
             </Space>
             <Space>
                 <SpaceItem>
-                    <Button Type="@ButtonType.Primary"
+                    <Button Type="@ButtonType.Primary" Disabled="@(context.DriverType==DriverTypeEnum.Other)"
                             OnClick="@(()=>{ NavigationManager.NavigateTo($"/Tags/{context.Id}");})">
                         点位配置
                     </Button>
@@ -98,7 +98,7 @@
             <Space>
                 <SpaceItem>
                     <Button Type="@ButtonType.Primary"
-                            OnClick="@(()=>{  NavigationManager.NavigateTo($"/Flow/{context.FlowId??"new"}");})">
+                            OnClick="@(()=>EditFlow(context))">
                         流程编辑
                     </Button>
                 </SpaceItem>

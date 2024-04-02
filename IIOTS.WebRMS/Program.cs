@@ -1,11 +1,14 @@
 using AntDesign;
 using AntDesign.ProLayout;
+using Blazored.LocalStorage;
 using IIOTS.WebRMS;
 using IIOTS.WebRMS.Services; 
 using Microsoft.AspNetCore.Components;
 LocaleProvider.DefaultLanguage = "zh-CN";
 var builder = WebApplication.CreateBuilder(args);
 builder.UseIdHelper().UseCache();
+builder.UseNodeRedApi();
+builder.Services.AddBlazoredLocalStorage();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

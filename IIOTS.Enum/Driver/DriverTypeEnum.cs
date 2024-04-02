@@ -25,6 +25,10 @@
         /// <summary>
         /// 西门子S7协议
         /// </summary>
-        S7
+        S7,
+        /// <summary>
+        /// 其他
+        /// </summary>
+        Other
     }
 }
