@@ -105,6 +105,7 @@ namespace IIOTS.Driver
                     {
                         _Value = value;
                     }
+                    OldChangeTime = ChangeTime;
                     ChangeTime = DateTime.Now;
                     ThreadPool.QueueUserWorkItem(p => SendValueChangeEvent());
                 }
@@ -157,6 +158,7 @@ namespace IIOTS.Driver
                             TagTypeEnum.Double => (double?)_Value / Magnification,
                             _ => null
                         };
+                        OldChangeTime = ChangeTime;
                         ChangeTime = DateTime.Now;
                         ThreadPool.QueueUserWorkItem(p => SendValueChangeEvent());
                     }
