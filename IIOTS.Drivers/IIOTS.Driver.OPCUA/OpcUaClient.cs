@@ -647,7 +647,7 @@ namespace IIOTS.Driver
         /// <returns>写成功标志</returns>
         public bool WriteNode<T>(string tag, T value)
         {
-            WriteValue valueToWrite = new()
+            WriteValue valueToWrite = new WriteValue()
             {
                 NodeId = new NodeId(tag),
                 AttributeId = Attributes.Value
@@ -656,18 +656,26 @@ namespace IIOTS.Driver
             valueToWrite.Value.StatusCode = StatusCodes.Good;
             valueToWrite.Value.ServerTimestamp = DateTime.MinValue;
             valueToWrite.Value.SourceTimestamp = DateTime.MinValue;
-            //valueToWrite.Value.WrappedValue. = Typeof(T);
 
-            WriteValueCollection valuesToWrite =
-            [
+            WriteValueCollection valuesToWrite = new WriteValueCollection
+            {
                 valueToWrite
-            ];
+            };
 
             // 写入当前的值
+            var ar = m_session.BeginWrite(
+                requestHeader: null,
+                nodesToWrite: valuesToWrite,
+                callback: null,
+                asyncState: null);
 
-            m_session.Write(
-                null,
-                valuesToWrite,
+            if (!ar.AsyncWaitHandle.WaitOne(2000))
+            {
+                throw new Exception("超时时间已到，操作未完成");
+            }
+
+            m_session.EndWrite(
+                ar,
                 out StatusCodeCollection results,
                 out DiagnosticInfoCollection diagnosticInfos);
 
@@ -676,10 +684,11 @@ namespace IIOTS.Driver
 
             if (StatusCode.IsBad(results[0]))
             {
-                throw new ServiceResultException(results[0]);
+                //throw new ServiceResultException( results[0] );
+                throw new Exception(string.Format("OPC UA Driver WriteNode Error: {0}", results[0]));
             }
 
-            return !StatusCode.IsBad(results[0]);
+            return !StatusCode.IsBad(results[0]); 
         }
 
 
@@ -1179,7 +1188,7 @@ namespace IIOTS.Driver
         /// <summary>
         /// 会话 连接核心
         /// </summary>
-        private Session? m_session;
+        private Session m_session;
         private bool m_IsConnected;                       //是否已经连接过
         private int m_reconnectPeriod = 10;               // 重连状态
         private bool m_useSecurity;
