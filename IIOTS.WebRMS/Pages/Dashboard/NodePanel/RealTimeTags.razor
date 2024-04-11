@@ -1,60 +1,117 @@
-﻿@page "/RealTimeTags/{edgeId}/{ProgressId}/{equ}" 
+﻿@page "/RealTimeTags/{edgeId}/{ProgressId}/{equ}"
+@using IIOTS.Enum
+@using IIOTS.Util
 <div>
-    <Modal Title="写值"
+    <Modal Title=@($"写入{_WriteTag.TagName}")
            @bind-Visible="@editBoxVisible"
-           OnOk="()=>WriteTag(WriteTagValue.Id)"
-           OnCancel="@(()=>{ editBoxVisible = false; })">
-        <Input Placeholder="输入值" @bind-Value="@WriteTagValue.Content" />
-    </Modal> 
+           OnOk="()=>WriteTag()"
+           OnCancel="@(()=>{  editBoxVisible = false; })">
+        @{
+            if (_WriteTag.Type == TagTypeEnum.Boole)
+            {
+                <RadioGroup @bind-Value="@WriteBoole" ButtonStyle="@RadioButtonStyle.Solid">
+                    <Radio RadioButton Value="true">True</Radio>
+                    <Radio RadioButton Value="false">False</Radio>
+                </RadioGroup>
+            }
+            else if (_WriteTag.Type == TagTypeEnum.String)
+            {
+                <Input Placeholder="输入字符" style="width: 100%;" @bind-Value="@WriteString" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Short)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteShort" TValue="short" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Ushort)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteUshort" TValue="ushort" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Int)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteInt" TValue="int" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Uint)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteUint" TValue="uint" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Long)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteLong" TValue="long" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Ulong)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteUlong" TValue="ulong" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Double)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteDouble" TValue="double" Step="0.1" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.Float)
+            {
+                <AntDesign.InputNumber style="width: 100%;" Placeholder="输入字符" @bind-Value="@WriteFloat" TValue="float" Step="(float)0.1" />
+            }
+            else if (_WriteTag.Type == TagTypeEnum.StringArray)
+            {
+                <InputTextArea style="width: 100%;" @bind-Value="WriteString" rows="5"></InputTextArea>
+            }
+        }
+
+
+    </Modal>
     <Table TItem="IIOTS.Models.Tag"
-           @bind-SelectedRows="selectedRows"
            ScrollX="max-content"
            DataSource="@tags.Values"
            RowKey="x=>x.TagName">
-        <Selection Key="@(context.TagName)" />
-        <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
-        <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable  Sortable />
-        <PropertyColumn Title="站号" Property="c=>c.StationNumber" Filterable Sortable />
-        <PropertyColumn Title="更新方式" Property="c=>c.UpdateMode" Filterable Sortable />
-        <PropertyColumn Title="数据类型" Property="c=>c.DataType" Filterable Sortable />
-        <PropertyColumn Title="数据长度" Property="c=>c.DataLength"  Sortable />
-        <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Filterable Sortable />
-        <ActionColumn Title="当前值" >
-            <Space> 
-                <SpaceItem>
-                    <Button Disabled="context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR"
-                            Type="@ButtonType.Link" OnClick="@(()=>{
-                                            WriteTagValue.Id=context.TagName;
-                                            WriteTagValue.Content=string.Empty;
-                                            editBoxVisible = true;
-                                            })">
-                        @if (context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR)
-                        {
-                            <Icon Type="edit" Theme="outline" />
-                        }
-                        else
-                        {
-                            <Icon Type="edit" Theme="fill" />
-                        }
-                    </Button>
-                </SpaceItem>
+        <ChildContent>
+            <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
+            <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable Sortable />
+            <PropertyColumn Title="站号" Property="c=>c.StationNumber" Filterable Sortable />
+            <PropertyColumn Title="更新方式" Property="c=>c.UpdateMode" Filterable Sortable />
+            <PropertyColumn Title="数据类型" Property="c=>c.DataType" Filterable Sortable />
+            <PropertyColumn Title="数据长度" Property="c=>c.DataLength" Sortable />
+            <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Filterable Sortable />
+            <ActionColumn Title="当前值">
+                <Space>
+                    <SpaceItem>
+                        <Button Disabled="context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR"
+                                Type="@ButtonType.Link" OnClick="@(()=>OpenWritBox(context))">
+                            @if (context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR)
+                            {
+                                <Icon Type="edit" Theme="outline" />
+                            }
+                            else
+                            {
+                                <Icon Type="edit" Theme="fill" />
+                            }
+                        </Button>
+                    </SpaceItem>
 
-            </Space>
-            <Space>
-                <SpaceItem>
-                    <PropertyColumn Property="c=>c.Value" Sortable />
-                </SpaceItem>
-            </Space>
-        </ActionColumn>
-        <PropertyColumn Title="旧值" Property="c=>c.OldValue" Sortable />
-        <PropertyColumn Title="转换值" Property="c=>c.ZoomValue" Sortable />
-        <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
-        <PropertyColumn Title="质量戳" Property="c=>c.Quality" Sortable />
-        <PropertyColumn Title="变化时间" Property="c=>c.ChangeTime" Format="yyyy-MM-dd HH:mm:ss" Sortable /> 
-        <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
-        <PropertyColumn Title="顺序" Property="c=>c.Sort" Filterable Sortable />
-        <PropertyColumn Title="编码" Property="c=>c.Coding" Filterable Sortable />
-        <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable/>
-
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <PropertyColumn Property="c=>c.Value" Sortable />
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+            <PropertyColumn Title="旧值" Property="c=>c.OldValue" Sortable />
+            <PropertyColumn Title="转换值" Property="c=>c.ZoomValue" Sortable />
+            <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
+            <PropertyColumn Title="质量戳" Property="c=>c.Quality" Sortable />
+            <PropertyColumn Title="变化时间" Property="c=>c.ChangeTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="旧值变化时间" Property="c=>c.OldChangeTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
+            <PropertyColumn Title="顺序" Property="c=>c.Sort" Filterable Sortable />
+            <PropertyColumn Title="编码" Property="c=>c.Coding" Filterable Sortable />
+            <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable />
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination  
+                Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
     </Table>
 </div>
