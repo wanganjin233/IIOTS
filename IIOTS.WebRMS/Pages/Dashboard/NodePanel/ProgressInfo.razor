@@ -5,11 +5,11 @@
 @using IIOTS.Util
 @using IIOTS.WebRMS.Models
 @using MQTTnet
-@using MQTTnet.Protocol 
+@using MQTTnet.Protocol
 
 @page "/ProgressInfo/{edgeId}"
 
- 
+
 <div>
     <Modal Title="添加进程"
            Visible="@_editBoxVisible"
@@ -43,60 +43,69 @@
     <Table TItem="ProgressConfigEntity"
            DataSource="@progressConfigEntities"
            ScrollX="max-content"
-           Size="TableSize.Small"
            RowKey="x=>x.Id"
            Loading="@tableLoad">
-        <Selection Key="@(context.Id.ToString())" />
-        <PropertyColumn Title="名称" Property="c=>c.Name" Sortable />
-        <PropertyColumn Title="进程类型" Property="c=>c.ClientType" Sortable />
-        <PropertyColumn Title="状态" Property="@(c=>@edgeLoginInfo.ProgressLoginInfos.Any(p => p.ClientId == $"{c.Id}_{c.ClientType}") ? "在线" : "离线")" Sortable />
-        <PropertyColumn Title="启用" Property="c=>c.IsUse">
-            <Switch Value="context.IsUse"
-                    ValueChanged="@(p=>{tableLoad=true;
+        <ChildContent>
+            <Selection Key="@(context.Id.ToString())" />
+            <PropertyColumn Title="名称" Property="c=>c.Name" Sortable />
+            <PropertyColumn Title="进程类型" Property="c=>c.ClientType" Sortable />
+            <PropertyColumn Title="状态" Property="@(c=>@edgeLoginInfo.ProgressLoginInfos.Any(p => p.ClientId == $"{c.Id}_{c.ClientType}") ? "在线" : "离线")" Sortable />
+            <PropertyColumn Title="启用" Property="c=>c.IsUse">
+                <Switch Value="context.IsUse"
+                        ValueChanged="@(p=>{tableLoad=true;
                                      UpdateIsUse(context,p);
                                      tableLoad=false;
                                      })">
-            </Switch>
-        </PropertyColumn>
-        <PropertyColumn Title="启动时间" Property="c=>GetStartTime(c)" Sortable />
-        <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
-        <ActionColumn Title="操作">
+                </Switch>
+            </PropertyColumn>
+            <PropertyColumn Title="启动时间" Property="c=>GetStartTime(c)" Sortable />
+            <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <ActionColumn Title="操作">
 
-            <Space>
-                <SpaceItem>
-                    <Button Block
-                            Type="@ButtonType.Primary"
-                            OnClick="@(()=>{NavigationManager.NavigateTo($"/Driver/{EdgeId}/{context.Id}/{context.ClientType}");})">
-                        编辑设备
-                    </Button>
-                </SpaceItem>
-            </Space>
-            <Space>
-                <SpaceItem>
-                    <Button Block
-                            Type="@ButtonType.Primary"
-                            OnClick="@(()=>{
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
+                                OnClick="@(()=>{NavigationManager.NavigateTo($"/Driver/{EdgeId}/{context.Id}/{context.ClientType}");})">
+                            编辑设备
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
+                                OnClick="@(()=>{
                             AddProgressConfig=context.DeepClone();
                             _editBoxVisible = true;
                             })">
-                        编辑
-                    </Button>
-                </SpaceItem>
-            </Space>
-            <Space>
-                <SpaceItem>
-                    <Popconfirm Title="确认删除？"
-                                OnConfirm="@(async()=>{
+                            编辑
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Popconfirm Title="确认删除？"
+                                    OnConfirm="@(async()=>{
                                                  tableLoad=true;
                                                  await Detect(context);
                                                  tableLoad=false;
                                               })">
-                        <Button Danger Type="@ButtonType.Primary">
-                            删除
-                        </Button>
-                    </Popconfirm>
-                </SpaceItem>
-            </Space>
-        </ActionColumn>
+                            <Button Danger Type="@ButtonType.Primary">
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
     </Table>
 </div> 

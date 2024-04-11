@@ -1,7 +1,7 @@
 {
   "Name": "机械转孔020",
   "EQU": "H-ME-MD-020",
-  "ConnectionString": "opc.tcp://10.164.197.155:62548;1:1",
+  "ConnectionString": "opc.tcp://10.164.144.137:62548;1:1",
   "DriverType": "OPCUA",
   "Tags": [
     {

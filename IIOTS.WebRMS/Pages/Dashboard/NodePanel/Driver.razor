@@ -40,15 +40,15 @@
     <Table TItem="EquConfigEntity"
            @bind-PageIndex="_pageIndex"
            @bind-PageSize="_pageSize"
-           @bind-SelectedRows="selectedRows"
+           @bind-SelectedRows="selectedRows" 
            Total="(int)_total"
            OnPageIndexChange="GetPage"
            OnPageSizeChange="GetPage"
            ScrollX="max-content"
-           DataSource="@EquConfigEntitys"
-           Size="TableSize.Small"
+           DataSource="@EquConfigEntitys" 
            RowKey="x=>x.Id"
-           Loading="@tableLoad">
+           Loading="@tableLoad"> 
+             <ChildContent>
         <Selection Key="@(context.Id.ToString())" />
         <PropertyColumn Title="设备号" Property="c=>c.EQU" Sortable Filterable />
         <PropertyColumn Title="驱动类型" Property="c=>c.TagGroupEntity.DriverType" Sortable />
@@ -98,6 +98,16 @@
                     </Popconfirm>
                 </SpaceItem>
             </Space>
-        </ActionColumn>
+            </ActionColumn>
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination 
+                        Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
     </Table>
 </div>

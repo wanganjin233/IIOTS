@@ -1,71 +1,199 @@
 ﻿@using System.ComponentModel
 @using AntDesign.TableModels
+@using IIOTS.Enum
 @using IIOTS.WebRMS.Services
 @using IIOTS.Models
 @using IIOTS.Util
 @using IIOTS.WebRMS.Models
-@using MQTTnet
-@using MQTTnet.Protocol 
-@inject IFreeSql freeSql
-@inject NavigationManager NavigationManager
 @page "/Tags/{GID}"
 
-@code {
-
-    /// <summary>
-    /// Tag组ID
-    /// </summary>
-    [Parameter]
-    public string? GID { get; set; } 
-    IEnumerable<TagConfigEntity> selectedRows;
-    bool editBoxVisible = false;
-    List<TagConfigEntity> TagConfigs = new List<TagConfigEntity>();
-    /// <summary>
-    ///初始化
-    /// </summary>
-    /// <returns></returns>
-    protected override Task OnInitializedAsync()
-    {
-        GetPage();
-        return base.OnInitializedAsync();
-    }
-    private void GetPage()
-    {
-        TagConfigs= freeSql
-        .Select<TagConfigEntity>()
-        .Where(p => p.GID.ToString() == GID) 
-        .ToList(); 
-    }
-}
 <div>
-    <Modal Title="BasicModal"
-           @bind-Visible="@editBoxVisible">
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+    <Modal Title=@($"点位{tagConfig.TagName}编辑")
+           Visible="@editBoxVisible"
+           OnOk="UpdataOrAdd"
+           OnCancel="@(()=>{ editBoxVisible = false; })">
+        <Form Model="@tagConfig"
+              LabelColSpan="8"
+              WrapperColSpan="16">
+            <FormItem Label="点位名称">
+                <Input @bind-Value="@context.TagName" />
+            </FormItem>
+            <FormItem Label="点位地址">
+                <Input @bind-Value="@context.Address" />
+            </FormItem>
+            <FormItem Label="站号">
+                <AntDesign.InputNumber @bind-Value="@context.StationNumber" />
+            </FormItem>
+            <FormItem Label="顺序">
+                <Select DefaultValue="@SortEnum.ABCD"
+                        Style="width: 120px;"
+                        TItemValue="SortEnum"
+                        @bind-Value="@context.Sort"
+                        TItem="string">
+                    <SelectOptions>
+                        @foreach (SortEnum sortEnum in Enum.GetValues(typeof(SortEnum)))
+                        {
+                            <SelectOption TItemValue="SortEnum"
+                                          TItem="string"
+                                          Value="@sortEnum"
+                                          Label="@sortEnum.ToString()" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="编码">
+                <Select DefaultValue="@CodingEnum.ASCII"
+                        Style="width: 120px;"
+                        TItemValue="CodingEnum"
+                        @bind-Value="@context.Coding"
+                        TItem="string">
+                    <SelectOptions>
+                        @foreach (CodingEnum coding in Enum.GetValues(typeof(CodingEnum)))
+                        {
+                            <SelectOption TItemValue="CodingEnum"
+                                          TItem="string"
+                                          Value="@coding"
+                                          Label="@coding.ToString()" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="更新方式">
+                <Select DefaultValue="@UpdateModeEnum.Sub"
+                        Style="width: 120px;"
+                        TItemValue="UpdateModeEnum"
+                        @bind-Value="@context.UpdateMode"
+                        TItem="string">
+                    <SelectOptions>
+                        @foreach (UpdateModeEnum updateModeEnum in Enum.GetValues(typeof(UpdateModeEnum)))
+                        {
+                            <SelectOption TItemValue="UpdateModeEnum"
+                                          TItem="string"
+                                          Value="@updateModeEnum"
+                                          Label="@updateModeEnum.ToString()" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="数据类型">
+                <Select DefaultValue="@TagTypeEnum.Short"
+                        Style="width: 120px;"
+                        TItemValue="TagTypeEnum"
+                        @bind-Value="@context.DataType"
+                        TItem="string">
+                    <SelectOptions>
+                        @foreach (TagTypeEnum tagTypeEnum in Enum.GetValues(typeof(TagTypeEnum)))
+                        {
+                            <SelectOption TItemValue="TagTypeEnum"
+                                          TItem="string"
+                                          Value="@tagTypeEnum"
+                                          Label="@tagTypeEnum.ToString()" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="数据长度">
+                <AntDesign.InputNumber @bind-Value="@context.DataLength" />
+            </FormItem>
+            <FormItem Label="缩放">
+                <AntDesign.InputNumber @bind-Value="@context.Magnification" />
+            </FormItem>
+            <FormItem Label="读写权限">
+                <Select DefaultValue="@ClientAccessEnum.RW"
+                        Style="width: 120px;"
+                        TItemValue="ClientAccessEnum"
+                        @bind-Value="@context.ClientAccess"
+                        TItem="string">
+                    <SelectOptions>
+                        @foreach (ClientAccessEnum clientAccessEnum in Enum.GetValues(typeof(ClientAccessEnum)))
+                        {
+                            <SelectOption TItemValue="ClientAccessEnum"
+                                          TItem="string"
+                                          Value="@clientAccessEnum"
+                                          Label="@clientAccessEnum.ToString()" />
+                        }
+                    </SelectOptions>
+                </Select>
+            </FormItem>
+            <FormItem Label="单位">
+                <Input @bind-Value="@context.EngUnits" />
+            </FormItem>
+            <FormItem Label="备注">
+                <Input @bind-Value="@context.Description" />
+            </FormItem>
+        </Form>
     </Modal>
-    <Button OnClick="@(()=>{ editBoxVisible = true; })" Type="primary" Style="margin-bottom:16px">
+    <Button OnClick="@(()=>{
+                              tagConfig=new();
+                              editBoxVisible = true;
+                              })"
+            Type="primary"
+            Style="margin-bottom:16px">
         添加
     </Button>
-    <Table TItem="TagConfigEntity"  
+    <Button OnClick="CopyTags"
+            Type="primary"
+            Style="margin-bottom:16px">
+        复制所选项
+    </Button>
+    @*     <Button OnClick="DetectTags"
+    Type="primary"
+    Danger
+    Style="margin-bottom:16px">
+    删除所选项
+    </Button> *@
+    <Table TItem="TagConfigEntity"
+           @bind-SelectedRows="selectedRows"
            DataSource="@TagConfigs"
            ScrollX="max-content"
            RowKey="x=>x.Id">
-        <Selection Key="@(context.Id.ToString())" />
-        <PropertyColumn Title="ID" Property="c=>c.Id" Sortable />
-        <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
-        <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable Sortable />
-        <PropertyColumn Title="更新模式" Property="c=>c.UpdateMode" Sortable />
-        <PropertyColumn Title="站号" Property="c=>c.StationNumber" Sortable />
-        <PropertyColumn Title="数据类型" Property="c=>c.DataType" Sortable />
-        <PropertyColumn Title="数据长度" Property="c=>c.DataLength" Sortable />
-        <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
-        <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Sortable />
-        <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
-        <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable />
-        <PropertyColumn Title="顺序" Property="c=>c.Sort" Sortable />
-        <PropertyColumn Title="编码" Property="c=>c.Coding" Sortable /> 
-        <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
-
+        <ChildContent>
+            <Selection Key="@(context.Id.ToString())" />
+            <PropertyColumn Title="ID" Property="c=>c.Id" Sortable />
+            <PropertyColumn Title="点位名称" Property="c=>c.TagName" Filterable Sortable />
+            <PropertyColumn Title="点位地址" Property="c=>c.Address" Filterable Sortable />
+            <PropertyColumn Title="更新模式" Property="c=>c.UpdateMode" Sortable />
+            <PropertyColumn Title="站号" Property="c=>c.StationNumber" Sortable />
+            <PropertyColumn Title="数据类型" Property="c=>c.DataType" Sortable />
+            <PropertyColumn Title="数据长度" Property="c=>c.DataLength" Sortable />
+            <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
+            <PropertyColumn Title="读写权限" Property="c=>c.ClientAccess" Sortable />
+            <PropertyColumn Title="单位" Property="c=>c.EngUnits" Sortable />
+            <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable />
+            <PropertyColumn Title="顺序" Property="c=>c.Sort" Sortable />
+            <PropertyColumn Title="编码" Property="c=>c.Coding" Sortable />
+            <PropertyColumn Title="更新时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <ActionColumn Title="操作">
+                <Space>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary"
+                                OnClick="@(()=>{
+                                        tagConfig=context.DeepClone();
+                                        editBoxVisible = true;
+                                        })">
+                            编辑
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Popconfirm Title="确认删除？"
+                                    OnConfirm="()=> DetectTag(context)">
+                            <Button Danger Type="@ButtonType.Primary">
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
     </Table>
 </div>

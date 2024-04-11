@@ -140,17 +140,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         /// <param name="equConfig"></param>
         /// <param name="tags"></param>
         private void SwitchEqu(EquConfigEntity equConfig, List<TagConfig> tags)
-        {
-            var adsda = new EquConfig()
-            {
-                Enable = true,
-                ConnectionString = equConfig.ConnectionString,
-                Description = equConfig.Description ?? string.Empty,
-                EQU = equConfig.EQU,
-                DriverType = equConfig.TagGroupEntity.DriverType,
-                ScanRate = equConfig.ScanRate,
-                Tags = tags
-            }.ToJson();
+        { 
             string topic = $"EdgeCore/{progressConfig.Gname}/Equ/DeployEqu;{equConfig.EQU}";
             string id = $"{progressConfig.Id}_{progressConfig.ClientType}";
             if (equConfig.IsUse)
@@ -207,6 +197,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
                     SwitchEqu(equConfig, tags);
                 }
             }
+            selectedRows = [];
         }
         /// <summary>
         /// 设备配置启用状态修改

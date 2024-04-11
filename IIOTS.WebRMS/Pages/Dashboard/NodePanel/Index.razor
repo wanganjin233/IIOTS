@@ -29,27 +29,36 @@
         </Card>
         <Table TItem="EdgeLoginInfo"
                ScrollX="max-content"
-               DataSource="@edgeLoginInfos.Values"
-               Size="TableSize.Small">
-            <PropertyColumn Title="节点名称" Property="c=>c.EdgeID" Filterable Sortable />
-            <PropertyColumn Title="启动时间" Property="c=>c.StartTime" Filterable Format="yyyy-MM-dd HH:mm:ss" Sortable />
-            <PropertyColumn Title="运行状态" Property="c=>c.State" Filterable>
-                @{
-                    var color = context.State ? "green" : "red";
-                    <Tag Color="@color">@(context.State ? "在线" : "离线")</Tag>
-                }
-            </PropertyColumn>
-            <ActionColumn Title="操作">
-                <Space>
-                    <SpaceItem>
-                        <Button Block
-                                Type="@ButtonType.Primary"
-                                OnClick="@(()=>{  NavigationManager.NavigateTo($"/ProgressInfo/{context.EdgeID}");})">
-                            查看点位
-                        </Button>
-                    </SpaceItem>
-                </Space>
-            </ActionColumn>
+               DataSource="@edgeLoginInfos.Values">
+            <ChildContent>
+                <PropertyColumn Title="节点名称" Property="c=>c.EdgeID" Filterable Sortable />
+                <PropertyColumn Title="启动时间" Property="c=>c.StartTime" Filterable Format="yyyy-MM-dd HH:mm:ss" Sortable />
+                <PropertyColumn Title="运行状态" Property="c=>c.State" Filterable>
+                    @{
+                        var color = context.State ? "green" : "red";
+                        <Tag Color="@color">@(context.State ? "在线" : "离线")</Tag>
+                    }
+                </PropertyColumn>
+                <ActionColumn Title="操作">
+                    <Space>
+                        <SpaceItem>
+                            <Button Block
+                                    Type="@ButtonType.Primary"
+                                    OnClick="@(()=>{  NavigationManager.NavigateTo($"/ProgressInfo/{context.EdgeID}");})">
+                                查看进程
+                            </Button>
+                        </SpaceItem>
+                    </Space>
+                </ActionColumn>
+            </ChildContent>
+            <PaginationTemplate>
+                <div style="margin-top: 20px;"></div>
+                <Pagination Total="context.Total"
+                            PageSize="context.PageSize"
+                            Current="context.PageIndex"
+                            ShowSizeChanger
+                            OnChange="context.HandlePageChange" />
+            </PaginationTemplate>
         </Table>
     </Content>
 

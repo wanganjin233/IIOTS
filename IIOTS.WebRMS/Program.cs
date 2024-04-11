@@ -37,11 +37,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseStaticFiles();
 
-app.UseRouting();
-
+app.UseRouting(); 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

@@ -44,6 +44,11 @@ namespace IIOTS.Models
         /// 变化时间
         /// </summary>
         public DateTime ChangeTime { get; set; }
+
+        /// <summary>
+        /// 旧值变化时间
+        /// </summary>
+        public DateTime OldChangeTime { get; set; }
         /// <summary>
         /// 时间
         /// </summary>

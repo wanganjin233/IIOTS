@@ -1,0 +1,42 @@
+﻿@using System.Text.RegularExpressions
+@using IIOTS.Models
+@using System.Collections.Concurrent
+@using System.ComponentModel.DataAnnotations
+@using Title = AntDesign.Charts.Title
+@page "/login"
+<h2>Login</h2>
+
+<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <InputText id="username" @bind-Value="loginModel.Username" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="loginModel.Password" class="form-control" type="password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task HandleLogin()
+    {
+        // 在这里处理登录逻辑
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "Please enter your username.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Please enter your password.")]
+        public string Password { get; set; }
+    }
+}
+
