@@ -48,8 +48,8 @@ namespace IIOTS.Driver
         /// <returns></returns>
         public override byte[]? SendCommand(byte[] command)
         {
-            int datalen = BitConverter.ToUInt16(new byte[2] { command[19], command[20] }, 0);
-            Communication.HeadBytes = new byte[] {
+            int datalen = BitConverter.ToUInt16([command[19], command[20]], 0);
+            Communication.HeadBytes = [
                 0xD0,
                 command[1],
                 command[2],
@@ -57,7 +57,7 @@ namespace IIOTS.Driver
                 command[4],
                 command[5],
                 command[6],
-            };
+            ];
             return base.SendCommand(command).GetBody(command[13] == 1, datalen);
         }
 

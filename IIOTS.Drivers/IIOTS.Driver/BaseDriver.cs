@@ -44,7 +44,7 @@ namespace IIOTS.Driver
         ///最大 读取长度
         /// </summary>
         public virtual int ReadMaxLength => 124;
-        private bool State = true;
+        protected bool State = true;
         /// <summary>
         /// 驱动连接状态
         /// </summary>
@@ -116,7 +116,7 @@ namespace IIOTS.Driver
             foreach (var tagGByStationNumber in tags.GroupBy(p => p.StationNumber))
             {
                 foreach (var tagGByBit in tagGByStationNumber.GroupBy(p => p.IsBit))
-                { 
+                {
                     foreach (var tagGByTypeNeume in tagGByBit.GroupBy(p => p.Type))
                     {
                         TagGroup tagGroup = new()
@@ -162,14 +162,7 @@ namespace IIOTS.Driver
             }
             return TagGroups.ToList();
         }
-        /// <summary>
-        /// 释放
-        /// </summary>
-        public void Dispose()
-        {
-            Stop();
-            GC.SuppressFinalize(this);
-        }
+
         /// <summary>
         /// tag处理
         /// </summary>
@@ -218,7 +211,7 @@ namespace IIOTS.Driver
                 {
                     bool state = true;
                     while (IsRun)
-                    { 
+                    {
                         foreach (var tagGroup in TagGroups)
                         {
                             try
@@ -262,7 +255,7 @@ namespace IIOTS.Driver
                                 }
                             }
                             catch (Exception)
-                            { 
+                            {
                             }
                         }
 
@@ -279,7 +272,8 @@ namespace IIOTS.Driver
         /// <summary>
         /// 运行状态
         /// </summary>
-        protected bool IsRun = false;
+        protected bool IsRun = false; 
+
         /// <summary>
         /// 停止驱动
         /// </summary>
@@ -287,6 +281,14 @@ namespace IIOTS.Driver
         {
             Communication?.Dispose();
             IsRun = false;
+        }
+        /// <summary>
+        /// 释放
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
+            GC.SuppressFinalize(this);
         }
     }
 }

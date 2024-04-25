@@ -235,8 +235,7 @@ namespace IIOTS.Communication
         public bool SendConformity(byte[] bytes)
         {
             byte[]? lengthData = (DataLengthType) switch
-            {
-
+            { 
                 LengthTypeEnum.UShort => BitConverter.GetBytes((ushort)bytes.Length),
                 LengthTypeEnum.ReUShort => BitConverter.GetBytes((ushort)bytes.Length).Reverse().ToArray(),
                 LengthTypeEnum.Uint => BitConverter.GetBytes((uint)bytes.Length),

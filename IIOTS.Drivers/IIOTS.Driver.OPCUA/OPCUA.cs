@@ -37,7 +37,11 @@ namespace IIOTS.Driver
             }
             CommunicationStr = communicationStr;
         }
-
+        /// <summary>
+        /// opc状态变化事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpcUaClient_OpcStatusChange(object? sender, OpcUaStatusEventArgs e)
         {
             if (driverState != e.Connected)
@@ -101,6 +105,7 @@ namespace IIOTS.Driver
                         {
                             subTags = subTags.Union(subTagGroup.Tags.Select(p => p.Address)).ToList();
                         }
+                        opcUaClient.RemoveAllSubscription();
                         //订阅点位
                         opcUaClient.AddSubscription(Guid.NewGuid().ToString("N"), subTags.ToArray(), SubCallback);
                         while (IsRun)

@@ -1,17 +1,44 @@
 {
   "Name": "Scanner98",
   "EQU": "Scanner98",
-  "ConnectionString": "127.0.0.1:6000",
+  "ConnectionString": "127.0.0.1:102",
   "DriverType": "S7",
   "Tags": [
     {
-      "TagName": "p1",
-      "Address": "DB1.7000",
-      "DataType": "Short",
+      "TagName": "p1.1",
+      "Address": "DB1.7000.1",
+      "DataType": "Boole",
       "ClientAccess": "RW",
       "Description": "输送速度",
       "EngUnits": "m/min",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
+      "StationNumber": 0
+    },{
+      "TagName": "p1.2",
+      "Address": "DB1.7000.2",
+      "DataType": "Boole",
+      "ClientAccess": "RW",
+      "Description": "输送速度",
+      "EngUnits": "m/min",
+      "Sort": "DCBA",
+      "StationNumber": 0
+    },{
+      "TagName": "p1",
+      "Address": "M7001.1",
+      "DataType": "Boole",
+      "ClientAccess": "RW",
+      "Description": "烘干设定温度",
+      "EngUnits": "℃",
+      "Sort": "DCBA",
+      "StationNumber": 0
+    },{
+      "TagName": "p12222",
+      "Address": "M7002",
+      "DataType": "Short",
+      "ClientAccess": "RW",
+      "Description": "烘干设定温度",
+      "EngUnits": "℃",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -21,47 +48,48 @@
       "ClientAccess": "RW",
       "Description": "烘干设定温度",
       "EngUnits": "℃",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p3",
       "Address": "DB1.7004",
-      "DataType": "Short",
+      "DataType": "Float",
       "ClientAccess": "RW",
       "Description": "超声波1设定功率百分比",
       "EngUnits": "1",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p4",
-      "Address": "DB1.7006",
-      "DataType": "Short",
+      "Address": "DB1.7008",
+      "DataType": "Double",
       "ClientAccess": "RW",
       "Description": "超声波2设定功率百分比",
       "EngUnits": "1",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p5",
-      "Address": "DB1.7008",
-      "DataType": "Short",
+      "Address": "DB1.7016",
+      "DataType": "String",
       "ClientAccess": "RW",
       "Description": "超声波3设定功率百分比",
       "EngUnits": "1",
       "Sort": "ABCD",
-      "StationNumber": 0
+      "StationNumber": 0,
+	  "DataLength":10
     },
     {
       "TagName": "p6",
-      "Address": "DB1.7010",
+      "Address": "DB1.7026",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "超声波4设定功率百分比",
       "EngUnits": "1",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -71,7 +99,7 @@
       "ClientAccess": "RW",
       "Description": "超声波5设定功率百分比",
       "EngUnits": "1",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -81,7 +109,7 @@
       "ClientAccess": "RW",
       "Description": "超声波6设定功率百分比",
       "EngUnits": "1",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -91,7 +119,7 @@
       "ClientAccess": "RW",
       "Description": "高压水洗设定压力",
       "EngUnits": "Kgf/cm²",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -101,7 +129,7 @@
       "ClientAccess": "RW",
       "Description": "微蚀设定温度",
       "EngUnits": "℃",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -111,7 +139,7 @@
       "ClientAccess": "RW",
       "Description": "上喷设定压力",
       "EngUnits": "Kgf/cm²",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -121,7 +149,7 @@
       "ClientAccess": "RW",
       "Description": "下喷设定压力",
       "EngUnits": "Kgf/cm²",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -131,7 +159,7 @@
       "ClientAccess": "RW",
       "Description": "磨刷1设定电流",
       "EngUnits": "A",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -141,7 +169,7 @@
       "ClientAccess": "RW",
       "Description": "磨刷2设定电流",
       "EngUnits": "A",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -151,7 +179,7 @@
       "ClientAccess": "RW",
       "Description": "磨刷3设定电流",
       "EngUnits": "A",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
@@ -161,77 +189,77 @@
       "ClientAccess": "RW",
       "Description": "磨刷4设定电流",
       "EngUnits": "A",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p17",
-      "Address": "D9.2000",
+      "Address": "DB9.2000",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "配方保存完成标识",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p18",
-      "Address": "D9.2002",
+      "Address": "DB9.2002",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "清线完成标识",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p19",
-      "Address": "D9.2004",
+      "Address": "DB9.2004",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "任务执行成功标识",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p20",
-      "Address": "D9.2018",
+      "Address": "DB9.2018",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "配方保存命令",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "P23",
-      "Address": "D9.2020",
+      "Address": "DB9.2020",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "清线命令（1、2、3、4）",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p21",
-      "Address": "D9.2022",
+      "Address": "DB9.2022",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "任务开始命令",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     },
     {
       "TagName": "p22",
-      "Address": "D7.2520",
+      "Address": "DB7.2520",
       "DataType": "Short",
       "ClientAccess": "RW",
       "Description": "设备状态",
       "EngUnits": "",
-      "Sort": "ABCD",
+      "Sort": "DCBA",
       "StationNumber": 0
     }
   ]

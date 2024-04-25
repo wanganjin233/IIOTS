@@ -1,11 +1,13 @@
 ﻿using IIOTS.Enum;
 using IIOTS.Models;
 using IIOTS.Util;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using static NetMQ.NetMQSelector;
 
 namespace IIOTS.Driver
 {
-    public class S7 : BaseDriver
+    public partial class S7 : BaseDriver
     {
         /// <summary>
         /// PLC的机架号
@@ -54,7 +56,8 @@ namespace IIOTS.Driver
         {
             Communication.HeadBytes = [0x03, 0x00];
             Communication.DataLengthLocation = 2;
-            Communication.DataLengthType = LengthTypeEnum.ReUint;
+            Communication.DataLengthType = LengthTypeEnum.ReUShort;
+            Communication.LengthReplenish = -4;
             _DriverType = DriverTypeEnum.S7;
         }
         /// <summary>
@@ -84,7 +87,78 @@ namespace IIOTS.Driver
                      {
                          if (LogIn())
                          {
-                             base.Start(cycle);
+                             IsRun = true;
+                             Task.Factory.StartNew(async () =>
+                             {
+                                 bool state = true;
+                                 while (IsRun)
+                                 {
+                                     foreach (var tagGroup in TagGroups)
+                                     {
+                                         try
+                                         {
+                                             if (tagGroup.Command == null)
+                                             {
+                                                 continue;
+                                             }
+                                             byte[]? BodyByte = SendCommand(tagGroup.Command);
+                                             if (BodyByte != null)
+                                             {
+                                                 foreach (var s7Addresses in TagGroupKVs[tagGroup])
+                                                 {
+                                                     if (BodyByte.Equalsbytes([0xFF, 0x04]))
+                                                     {
+                                                         int length = BitConverter.ToUInt16(BodyByte
+                                                             .Skip(2)
+                                                             .Take(2)
+                                                             .Reverse()
+                                                             .ToArray()) / 8;
+                                                         foreach (var tag in s7Addresses.Tags)
+                                                         {
+                                                             int skipIndex = (int)(tag.Location - s7Addresses.Address) + 4;
+                                                             if (tag.IsBit)
+                                                             {
+                                                                 tag.UpdateValue = [(byte)((BodyByte
+                                                             .Skip(skipIndex)
+                                                             .Take(1)
+                                                             .First() >> tag.BitLocation)&1) ];
+                                                             }
+                                                             else
+                                                             {
+                                                                 tag.UpdateValue = BodyByte
+                                                                                 .Skip(skipIndex)
+                                                                                 .Take(tag.DataLength)
+                                                                                 .ToArray();
+                                                             }
+                                                         }
+                                                         BodyByte = BodyByte.Skip(length + 4).ToArray();
+                                                     }
+                                                     else
+                                                     {
+                                                         BodyByte = BodyByte.Skip(4).ToArray();
+                                                     }
+                                                 }
+                                                 state = true;
+                                             }
+                                             else
+                                             {
+                                                 state = false;
+                                                 break;
+                                             }
+                                         }
+                                         catch (Exception)
+                                         {
+                                         }
+                                     }
+
+                                     if (state != State)
+                                     {
+                                         State = state;
+                                         ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
+                                     }
+                                     await Task.Delay(cycle);
+                                 }
+                             }, TaskCreationOptions.LongRunning);
                              break;
                          }
                          Task.Delay(500);
@@ -107,63 +181,82 @@ namespace IIOTS.Driver
         /// 读取最大长度
         /// </summary>
         public override int ReadMaxLength => 254;
-
+        private readonly ConcurrentDictionary<TagGroup, List<S7Addresses>> TagGroupKVs = new ConcurrentDictionary<TagGroup, List<S7Addresses>>();
+        /// <summary>
+        /// tag分组
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         protected override List<TagGroup>? Packet(List<TagProcess> tags)
         {
             //生成组地址报文
-            S7Addresses CreationS7Addresses(TagGroup tagGroup, AddressTypeEnum addressTypeEnum, ushort dbBlock)
+            static S7Addresses CreationS7Addresses(List<TagProcess> itemTags, AddressTypeEnum addressTypeEnum, ushort dbBlock)
             {
-                Tag firstTag = tagGroup.Tags.First();
-                Tag lastTag = tagGroup.Tags.Last();
+                Tag firstTag = itemTags.First();
+                Tag lastTag = itemTags.Last();
                 return new S7Addresses()
                 {
                     Address = (ushort)firstTag.Location,
                     AddressType = addressTypeEnum,
                     Length = (ushort)(lastTag.Location + lastTag.DataLength - firstTag.Location),
-                    DbBlock = dbBlock
-
+                    DbBlock = dbBlock,
+                    Tags = itemTags
                 };
-
             }
             //清空分组
             TagGroups.Clear();
             if (tags.Count == 0) { return null; }
-            var TagGroupKV = new Dictionary<TagGroup, List<S7Addresses>>();
+            //根据点位类型分类遍历
             foreach (var tagGByTypeNeume in tags.GroupBy(p => p.Type))
             {
                 var tagGroup = new TagGroup();
-                TagGroupKV.Add(tagGroup, new List<S7Addresses>());
+                TagGroupKVs.TryAdd(tagGroup, []);
+                //遍历DB块分类
                 foreach (var tagGByDbBlock in tagGByTypeNeume.GroupBy(p => p.DbBlock))
                 {
+                    List<TagProcess> itemTags = [];
                     //排序
-                    List<TagProcess> tagsList = tagGByTypeNeume.OrderBy(p => p.Location).ToList();
+                    List<TagProcess> tagsList = [.. tagGByDbBlock.OrderBy(p => p.Location)];
+                    //计算一组结束位置
                     int endTag = (int)(tagsList.First().Location + ReadMaxLength);
+                    //遍历块的tag
                     foreach (var tag in tagsList)
                     {
+                        //点位结束位置小于组最大结束位置添加到组
                         if (tag.Location + tag.DataLength < endTag)
                         {
+                            itemTags.Add(tag);
                             tagGroup.Tags.Add(tag);
                         }
                         else //超出读取最大长度
                         {
-                            TagGroupKV[tagGroup].Add(CreationS7Addresses(tagGroup, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key)); 
+                            TagGroupKVs[tagGroup].Add(CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key));
                             tagGroup = new TagGroup();
+                            TagGroupKVs.TryAdd(tagGroup, []);
                             tagGroup.Tags.Add(tag);
+                            itemTags = [tag];
                             endTag = (int)(tag.Location + ReadMaxLength);
                         }
-                    } 
-                    TagGroupKV[tagGroup].Add(CreationS7Addresses(tagGroup, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key));
-                    if (TagGroupKV[tagGroup].Count > 10)
+                    }
+                    TagGroupKVs[tagGroup].Add(CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key));
+                    if (TagGroupKVs[tagGroup].Count > 10)
                     {
                         tagGroup = new TagGroup();
+                        TagGroupKVs.TryAdd(tagGroup, []);
                     }
                 }
-                TagGroups.Add(tagGroup);
             }
-            return TagGroups.ToList();
+            foreach (var TagGroupKV in TagGroupKVs)
+            {
+                TagGroupKV.Key.Command = TagGroupKV.Value.ToArray().BatchReadCommand();
+                TagGroups.Add(TagGroupKV.Key);
+            }
+            return [.. TagGroups];
         }
-
-
+        /// <summary>
+        /// 状态变化
+        /// </summary>
+        public override event Action<BaseDriver>? DriverStateChange;
         /// <summary>
         /// tag点位地址解析
         /// </summary>
@@ -171,25 +264,35 @@ namespace IIOTS.Driver
         /// <returns></returns>
         protected override TagProcess TagParsing(TagProcess tag)
         {
-            string? addressType = Regex.Matches(tag.Address, "^[a-zA-Z]+").FirstOrDefault()?.Value;
+            string? addressType = TagAddressMatches().Matches(tag.Address).FirstOrDefault()?.Value;
             if (addressType != null && addressType.ToEnum(out AddressTypeEnum _AddressType))
             {
                 tag.Type = _AddressType;
                 string[] addressArr = tag.Address[addressType.Length..].Split('.');
-                if (tag.DataType == TagTypeEnum.Boole)
+                if (_AddressType == AddressTypeEnum.M)
                 {
-                    if (addressArr.Length > 2)
+                    if (tag.DataType == TagTypeEnum.Boole)
                     {
-                        tag.BitLocation = addressArr[2].ToInt();
+                        tag.BitLocation = addressArr.Length > 1 ? addressArr[1].ToInt() : 0;
+                        tag.IsBit = true;
                     }
-                    else
-                    {
-                        tag.BitLocation = 0;
-                    }
-                    tag.IsBit = true;
+                    tag.DbBlock = 0;
+                    tag.Location = addressArr[0].ToUshort();
                 }
-                tag.DbBlock = addressArr[0].ToUshort();
-                tag.Location = (uint)addressArr[1].ToInt();
+                else
+                {
+                    if (tag.DataType == TagTypeEnum.Boole)
+                    {
+                        tag.BitLocation = addressArr.Length > 2 ? addressArr[2].ToInt() : 0;
+                        tag.IsBit = true;
+                    }
+                    tag.DbBlock = addressArr[0].ToUshort();
+                    tag.Location = (uint)addressArr[1].ToInt();
+                }
+            }
+            else
+            {
+                throw new Exception("地址类型错误");
             }
             return tag;
         }
@@ -229,16 +332,23 @@ namespace IIOTS.Driver
                 (tag.ClientAccess == ClientAccessEnum.RW
                 || tag.ClientAccess == ClientAccessEnum.OW))
             {
-                // byte[] command = ((ushort)tag.Location).BatchWriteCommand((AddressTypeEnum)tag.Type,
-                //     tag.TagOnComm(value),
-                //     tag.IsBit,
-                //     PLCNode,
-                //     PCNode,
-                //     tag.StationNumber,
-                //     (byte)tag.BitLocation);
-                return SendCommand(new byte[0]) != null;
+                byte[] valueByte = tag.TagOnComm(value);
+                byte[] command = new S7Addresses[1]{  new()
+                {
+                    BitLocation=tag.BitLocation,
+                    IsBit=tag.IsBit,
+                    Address = (ushort)tag.Location,
+                    AddressType = (AddressTypeEnum)tag.Type,
+                    Length = (ushort)valueByte.Length,
+                    DbBlock = tag.DbBlock,
+                    WriteData = valueByte
+                }}.BatchWriteCommand();
+                return SendCommand(command) != null;
             }
             return false;
         }
+
+        [GeneratedRegex("^[a-zA-Z]+")]
+        private static partial Regex TagAddressMatches();
     }
 }

@@ -30,14 +30,15 @@ namespace IIOTS.EdgeDriver.Manage
             drivers[equ] = driver;
         }
         /// <summary>
-        /// 添加设备
+        /// 删除设备
         /// </summary>
         /// <param name="equ"></param>
         /// <param name="driver"></param>
-        public static void Remove(string equ)
+        public static bool Remove(string equ)
         {
-            drivers.TryRemove(equ, out BaseDriver? driver);
+            bool rv = drivers.TryRemove(equ, out BaseDriver? driver);
             driver?.Dispose();
+            return rv;
         }
         /// <summary>
         /// 停止设备

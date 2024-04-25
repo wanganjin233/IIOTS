@@ -52,9 +52,9 @@ namespace IIOTS.Driver
         /// <returns></returns>
         public static byte[]? GetBody(this byte[]? _byte)
         {
-            if (_byte != null && _byte.Length >= 22 && _byte.Equalsbytes(ReadSuccess, 20))
+            if (_byte != null && _byte.Length >= 17 && _byte.Equalsbytes(ReadSuccess, 13))
             {
-                _byte = _byte.Skip(22).ToArray();
+                _byte = _byte.Skip(17).ToArray();
                 return _byte;
             }
             return null;

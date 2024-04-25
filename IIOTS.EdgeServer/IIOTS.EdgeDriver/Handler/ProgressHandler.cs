@@ -88,7 +88,10 @@ namespace IIOTS.EdgeDriver.Handler
             {
                 foreach (var equ in eques)
                 {
-                    DriverManage.Remove(equ);
+                    if (!DriverManage.Remove(equ))
+                    {
+                        logger.LogError($"删除设备{equ}失败");
+                    }
                 }
                 return true;
             }

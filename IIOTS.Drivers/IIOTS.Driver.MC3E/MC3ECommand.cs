@@ -111,12 +111,12 @@
         /// </summary>
         /// <param name="Addresses"></param>
         /// <returns></returns>
-        internal static byte[] RandomReadCommand(this List<string> Addresses) { return Array.Empty<byte>(); }
+        internal static byte[] RandomReadCommand(this List<string> Addresses) { return []; }
         /// <summary>
         /// 生成随机写入指令
         /// </summary>
         /// <param name="Addresses"></param>
         /// <returns></returns>
-        internal static byte[] RandomWriteCommand(this Dictionary<string, object> Addresses) { return Array.Empty<byte>(); }
+        internal static byte[] RandomWriteCommand(this Dictionary<string, object> Addresses) { return []; }
     }
 }

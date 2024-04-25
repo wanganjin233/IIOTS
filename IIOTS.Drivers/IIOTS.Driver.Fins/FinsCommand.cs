@@ -5,8 +5,8 @@
         /// <summary>
         /// 登录指令包
         /// </summary>
-        internal static byte[] LogInCommand => new byte[20]
-        {
+        internal static byte[] LogInCommand =>
+        [
             0x46,
             0x49,
             0x4E,
@@ -27,7 +27,7 @@
             0x00,
             0x00,
             0x00
-        };
+        ];
         /// <summary>
         /// 生成批量读取指令 
         /// </summary>
