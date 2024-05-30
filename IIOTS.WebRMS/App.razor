@@ -1,11 +1,22 @@
-<Router AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(BasicLayout)" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(BasicLayout)">
+@using IIOTS.WebRMS.Pages
+@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeView Context="authCountext">
+                <Authorized> 
+                    <RouteView RouteData="@routeData" DefaultLayout="@typeof(BasicLayout)" />
+                </Authorized>
+                <NotAuthorized> 
+                   <Login></Login>
+                </NotAuthorized>
+            </AuthorizeView>
+        </Found>
+        <NotFound>
             <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
-<AntContainer />
+        </NotFound>
+    </Router>
+    <AntContainer />
+</CascadingAuthenticationState>
+

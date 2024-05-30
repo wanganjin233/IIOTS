@@ -102,7 +102,7 @@ namespace IIOTS.Test
                 MessageBox.Show("打开" + strName + "失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-
+         
 
         private void Form2_Load(object sender, EventArgs e)
         {  

@@ -1,5 +1,5 @@
 ﻿using IIOTS.Models;
-using IIOTS.Util; 
+using IIOTS.Util;
 using IIOTS.WebRMS.Services;
 using Microsoft.AspNetCore.Components;
 using MQTTnet.Protocol;
@@ -15,13 +15,10 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
 
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
-         
-
         /// <summary>
         /// 边缘节点信息
         /// </summary>
         private ConcurrentDictionary<string, EdgeLoginInfo> edgeLoginInfos = new();
-
         /// <summary>
         ///初始化页面
         /// </summary>

@@ -1,0 +1,90 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IIOTS.WebRMS.Models
+@page "/ServiceList"
+<div>
+    <Modal Maximizable=true Title="添加服务"
+           Visible="@_editBoxVisible"
+           OnOk="AddOrUpdateNodeService"
+           OnCancel="@(()=>{ _editBoxVisible = false; })"
+           ConfirmLoading="@_editBoxLoading"
+           Width="700">  
+        <Form Model="@NodeService"
+              LabelColSpan="8"
+              WrapperColSpan="16">
+            <FormItem Label="服务名">
+                <Input @bind-Value="@context.ServiceName" />
+            </FormItem>
+            <FormItem Label="服务节点">
+                <Input @bind-Value="@context.ServiceNode" Disabled="@_editNode"/>
+            </FormItem>
+            <FormItem Label="备注">
+                <Input @bind-Value="@context.Description" />
+            </FormItem>
+        </Form>
+    </Modal>
+    <Button OnClick="@(()=>{
+                        NodeService=new();
+                        _editBoxVisible = true;
+                        })"
+            Type="primary"
+            Style="margin-bottom:16px">
+        添加服务
+    </Button>
+    <Table TItem="NodeServiceEntity"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize"
+           Total="(int)_total"
+           OnPageIndexChange="GetPage"
+           OnPageSizeChange="GetPage"
+           ScrollX="max-content"
+           DataSource="@NodeServiceEntitys"
+           RowKey="x=>x.Id"
+           Loading="@tableLoad">
+        <ChildContent>
+            <Selection Key="@(context.Id.ToString())" />
+            <PropertyColumn Title="服务名" Property="c=>c.ServiceName" Sortable Filterable />
+            <PropertyColumn Title="服务节点" Property="c=>c.ServiceNode" Sortable />
+            <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
+            <ActionColumn Title="操作">
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
+                                OnClick="()=>EditNodeService(context)">
+                            编辑服务
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
+                                OnClick="()=>EditNodeService(context)">
+                            编辑流程
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Popconfirm Title="确认删除？"
+                                    OnConfirm="()=> DetectNodeService(context)">
+                            <Button Danger Type="@ButtonType.Primary">
+                                删除服务
+                            </Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
+    </Table>
+</div>

@@ -3,7 +3,6 @@ using IIOTS.Models;
 using IIOTS.Util;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
-using static NetMQ.NetMQSelector;
 
 namespace IIOTS.Driver
 {
@@ -80,91 +79,92 @@ namespace IIOTS.Driver
         public override void Start(int cycle = 100)
         {
             ThreadPool.QueueUserWorkItem(p =>
-             {
-                 if (IsRun == false)
-                 {
-                     while (true)
-                     {
-                         if (LogIn())
-                         {
-                             IsRun = true;
-                             Task.Factory.StartNew(async () =>
-                             {
-                                 bool state = true;
-                                 while (IsRun)
-                                 {
-                                     foreach (var tagGroup in TagGroups)
-                                     {
-                                         try
-                                         {
-                                             if (tagGroup.Command == null)
-                                             {
-                                                 continue;
-                                             }
-                                             byte[]? BodyByte = SendCommand(tagGroup.Command);
-                                             if (BodyByte != null)
-                                             {
-                                                 foreach (var s7Addresses in TagGroupKVs[tagGroup])
-                                                 {
-                                                     if (BodyByte.Equalsbytes([0xFF, 0x04]))
-                                                     {
-                                                         int length = BitConverter.ToUInt16(BodyByte
-                                                             .Skip(2)
-                                                             .Take(2)
-                                                             .Reverse()
-                                                             .ToArray()) / 8;
-                                                         foreach (var tag in s7Addresses.Tags)
-                                                         {
-                                                             int skipIndex = (int)(tag.Location - s7Addresses.Address) + 4;
-                                                             if (tag.IsBit)
-                                                             {
-                                                                 tag.UpdateValue = [(byte)((BodyByte
+            {
+                if (IsRun == false)
+                {
+                    while (true)
+                    {
+                        if (LogIn())
+                        {
+                            IsRun = true;
+                            Task.Factory.StartNew(async () =>
+                            {
+                                bool state = true;
+                                while (IsRun)
+                                {
+                                    foreach (var tagGroup in TagGroups)
+                                    {
+                                        try
+                                        {
+                                            if (tagGroup.Command == null)
+                                            {
+                                                continue;
+                                            }
+                                            byte[]? BodyByte = SendCommand(tagGroup.Command);
+                                            tagGroup.Command.To0XString();
+                                            if (BodyByte != null)
+                                            {
+                                                foreach (var s7Addresses in TagGroupKVs[tagGroup])
+                                                {
+                                                    if (BodyByte.Equalsbytes([0xFF, 0x04]))
+                                                    {
+                                                        int length = BitConverter.ToUInt16(BodyByte
+                                                            .Skip(2)
+                                                            .Take(2)
+                                                            .Reverse()
+                                                            .ToArray()) / 8;
+                                                        foreach (var tag in s7Addresses.Tags)
+                                                        {
+                                                            int skipIndex = (int)(tag.Location - s7Addresses.Address) + 4;
+                                                            if (tag.IsBit)
+                                                            {
+                                                                tag.UpdateValue = [(byte)((BodyByte
                                                              .Skip(skipIndex)
                                                              .Take(1)
                                                              .First() >> tag.BitLocation)&1) ];
-                                                             }
-                                                             else
-                                                             {
-                                                                 tag.UpdateValue = BodyByte
-                                                                                 .Skip(skipIndex)
-                                                                                 .Take(tag.DataLength)
-                                                                                 .ToArray();
-                                                             }
-                                                         }
-                                                         BodyByte = BodyByte.Skip(length + 4).ToArray();
-                                                     }
-                                                     else
-                                                     {
-                                                         BodyByte = BodyByte.Skip(4).ToArray();
-                                                     }
-                                                 }
-                                                 state = true;
-                                             }
-                                             else
-                                             {
-                                                 state = false;
-                                                 break;
-                                             }
-                                         }
-                                         catch (Exception)
-                                         {
-                                         }
-                                     }
+                                                            }
+                                                            else
+                                                            {
+                                                                tag.UpdateValue = BodyByte
+                                                                                .Skip(skipIndex)
+                                                                                .Take(tag.DataLength)
+                                                                                .ToArray();
+                                                            }
+                                                        }
+                                                        BodyByte = BodyByte.Skip(length + 4).ToArray();
+                                                    }
+                                                    else
+                                                    {
+                                                        BodyByte = BodyByte.Skip(4).ToArray();
+                                                    }
+                                                }
+                                                state = true;
+                                            }
+                                            else
+                                            {
+                                                state = false;
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception)
+                                        {
+                                        }
+                                    }
 
-                                     if (state != State)
-                                     {
-                                         State = state;
-                                         ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
-                                     }
-                                     await Task.Delay(cycle);
-                                 }
-                             }, TaskCreationOptions.LongRunning);
-                             break;
-                         }
-                         Task.Delay(500);
-                     }
-                 }
-             }, TaskCreationOptions.LongRunning);
+                                    if (state != State)
+                                    {
+                                        State = state;
+                                        ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
+                                    }
+                                    await Task.Delay(cycle);
+                                }
+                            }, TaskCreationOptions.LongRunning);
+                            break;
+                        }
+                        Task.Delay(500);
+                    }
+                }
+            }, TaskCreationOptions.LongRunning);
         }
         /// <summary>
         /// S7协议两次握手
@@ -181,7 +181,21 @@ namespace IIOTS.Driver
         /// 读取最大长度
         /// </summary>
         public override int ReadMaxLength => 254;
-        private readonly ConcurrentDictionary<TagGroup, List<S7Addresses>> TagGroupKVs = new ConcurrentDictionary<TagGroup, List<S7Addresses>>();
+        private readonly ConcurrentDictionary<TagGroup, List<S7Addresses>> TagGroupKVs = new();
+        //生成组地址报文
+        private S7Addresses CreationS7Addresses(List<TagProcess> itemTags, AddressTypeEnum addressTypeEnum, ushort dbBlock)
+        {
+            Tag firstTag = itemTags.First();
+            Tag lastTag = itemTags.Last();
+            return new S7Addresses()
+            {
+                Address = (ushort)firstTag.Location,
+                AddressType = addressTypeEnum,
+                Length = (ushort)(lastTag.Location + lastTag.DataLength - firstTag.Location),
+                DbBlock = dbBlock,
+                Tags = itemTags
+            };
+        }
         /// <summary>
         /// tag分组
         /// </summary>
@@ -189,20 +203,7 @@ namespace IIOTS.Driver
         /// <returns></returns>
         protected override List<TagGroup>? Packet(List<TagProcess> tags)
         {
-            //生成组地址报文
-            static S7Addresses CreationS7Addresses(List<TagProcess> itemTags, AddressTypeEnum addressTypeEnum, ushort dbBlock)
-            {
-                Tag firstTag = itemTags.First();
-                Tag lastTag = itemTags.Last();
-                return new S7Addresses()
-                {
-                    Address = (ushort)firstTag.Location,
-                    AddressType = addressTypeEnum,
-                    Length = (ushort)(lastTag.Location + lastTag.DataLength - firstTag.Location),
-                    DbBlock = dbBlock,
-                    Tags = itemTags
-                };
-            }
+
             //清空分组
             TagGroups.Clear();
             if (tags.Count == 0) { return null; }
@@ -219,18 +220,22 @@ namespace IIOTS.Driver
                     List<TagProcess> tagsList = [.. tagGByDbBlock.OrderBy(p => p.Location)];
                     //计算一组结束位置
                     int endTag = (int)(tagsList.First().Location + ReadMaxLength);
+                    S7Addresses s7Addresses;
                     //遍历块的tag
                     foreach (var tag in tagsList)
                     {
                         //点位结束位置小于组最大结束位置添加到组
-                        if (tag.Location + tag.DataLength < endTag)
+                        if (tagGroup.Length + tag.Location + tag.DataLength < endTag)
                         {
+                            //tagGroup.Length +
                             itemTags.Add(tag);
                             tagGroup.Tags.Add(tag);
                         }
                         else //超出读取最大长度
                         {
-                            TagGroupKVs[tagGroup].Add(CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key));
+                            s7Addresses = CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key);
+                            TagGroupKVs[tagGroup].Add(s7Addresses);
+                            tagGroup.Length += s7Addresses.Length;
                             tagGroup = new TagGroup();
                             TagGroupKVs.TryAdd(tagGroup, []);
                             tagGroup.Tags.Add(tag);
@@ -238,8 +243,10 @@ namespace IIOTS.Driver
                             endTag = (int)(tag.Location + ReadMaxLength);
                         }
                     }
-                    TagGroupKVs[tagGroup].Add(CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key));
-                    if (TagGroupKVs[tagGroup].Count > 10)
+                    s7Addresses = CreationS7Addresses(itemTags, (AddressTypeEnum)tagGByTypeNeume.Key, tagGByDbBlock.Key);
+                    TagGroupKVs[tagGroup].Add(s7Addresses);
+                    tagGroup.Length += s7Addresses.Length;
+                    if (TagGroupKVs[tagGroup].Count >= 1)
                     {
                         tagGroup = new TagGroup();
                         TagGroupKVs.TryAdd(tagGroup, []);

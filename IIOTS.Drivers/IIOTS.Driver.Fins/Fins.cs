@@ -97,12 +97,25 @@ namespace IIOTS.Driver
         /// <returns></returns>
         protected override TagProcess TagParsing(TagProcess tag)
         {
+            string address = string.Empty;
             string? addressType = Regex.Matches(tag.Address, "^[E][A-Z0-9]").FirstOrDefault()?.Value;
-            addressType ??= Regex.Matches(tag.Address, "^[a-zA-Z]+").FirstOrDefault()?.Value;
+            if (addressType == null)
+            {
+                addressType = Regex.Matches(tag.Address, "^[a-zA-Z]+").FirstOrDefault()?.Value;
+                if (addressType != null)
+                {
+                    address = tag.Address.Remove(0, addressType.Length);
+                }
+            }
+            else
+            {
+                address = tag.Address.Remove(0, addressType.Length + 1);
+            }
+
             if (addressType != null && addressType.ToEnum(out AddressTypeEnum _AddressType))
             {
                 tag.Type = _AddressType;
-                string[] addressArr = tag.Address.Split('.');
+                string[] addressArr = address.Split('.');
                 if (addressArr.Length > 1)
                 {
                     tag.IsBit = true;
@@ -113,7 +126,7 @@ namespace IIOTS.Driver
                     tag.BitLocation = 0;
                     tag.IsBit = true;
                 }
-                tag.Location = (uint)addressArr[0].Remove(0, addressType.Length).ToInt();
+                tag.Location = (uint)addressArr[0].ToInt();
             }
             return tag;
         }

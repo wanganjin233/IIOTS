@@ -1,42 +1,84 @@
-﻿@using System.Text.RegularExpressions
-@using IIOTS.Models
-@using System.Collections.Concurrent
-@using System.ComponentModel.DataAnnotations
-@using Title = AntDesign.Charts.Title
-@page "/login"
-<h2>Login</h2>
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@using IIOTS.WebRMS.Models
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Components.Authorization 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient HttpClient
+@page "/login" 
 
-<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" @bind-Value="loginModel.Username" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="loginModel.Password" class="form-control" type="password" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</EditForm>
 @code {
-    private LoginModel loginModel = new LoginModel();
-
-    private async Task HandleLogin()
+    /// <summary>
+    /// 系统用户
+    /// </summary>
+    public partial class Sys_LoginUserData
     {
-        // 在这里处理登录逻辑
-    }
-
-    public class LoginModel
-    {
-        [Required(ErrorMessage = "Please enter your username.")]
-        public string Username { get; set; }
-
-        [Required(ErrorMessage = "Please enter your password.")]
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        [Required(ErrorMessage = "请输入您的用户名")]
+        public string UserName { get; set; }
+        /// <summary>
+        /// 用户密码
+        /// </summary>
+        [Required(ErrorMessage = "请输入您的密码")]
         public string Password { get; set; }
     }
-}
+    public Sys_LoginUserData SysLoginUserData { get; set; } = new Sys_LoginUserData();
+    [Inject] public NavigationManager NavigationManager { get; set; }
 
+    [Inject]
+    MessageService _message { get; set; }
+
+
+    public async   void HandleSubmit()
+    {
+            LoginDto model = new LoginDto()
+                {
+                    UserName = SysLoginUserData.UserName,
+                    Password = SysLoginUserData.Password
+                };
+            var httpResponse = await HttpClient.PostAsJsonAsync<LoginDto>($"api/Auth/Login", model);
+            UserDto? result = await httpResponse.Content.ReadFromJsonAsync<UserDto>();
+
+            if (string.IsNullOrWhiteSpace(result?.Token) == false)
+            { 
+                ((AuthProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
+            }
+            else
+            {
+                
+            }
+
+    }
+     
+     
+} 
+<Layout Class="site-layout-background-img"> 
+    <Content Style="padding: 24px;min-height: 280px;"> 
+        <div style="padding:30px"> 
+            <Card Bordered="true" Title=@("用户登录") Style="width:400px" Hoverable="true">
+                <Body>
+                    <Form Model="@SysLoginUserData" OnFinish="HandleSubmit">
+                        <FormItem>
+                            <AntDesign.Input Placeholder="请输入用户名" Size="large" @bind-Value="@context.UserName">
+                                <Prefix><Icon Type="user" /></Prefix>
+                            </AntDesign.Input>
+                        </FormItem>
+                        <FormItem>
+                            <AntDesign.Input Placeholder="请输入密码" Size="large" @bind-Value="@context.Password" Type="password">
+                                <Prefix><Icon Type="lock" /></Prefix>
+                            </AntDesign.Input>
+                        </FormItem>
+                        <Space Style="width:100%">
+                            <SpaceItem>
+                                <Button Type="primary" HtmlType="submit" Class="submit" Size="large" Block>登&nbsp;录</Button>
+                            </SpaceItem>
+                        </Space>
+                    </Form>
+                </Body>
+            </Card>
+        </div>
+    </Content>
+</Layout>

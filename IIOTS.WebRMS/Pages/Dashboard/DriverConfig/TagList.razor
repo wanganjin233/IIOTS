@@ -74,9 +74,10 @@
                     </SpaceItem>
                 </Space>
             </ActionColumn>
-            <PropertyColumn Title="组名" Property="c=>c.TagGName" Sortable />
-            <PropertyColumn Title="驱动类型" Property="c=>c.DriverType" Sortable />
-            <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
+            <PropertyColumn Title="ID" Property="c=>c.Id" Sortable Filterable />
+            <PropertyColumn Title="组名" Property="c=>c.TagGName" Sortable Filterable />
+            <PropertyColumn Title="驱动类型" Property="c=>c.DriverType" Sortable Filterable />
+            <PropertyColumn Title="备注" Property="c=>c.Description" Sortable Filterable />
             <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
             <ActionColumn Hidden="IsDisabled" Title="操作">
                 <Space>

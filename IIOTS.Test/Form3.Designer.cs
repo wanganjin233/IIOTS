@@ -28,94 +28,93 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            textBox1 = new TextBox();
+            textBox2 = new TextBox();
+            button1 = new Button();
+            textBox3 = new TextBox();
+            label1 = new Label();
+            comboBox1 = new ComboBox();
+            SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(296, 23);
-            this.textBox1.TabIndex = 0;
+            textBox1.AcceptsReturn = true;
+            textBox1.AcceptsTab = true;
+            textBox1.Location = new Point(12, 12);
+            textBox1.MaxLength = 327670000;
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.ScrollBars = ScrollBars.Vertical;
+            textBox1.Size = new Size(505, 447);
+            textBox1.TabIndex = 0;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 41);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(296, 23);
-            this.textBox2.TabIndex = 0;
+            textBox2.AcceptsReturn = true;
+            textBox2.AcceptsTab = true;
+            textBox2.Location = new Point(539, 12);
+            textBox2.MaxLength = 327670000;
+            textBox2.Multiline = true;
+            textBox2.Name = "textBox2";
+            textBox2.ScrollBars = ScrollBars.Vertical;
+            textBox2.Size = new Size(505, 447);
+            textBox2.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(314, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "检验";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.Location = new Point(488, 479);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 2;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(12, 70);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(296, 23);
-            this.textBox3.TabIndex = 0;
+            textBox3.Location = new Point(79, 479);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(100, 23);
+            textBox3.TabIndex = 3;
             // 
-            // textBox4
+            // label1
             // 
-            this.textBox4.Location = new System.Drawing.Point(12, 99);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(296, 23);
-            this.textBox4.TabIndex = 0;
+            label1.AutoSize = true;
+            label1.Location = new Point(45, 485);
+            label1.Name = "label1";
+            label1.Size = new Size(28, 17);
+            label1.TabIndex = 4;
+            label1.Text = "Gid";
             // 
-            // button2
+            // comboBox1
             // 
-            this.button2.Location = new System.Drawing.Point(314, 70);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "检验";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(386, 41);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "检验";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Poll", "Sub" });
+            comboBox1.Location = new Point(216, 477);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(121, 25);
+            comboBox1.TabIndex = 5;
+            comboBox1.Text = "Poll";
             // 
             // Form3
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 135);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "Form3";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "治具校验";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 17F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1081, 539);
+            Controls.Add(comboBox1);
+            Controls.Add(label1);
+            Controls.Add(textBox3);
+            Controls.Add(button1);
+            Controls.Add(textBox2);
+            Controls.Add(textBox1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "Form3";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "治具校验";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -124,8 +123,7 @@
         private TextBox textBox2;
         private Button button1;
         private TextBox textBox3;
-        private TextBox textBox4;
-        private Button button2;
-        private Button button3;
+        private Label label1;
+        private ComboBox comboBox1;
     }
 }

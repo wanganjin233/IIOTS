@@ -1,15 +1,15 @@
 ﻿@namespace IIOTS.WebRMS
 @inherits LayoutComponentBase
 
-<AntDesign.ProLayout.BasicLayout Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
+<AntDesign.ProLayout.BasicLayout Logo="@("/assets/logo.svg")"
                                  MenuData="_menuData">
-    <RightContentRender>
+    <RightContentRender> 
     </RightContentRender>
     <ChildContent>
         @Body
     </ChildContent>
     <FooterRender>
-        <FooterView Copyright="2021 Ant Design Blazor" Links="Links"></FooterView>
+        <FooterView Copyright="2023 Ant Design Blazor" Links="Links"></FooterView>
     </FooterRender>
 </AntDesign.ProLayout.BasicLayout>
 <SettingDrawer />
@@ -34,9 +34,9 @@
         },
          new MenuDataItem
         {
-            Path = "/EQUList",
-            Name = "设备信息",
-            Key = "EQUList",
+            Path = "/ServiceList",
+            Name = "节点服务",
+            Key = "ServiceList",
             Icon = "smile",
         }
     };
@@ -45,24 +45,10 @@
     {
         new LinkItem
         {
-            Key = "Ant Design Blazor",
-            Title = "Ant Design Blazor",
-            Href = "https://antblazor.com",
+            Key = "IIOTS",
+            Title = "IIOTS",
+            Href = "",
             BlankTarget = true,
-        },
-        new LinkItem
-        {
-            Key = "github",
-            Title = (RenderFragment)(@<Icon Type="github" />),
-            Href = "https://github.com/ant-design-blazor/ant-design-pro-blazor",
-            BlankTarget = true,
-        },
-        new LinkItem
-        {
-            Key = "Blazor",
-            Title = "Blazor",
-            Href = "https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor?WT.mc_id=DT-MVP-5003987",
-            BlankTarget = true,
-        }
+        } 
     };
 }

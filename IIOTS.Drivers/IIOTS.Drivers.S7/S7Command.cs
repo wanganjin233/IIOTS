@@ -1,14 +1,4 @@
-﻿
-
-using IIOTS.Models;
-using IIOTS.Util;
-using NetMQ;
-using System;
-using System.Data;
-using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace IIOTS.Driver
+﻿namespace IIOTS.Driver
 {
     internal static class S7Command
     {

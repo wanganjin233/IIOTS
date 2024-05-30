@@ -214,7 +214,33 @@ namespace IIOTS.EdgeCore.Service
                                       EdgeID = edgeLogin.EdgeID,
                                       StartTime = edgeLogin.StartTime,
                                       State = edgeLogin.State,
-                                      ProgressLoginInfos = _progressManage.ProgressRunList(),
+                                      ProgressLoginInfos = _progressManage.ProgressRunList()
+                                      .Select(p =>
+                                      new ProgressLoginInfo()
+                                      {
+                                          Name = p.Name,
+                                          ClientType = p.ClientType,
+                                          HeartbeatTime = p.HeartbeatTime,
+                                          StartTime = p.StartTime,
+                                          progressConfig = p.progressConfig == null ? null : new ProgressConfig()
+                                          {
+                                              Name = p.progressConfig.Name,
+                                              Description = p.progressConfig.Description,
+                                              Operations = p.progressConfig.Operations,
+                                              EquConfigs = p.progressConfig.EquConfigs.Select(p => new EquConfig()
+                                              {
+                                                  ScanRate = p.ScanRate,
+                                                  ConnectionString = p.ConnectionString,
+                                                  Description = p.Description,
+                                                  DriverType = p.DriverType,
+                                                  Enable = p.Enable,
+                                                  EQU = p.EQU,
+                                                  TagConfigPath = p.TagConfigPath,
+                                                  Tags = []
+                                              }).ToList()
+                                          }
+                                      })
+                                      .ToList(),
                                   }.ToJson()),
                                   QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
                                   Retain = true
@@ -248,7 +274,7 @@ namespace IIOTS.EdgeCore.Service
                         });
                     }
                     else if (topic.StartsWith("DriverStateChange"))
-                    { 
+                    {
                         await mqttClient.PublishAsync(new MqttApplicationMessage()
                         {
                             Topic = topic,

@@ -1,6 +1,6 @@
 ﻿@page "/RealTimeTags/{edgeId}/{ProgressId}/{equ}"
-@using IIOTS.Enum
-@using IIOTS.Util
+@using IIOTS.Enum 
+@using IIOTS.WebRMS.Models 
 <div>
     <Modal Title=@($"写入{_WriteTag.TagName}")
            @bind-Visible="@editBoxVisible"
@@ -55,8 +55,20 @@
                 <InputTextArea style="width: 100%;" @bind-Value="WriteString" rows="5"></InputTextArea>
             }
         }
-
-
+    </Modal> 
+    <Modal Title=@($"{_WriteTag.TagName}历史记录")
+           @bind-Visible="@logBoxVisible" 
+           Draggable=true
+           Footer=null
+           Width="1000">
+        <Table TItem="EquTag"
+               @bind-PageIndex="@logPageIndex"
+               Loading="@logBoxLoading"
+               ScrollX="max-content" 
+               DataSource="@equTags"> 
+            <PropertyColumn Title="变化时间" Property="c=>c.CreateTime.Value.LocalDateTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="点位值" Property="c=>c.Value" Filterable Sortable />
+        </Table>
     </Modal>
     <Table TItem="IIOTS.Models.Tag"
            ScrollX="max-content"
@@ -92,7 +104,7 @@
                         <PropertyColumn Property="c=>c.Value" Sortable />
                     </SpaceItem>
                 </Space>
-            </ActionColumn>
+            </ActionColumn> 
             <PropertyColumn Title="旧值" Property="c=>c.OldValue" Sortable />
             <PropertyColumn Title="转换值" Property="c=>c.ZoomValue" Sortable />
             <PropertyColumn Title="缩放" Property="c=>c.Magnification" Sortable />
@@ -103,11 +115,20 @@
             <PropertyColumn Title="顺序" Property="c=>c.Sort" Filterable Sortable />
             <PropertyColumn Title="编码" Property="c=>c.Coding" Filterable Sortable />
             <PropertyColumn Title="备注" Property="c=>c.Description" Filterable Sortable />
+            <ActionColumn Title="操作">
+                <Space>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary"
+                                OnClick="@(()=>ShowTagLog(context))">
+                            值变化记录
+                        </Button>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
         </ChildContent>
         <PaginationTemplate>
             <div style="margin-top: 20px;"></div>
-            <Pagination  
-                Total="context.Total"
+            <Pagination Total="context.Total"
                         PageSize="context.PageSize"
                         Current="context.PageIndex"
                         ShowSizeChanger

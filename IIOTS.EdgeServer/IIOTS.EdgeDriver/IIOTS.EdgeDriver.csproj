@@ -14,6 +14,7 @@
 		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.ModbusRtu\IIOTS.Driver.ModbusRtu.csproj" />
 		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.ModbusTcp\IIOTS.Driver.ModbusTcp.csproj" />
 		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Driver.OPCUA\IIOTS.Driver.OPCUA.csproj" />
+		<ProjectReference Include="..\..\IIOTS.Drivers\IIOTS.Drivers.S7\IIOTS.Driver.S7.csproj" />
 		<ProjectReference Include="..\..\IIOTS.Models\IIOTS.Models.csproj" />
 	</ItemGroup>
 </Project>
