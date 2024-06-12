@@ -1,0 +1,26 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IIOTS.WebRMS.Models
+@page "/Report/Status"
+<div>
+    <Table TItem="EquStatus" 
+           Total="(int)_total" 
+           OnChange="OnTableChange"
+           ScrollX="max-content"
+           DataSource="@EquStatus"
+           Loading="@tableLoad"> 
+        <ChildContent>
+            <PropertyColumn Title="报警时间" Property="c=>c._time" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="设备号" Property="c=>c.equ" Sortable Filterable />
+            <PropertyColumn Title="设备状态" Property="c=>c.status" Sortable Filterable />  
+        </ChildContent>
+        <PaginationTemplate>
+            <div style="margin-top: 20px;"></div>
+            <Pagination Total="context.Total"
+                        PageSize="context.PageSize"
+                        Current="context.PageIndex"
+                        ShowSizeChanger
+                        OnChange="context.HandlePageChange" />
+        </PaginationTemplate>
+    </Table>
+</div>
