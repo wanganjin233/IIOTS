@@ -6,8 +6,8 @@ using MQTTnet;
 using System.Collections.Concurrent;
 using IIOTS.Models;
 using IIOTS.WebRMS.Models;
-using IIOTS.Enum; 
-using Influxdb2.Client;
+using IIOTS.Enums;
+using IIOTS.Util.Infuxdb2;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
 {

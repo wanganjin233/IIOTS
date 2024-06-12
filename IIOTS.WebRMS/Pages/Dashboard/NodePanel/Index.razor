@@ -4,17 +4,7 @@
 @using Title = AntDesign.Charts.Title
 @page "/"
 <PageContainer Title="节点面板"> 
-    <Content>
-        <CascadingAuthenticationState>
-            <AuthorizeView Context="authCountext" Policy="@("Admin")">
-                <Authorized>
-                    <h3>Welcome, authorized user!</h3>
-                </Authorized>
-                <NotAuthorized>
-                    <h3>You are not authorized to view this content.</h3>
-                </NotAuthorized>
-            </AuthorizeView>
-        </CascadingAuthenticationState>
+    <Content> 
         <Card>
             <Row Gutter="24">
                 <AntDesign.Col Sm="8" Xs="24">

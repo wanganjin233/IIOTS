@@ -1,4 +1,4 @@
-﻿namespace IIOTS.Enum
+﻿namespace IIOTS.Enums
 {
     /// <summary>
     /// 点位类型

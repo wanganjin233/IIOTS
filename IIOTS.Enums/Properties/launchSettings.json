@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "IIOTS.Enum": {
+    "IIOTS.Enums": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

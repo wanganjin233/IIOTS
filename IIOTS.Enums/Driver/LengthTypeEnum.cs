@@ -1,4 +1,4 @@
-﻿namespace IIOTS.Enum
+﻿namespace IIOTS.Enums
 {
     /// <summary>
     /// 报文长度转换类型

@@ -1,5 +1,5 @@
 ﻿@page "/RealTimeTags/{edgeId}/{ProgressId}/{equ}"
-@using IIOTS.Enum 
+@using IIOTS.Enums 
 @using IIOTS.WebRMS.Models 
 <div>
     <Modal Title=@($"写入{_WriteTag.TagName}")
@@ -66,7 +66,7 @@
                Loading="@logBoxLoading"
                ScrollX="max-content" 
                DataSource="@equTags"> 
-            <PropertyColumn Title="变化时间" Property="c=>c.CreateTime.Value.LocalDateTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="变化时间" Property="c=>c._time.Value.LocalDateTime" Format="yyyy-MM-dd HH:mm:ss" Sortable />
             <PropertyColumn Title="点位值" Property="c=>c.Value" Filterable Sortable />
         </Table>
     </Modal>
@@ -85,9 +85,9 @@
             <ActionColumn Title="当前值">
                 <Space>
                     <SpaceItem>
-                        <Button Disabled="context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR"
+                        <Button Disabled="context.ClientAccess == IIOTS.Enums.ClientAccessEnum.OR"
                                 Type="@ButtonType.Link" OnClick="@(()=>OpenWritBox(context))">
-                            @if (context.ClientAccess == IIOTS.Enum.ClientAccessEnum.OR)
+                            @if (context.ClientAccess == IIOTS.Enums.ClientAccessEnum.OR)
                             {
                                 <Icon Type="edit" Theme="outline" />
                             }

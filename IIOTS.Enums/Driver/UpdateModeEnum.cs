@@ -1,4 +1,4 @@
-﻿namespace IIOTS.Enum
+﻿namespace IIOTS.Enums
 {
     /// <summary>
     /// 更新模式

@@ -1,21 +1,21 @@
-﻿namespace IIOTS.Enum
+﻿namespace IIOTS.Enums
 {
     /// <summary>
-    /// 质量戳
+    /// 读写权限
     /// </summary>
-    public enum QualityTypeEnum
+    public enum ClientAccessEnum
     {
         /// <summary>
-        /// 好的
+        /// 读写
         /// </summary>
-        Good,
+        RW,
         /// <summary>
-        /// 坏的
+        /// 只读
         /// </summary>
-        Bad,
+        OR,
         /// <summary>
-        /// 超时
+        /// 只写
         /// </summary>
-        TimeOut
+        OW
     }
 }
