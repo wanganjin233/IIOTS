@@ -9,7 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["IIOTS.EdgeServer/IIOTS.EdgeCore/IIOTS.EdgeCore.csproj", "IIOTS.EdgeServer/IIOTS.EdgeCore/"]
 COPY ["IIOTS.Models/IIOTS.Models.csproj", "IIOTS.Models/"]
-COPY ["IIOTS.Enum/IIOTS.Enum.csproj", "IIOTS.Enum/"]
+COPY ["IIOTS.Enums/IIOTS.Enums.csproj", "IIOTS.Enums/"]
 COPY ["IIOTS.Util/IIOTS.Util.csproj", "IIOTS.Util/"]
 COPY ["IIOTS.Interface/IIOTS.Interface.csproj", "IIOTS.Interface/"]
 COPY ["IIOTS.EdgeServer/IIOTS.EdgeDriver/IIOTS.EdgeDriver.csproj", "IIOTS.EdgeServer/IIOTS.EdgeDriver/"]

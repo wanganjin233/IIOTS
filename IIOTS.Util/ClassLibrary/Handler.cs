@@ -1,4 +1,4 @@
-﻿using IIOTS.Enum;
+﻿using IIOTS.Enums;
 using IIOTS.Models;
 using System.Collections.Concurrent;
 using System.Reflection;

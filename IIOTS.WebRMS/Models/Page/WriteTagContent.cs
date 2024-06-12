@@ -1,4 +1,4 @@
-﻿using IIOTS.Enum;
+﻿using IIOTS.Enums;
 namespace IIOTS.WebRMS.Models
 {
     public class WriteTagContent

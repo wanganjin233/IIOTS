@@ -6,6 +6,10 @@
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\IIOTS.Communication\IIOTS.Communication.csproj" />
     <ProjectReference Include="..\..\IIOTS.Models\IIOTS.Models.csproj" />
     <ProjectReference Include="..\..\IIOTS.Util\IIOTS.Util.csproj" />

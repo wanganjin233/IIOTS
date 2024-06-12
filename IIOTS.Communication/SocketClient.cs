@@ -1,4 +1,4 @@
-﻿using IIOTS.Enum;
+﻿using IIOTS.Enums;
 using IIOTS.Interface;
 using IIOTS.Util;
 using System.Net.Sockets;

@@ -7,7 +7,9 @@
     <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.369.30" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.5.374.54" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IIOTS.Driver\IIOTS.Driver.csproj" />

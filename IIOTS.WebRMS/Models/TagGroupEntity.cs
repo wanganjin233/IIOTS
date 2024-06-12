@@ -1,5 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
-using IIOTS.Enum;
+using IIOTS.Enums;
 
 namespace IIOTS.WebRMS.Models
 {

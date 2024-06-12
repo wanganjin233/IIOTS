@@ -3,7 +3,7 @@
 
 <AntDesign.ProLayout.BasicLayout Logo="@("/assets/logo.svg")"
                                  MenuData="_menuData">
-    <RightContentRender> 
+    <RightContentRender>
     </RightContentRender>
     <ChildContent>
         @Body
@@ -23,14 +23,14 @@
             Path = "/",
             Name = "节点信息",
             Key = "node",
-            Icon = "smile",
+            Icon = "deployment-unit",
         },
          new MenuDataItem
         {
             Path = "/TagList",
             Name = "设备配置",
             Key = "TagList",
-            Icon = "smile",
+            Icon = "group",
         },
          new MenuDataItem
         {
@@ -38,6 +38,28 @@
             Name = "节点服务",
             Key = "ServiceList",
             Icon = "smile",
+        },new MenuDataItem
+        {
+            Name = "报表",
+            Key = "Report",
+            Icon =  "table",
+            Children =new MenuDataItem[]
+            {
+                new MenuDataItem
+                {
+                     Path="/Report/Alarm",
+                     Name ="报警明细",
+                     Key ="Alarms",
+                     Icon = "alert"
+                } ,
+                new MenuDataItem
+                {
+                    Path="/Report/Status",
+                    Name ="状态明细",
+                    Key ="Status",
+                    Icon = "bell"
+                }
+            }
         }
     };
 
@@ -49,6 +71,6 @@
             Title = "IIOTS",
             Href = "",
             BlankTarget = true,
-        } 
+        }
     };
 }

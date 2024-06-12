@@ -1,4 +1,4 @@
-﻿using IIOTS.Enum;
+﻿using IIOTS.Enums;
 using IIOTS.Models;
 using IIOTS.Util;
 using Newtonsoft.Json;

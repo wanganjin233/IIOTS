@@ -2,7 +2,7 @@
 using Opc.Ua;
 using IIOTS.Util;
 using IIOTS.Models;
-using IIOTS.Enum;
+using IIOTS.Enums;
 
 namespace IIOTS.Driver
 {
@@ -108,7 +108,7 @@ namespace IIOTS.Driver
                         opcUaClient.RemoveAllSubscription();
                         //订阅点位
                         opcUaClient.AddSubscription(Guid.NewGuid().ToString("N"), subTags.ToArray(), SubCallback);
-                        while (IsRun)
+                        while (IsRun && tagNodeId.Length > 0)
                         {
                             try
                             {
@@ -146,7 +146,7 @@ namespace IIOTS.Driver
         {
             if (value == null) return false;
             Tag? tag = AllTags.FirstOrDefault(p => p.TagName == tagName);
-            if (tag == null) return false; 
+            if (tag == null) return false;
             return opcUaClient.WriteNode(tag.Address, tag.DataType switch
             {
                 TagTypeEnum.Boole => Convert.ToBoolean(value.ToString()),
@@ -174,6 +174,46 @@ namespace IIOTS.Driver
             MonitoredItemNotification? notification = args.NotificationValue as MonitoredItemNotification;
             foreach (var tagProcess in addressNames.Values.Where(p => p.Address == monitoredItem.DisplayName))
             {
+                if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Boolean)
+                {
+                    tagProcess.DataType = TagTypeEnum.Boole;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Double)
+                { 
+                    tagProcess.DataType = TagTypeEnum.Double;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Float)
+                { 
+                    tagProcess.DataType = TagTypeEnum.Float;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.String)
+                {
+                    tagProcess.DataType = TagTypeEnum.String;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Int16)
+                {
+                    tagProcess.DataType = TagTypeEnum.Short;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.UInt16)
+                {
+                    tagProcess.DataType = TagTypeEnum.Ushort;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Int32)
+                {
+                    tagProcess.DataType = TagTypeEnum.Int;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.UInt32)
+                {
+                    tagProcess.DataType = TagTypeEnum.Uint;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Int64)
+                {
+                    tagProcess.DataType = TagTypeEnum.Long;
+                }
+                else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.UInt64)
+                {
+                    tagProcess.DataType = TagTypeEnum.Ulong;
+                }
                 tagProcess.SetValue = notification?.Value.WrappedValue.Value;
             }
         }

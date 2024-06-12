@@ -292,13 +292,13 @@ namespace IIOTS.EdgeCore.Service
                               HandlerResult result = handler.ExecuteHandler(topic, message);
                               switch (result.MsgType)
                               {
-                                  case Enum.MsgTypeEnum.Request:
+                                  case Enums.MsgTypeEnum.Request:
                                       publisher.Send(result.Router, result.Data);
                                       break;
-                                  case Enum.MsgTypeEnum.Response:
+                                  case Enums.MsgTypeEnum.Response:
                                       result.SetResponse();
                                       break;
-                                  case Enum.MsgTypeEnum.Execute:
+                                  case Enums.MsgTypeEnum.Execute:
                                       break;
                               }
                           });

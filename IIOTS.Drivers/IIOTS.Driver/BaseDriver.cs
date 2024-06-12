@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using IIOTS.Communication;
-using IIOTS.Enum;
+using IIOTS.Enums;
 using IIOTS.Interface;
 using IIOTS.Models;
 using IIOTS.Util;

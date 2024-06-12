@@ -1,4 +1,4 @@
-﻿using IIOTS.Enum;
+﻿using IIOTS.Enums;
 using System.Text;
 
 namespace IIOTS.Util

@@ -1,4 +1,4 @@
-﻿using Influxdb2.Client;
+﻿using IIOTS.Util.Infuxdb2;
 
 namespace IIOTS.WebRMS.Models
 {
@@ -8,7 +8,7 @@ namespace IIOTS.WebRMS.Models
         /// 点位名称
         /// </summary>
         [ColumnType(ColumnType.Tag),ColumnName("tagName")]
-        public string? TagName { get; set; }
+        public string? tagName { get; set; }
         /// <summary>
         /// 值
         /// </summary>
@@ -23,6 +23,6 @@ namespace IIOTS.WebRMS.Models
         /// 时间戳
         /// </summary>
         [ColumnType(ColumnType.Timestamp)]
-        public DateTimeOffset? CreateTime { get; set; }
+        public DateTimeOffset? _time { get; set; }
     }
 }

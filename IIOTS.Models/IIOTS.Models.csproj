@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IIOTS.Enum\IIOTS.Enum.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IIOTS.Enums\IIOTS.Enums.csproj" />
   </ItemGroup>
 </Project>

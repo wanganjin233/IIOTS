@@ -133,7 +133,7 @@ namespace IIOTS.Driver
                 Array.Empty<string>());
 
             // set up keep alive callback. 回调十分频繁 不要直接更新界面    最好包一层 利用观察者  状态改变再更新界面
-            m_session.KeepAlive += new KeepAliveEventHandler(Session_KeepAlive);
+            m_session.KeepAlive += Session_KeepAlive;
 
             // update the client status
             ConnectedState = true;
@@ -145,6 +145,7 @@ namespace IIOTS.Driver
             return m_session;
         }
 
+       
         /// <summary>
         /// Disconnects from the server.
         /// </summary>
@@ -193,11 +194,12 @@ namespace IIOTS.Driver
                 Text = string.Format(status, args),
             });
         }
+       
 
         /// <summary>
         /// Handles a keep alive event from a session.
         /// </summary>
-        private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
+        private void Session_KeepAlive(ISession session, KeepAliveEventArgs e)
         {
             try
             {
@@ -253,7 +255,7 @@ namespace IIOTS.Driver
                     return;
                 }
 
-                m_session = m_reconnectHandler.Session;
+                m_session = (Session)m_reconnectHandler.Session;
                 m_reconnectHandler.Dispose();
                 m_reconnectHandler = null;
 

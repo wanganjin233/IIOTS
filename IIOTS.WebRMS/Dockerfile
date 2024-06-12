@@ -12,7 +12,7 @@ WORKDIR /src
 COPY ["IIOTS.WebRMS/IIOTS.WebRMS.csproj", "IIOTS.WebRMS/"]
 COPY ["IIOTS.Util/IIOTS.Util.csproj", "IIOTS.Util/"]
 COPY ["IIOTS.Interface/IIOTS.Interface.csproj", "IIOTS.Interface/"]
-COPY ["IIOTS.Enum/IIOTS.Enum.csproj", "IIOTS.Enum/"]
+COPY ["IIOTS.Enums/IIOTS.Enums.csproj", "IIOTS.Enums/"]
 COPY ["IIOTS.Models/IIOTS.Models.csproj", "IIOTS.Models/"]
 RUN dotnet restore "./IIOTS.WebRMS/./IIOTS.WebRMS.csproj"
 COPY . .
