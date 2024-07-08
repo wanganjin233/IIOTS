@@ -27,6 +27,10 @@
         /// </summary>
         S7,
         /// <summary>
+        /// 信捷协议
+        /// </summary>
+        XINJIE,
+        /// <summary>
         /// 其他
         /// </summary>
         Other
