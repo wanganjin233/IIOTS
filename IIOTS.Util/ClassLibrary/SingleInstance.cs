@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace IIOTS.Util
+﻿namespace IIOTS.Util
 {
     public class SingleInstance<T> where T : class, new()
     {

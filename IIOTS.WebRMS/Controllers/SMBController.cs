@@ -9,6 +9,11 @@ namespace IIOTS.WebRMS.Controllers
     [Route("api/[controller]/[action]")]
     public class SMBController : Controller
     {
+        /// <summary>
+        /// 获取文件列表
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [HttpPost]
         public List<SmbFileInfo> GetFileList(SmbFileSearch search)
         {
@@ -20,18 +25,25 @@ namespace IIOTS.WebRMS.Controllers
             {
                 var lastModDate = epocDate.AddMilliseconds(item.LastModified())
                                           .ToLocalTime();
-                if (search.FileName.Contains(item.GetName()))
-                {
+                if (item.GetName().Contains(search.FileName))
+                {  
                     smbFileInfos.Add(new SmbFileInfo()
                     {
                         Name = item.GetName(),
+                        Path = item.GetPath(),
                         IsDirectory = item.IsDirectory(),
                         LastDateTime = lastModDate
                     });
+                    
                 }
             }
             return smbFileInfos;
         }
+        /// <summary>
+        /// 获取文本内容
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult<string> GetFileText(SmbFileSearch search)
         {
