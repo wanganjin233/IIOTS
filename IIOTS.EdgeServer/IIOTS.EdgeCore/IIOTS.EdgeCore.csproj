@@ -6,6 +6,7 @@
     <UserSecretsId>dotnet-IIOTS.EdgeCore-21470cc2-fc1e-4ef9-94dd-248abe1ad216</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Config\DisabledConfig\MC3E - 复制.json" />

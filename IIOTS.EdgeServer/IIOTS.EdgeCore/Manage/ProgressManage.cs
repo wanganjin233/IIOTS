@@ -110,14 +110,12 @@ namespace IIOTS.EdgeCore.Manage
                         EquConfigs = [equConfig]
                     };
                 }
-                else if (!progressLoginInfo.progressConfig.EquConfigs.Any(p => p.EQU == equConfig.EQU))
+                var equConfigF = progressLoginInfo?.progressConfig?.EquConfigs.FirstOrDefault(p => p.EQU == equConfig.EQU);
+                if (equConfigF != null)
                 {
-                    progressLoginInfo.progressConfig.EquConfigs.Add(equConfig);
+                    progressLoginInfo?.progressConfig?.EquConfigs.Remove(equConfigF);
                 }
-                else
-                {
-                    return false;
-                }
+                progressLoginInfo?.progressConfig?.EquConfigs.Add(equConfig);
                 return true;
             }
         }
@@ -146,7 +144,7 @@ namespace IIOTS.EdgeCore.Manage
                     for (int i = 0; i < removeEquConfigs.Length; i++)
                     {
                         progressLoginInfo.progressConfig.EquConfigs.Remove(removeEquConfigs[i]);
-                    } 
+                    }
                 }
                 return true;
             }

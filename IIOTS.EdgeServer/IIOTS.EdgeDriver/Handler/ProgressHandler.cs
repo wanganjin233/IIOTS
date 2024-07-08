@@ -48,6 +48,7 @@ namespace IIOTS.EdgeDriver.Handler
                 }
                 else
                 {
+                    DriverManage.Remove(equInfo.EQU);
                     //创建实例
                     if (Activator.CreateInstance(type, [equInfo.ConnectionString], null) is BaseDriver baseDriver)
                     {
