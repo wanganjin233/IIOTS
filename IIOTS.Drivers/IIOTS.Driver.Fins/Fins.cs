@@ -18,7 +18,11 @@ namespace IIOTS.Driver
         /// <summary>
         /// 驱动状态
         /// </summary> 
-        public override bool DriverState => base.DriverState && PLCNode != null && PCNode != null;
+        public override bool DriverState => base.DriverState && PLCNode != null && PCNode != null; 
+        /// <summary>
+        /// 状态变化
+        /// </summary>
+        public override event Action<BaseDriver>? DriverStateChange;
         /// <summary>
         /// 初始化欧姆龙Fins驱动
         /// </summary>
@@ -63,7 +67,7 @@ namespace IIOTS.Driver
                              base.Start(cycle);
                              break;
                          }
-                         Task.Delay(500);
+                         Task.Delay(5000);
                      }
                  }
              }, TaskCreationOptions.LongRunning);
@@ -141,13 +145,17 @@ namespace IIOTS.Driver
             var bytes = base.SendCommand(command).GetBody();
             if (bytes == null)
             {
+                PCNode = null;
+                PLCNode = null;
+                State = false;
+                ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
                 while (true)
                 {
                     if (LogIn())
                     {
                         break;
                     }
-                    Task.Delay(500);
+                    Task.Delay(5000);
                 }
             }
             return bytes;

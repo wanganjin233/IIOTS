@@ -256,15 +256,23 @@ namespace IIOTS.Driver
                             }
                             catch (Exception)
                             {
+                                state = false;
+                                break;
+                            }
+                            finally
+                            {
+                                await Task.Delay(cycle);
                             }
                         }
-
                         if (state != State)
                         {
                             State = state;
                             ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
                         }
-                        await Task.Delay(cycle);
+                        if (TagGroups.Count == 0)
+                        {
+                            await Task.Delay(cycle);
+                        }
                     }
                 }, TaskCreationOptions.LongRunning);
             }
@@ -272,7 +280,7 @@ namespace IIOTS.Driver
         /// <summary>
         /// 运行状态
         /// </summary>
-        protected bool IsRun = false; 
+        protected bool IsRun = false;
 
         /// <summary>
         /// 停止驱动
