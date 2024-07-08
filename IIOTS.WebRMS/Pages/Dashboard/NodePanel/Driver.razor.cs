@@ -6,8 +6,8 @@ using IIOTS.Util;
 using IIOTS.WebRMS.Models;
 using IIOTS.Models;
 using IIOTS.WebRMS.Extensions;
-using IIOTS.WebRMS.Services;
-using OneOf.Types;
+using IIOTS.WebRMS.Services; 
+
 namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
 {
     public partial class Driver : ComponentBase, IDisposable
@@ -19,17 +19,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         private NavigationManager NavigationManager { get; set; } = default!;
 
         [Inject]
-        private IFreeSql FreeSql { get; set; } = default!;
-        /// <summary>
-        /// 进程类型
-        /// </summary>
-        [Parameter]
-        public required string ClientType { get; set; }
-        /// <summary>
-        /// 节点ID
-        /// </summary>
-        [Parameter]
-        public required string EdgeId { get; set; }
+        private IFreeSql FreeSql { get; set; } = default!; 
         /// <summary>
         /// 进程ID
         /// </summary>

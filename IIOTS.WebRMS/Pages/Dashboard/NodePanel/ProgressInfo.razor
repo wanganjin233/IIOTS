@@ -61,12 +61,11 @@
             <PropertyColumn Title="启动时间" Property="c=>GetStartTime(c)" Sortable />
             <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
             <ActionColumn Title="操作">
-
                 <Space>
                     <SpaceItem>
                         <Button Block
                                 Type="@ButtonType.Primary"
-                                OnClick="@(()=>{NavigationManager.NavigateTo($"/Driver/{EdgeId}/{context.Id}/{context.ClientType}");})">
+                                OnClick="@(()=>{NavigationManager.NavigateTo($"/Driver/{context.Id}");})">
                             编辑设备
                         </Button>
                     </SpaceItem>
