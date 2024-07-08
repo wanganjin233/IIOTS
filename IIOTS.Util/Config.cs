@@ -3,7 +3,7 @@
     public static class Config
     {
         /// <summary>
-        /// 标识01111111111111111
+        /// 标识
         /// </summary>
         public static string Identifier { get; set; } = string.Empty;
         private static string? localIp;
