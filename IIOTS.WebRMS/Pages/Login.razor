@@ -1,12 +1,14 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
+@using IIOTS.Util
 @using IIOTS.WebRMS.Models
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.AspNetCore.Components.Authorization 
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NotificationService _notice
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient HttpClient
-@page "/login" 
+@page "/login"
 
 @code {
     /// <summary>
@@ -18,67 +20,127 @@
         /// 用户名
         /// </summary>
         [Required(ErrorMessage = "请输入您的用户名")]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         /// <summary>
         /// 用户密码
         /// </summary>
         [Required(ErrorMessage = "请输入您的密码")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
     public Sys_LoginUserData SysLoginUserData { get; set; } = new Sys_LoginUserData();
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
-    [Inject]
-    MessageService _message { get; set; }
 
 
-    public async   void HandleSubmit()
+    public async void HandleSubmit()
     {
-            LoginDto model = new LoginDto()
-                {
-                    UserName = SysLoginUserData.UserName,
-                    Password = SysLoginUserData.Password
-                };
-            var httpResponse = await HttpClient.PostAsJsonAsync<LoginDto>($"api/Auth/Login", model);
-            UserDto? result = await httpResponse.Content.ReadFromJsonAsync<UserDto>();
-
-            if (string.IsNullOrWhiteSpace(result?.Token) == false)
-            { 
-                ((AuthProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
-            }
-            else
+        LoginDto model = new LoginDto()
             {
-                
-            }
+                UserName = SysLoginUserData.UserName,
+                Password = SysLoginUserData.Password.ToMD5String()
+            };
+        var httpResponse = await HttpClient.PostAsJsonAsync<LoginDto>($"api/Auth/Login", model);
+        UserDto? result = await httpResponse.Content.ReadFromJsonAsync<UserDto>();
 
+        if (string.IsNullOrWhiteSpace(result?.Token) == false)
+        {
+            ((AuthProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
+        }
+        else
+        {
+            await _notice.Error(new NotificationConfig()
+                {
+                    Message = "验证失败",
+                    Description = "用户名或密码错误"
+                });
+        }
     }
-     
-     
-} 
-<Layout Class="site-layout-background-img"> 
-    <Content Style="padding: 24px;min-height: 280px;"> 
-        <div style="padding:30px"> 
-            <Card Bordered="true" Title=@("用户登录") Style="width:400px" Hoverable="true">
-                <Body>
-                    <Form Model="@SysLoginUserData" OnFinish="HandleSubmit">
-                        <FormItem>
-                            <AntDesign.Input Placeholder="请输入用户名" Size="large" @bind-Value="@context.UserName">
-                                <Prefix><Icon Type="user" /></Prefix>
-                            </AntDesign.Input>
-                        </FormItem>
-                        <FormItem>
-                            <AntDesign.Input Placeholder="请输入密码" Size="large" @bind-Value="@context.Password" Type="password">
-                                <Prefix><Icon Type="lock" /></Prefix>
-                            </AntDesign.Input>
-                        </FormItem>
-                        <Space Style="width:100%">
-                            <SpaceItem>
-                                <Button Type="primary" HtmlType="submit" Class="submit" Size="large" Block>登&nbsp;录</Button>
-                            </SpaceItem>
-                        </Space>
-                    </Form>
-                </Body>
-            </Card>
-        </div>
-    </Content>
+}
+
+<Layout style="min-height: 100vh;">
+    <GridRow style="height: 100vh;">
+        <!-- 左侧部分 -->
+        <GridCol Span="14" Style="min-width:300px">
+            <Layout>
+                <Content class="left-content">
+                    <div class="left-inner-content">
+                        <h1 class="title">工业互联系统</h1>
+                        <img class="logo" src="./assets/logo.svg" />
+                    </div>
+                </Content>
+            </Layout>
+        </GridCol>
+
+        <!-- 右侧部分 -->
+        <GridCol Span="10" Style="min-width:400px;">
+            <div class="centered-content">
+                <Content class="right-content">
+                    <Card Bordered="true" Title=@("用户登录") Hoverable="true" class="login-card">
+                        <Form Model="@SysLoginUserData" OnFinish="HandleSubmit" layout="vertical">
+                            <FormItem label="用户名">
+                                <AntDesign.Input Placeholder="请输入用户名" Size="large" @bind-Value="@context.UserName">
+                                    <Prefix><Icon Type="user" /></Prefix>
+                                </AntDesign.Input>
+                            </FormItem>
+                            <FormItem label="密码">
+                                <AntDesign.Input Placeholder="请输入密码" Size="large" @bind-Value="@context.Password" Type="password">
+                                    <Prefix><Icon Type="lock" /></Prefix>
+                                </AntDesign.Input>
+                            </FormItem>
+                            <FormItem>
+                                <Button Type="primary" HtmlType="submit" Size="large" Block>登&nbsp;录</Button>
+                            </FormItem>
+                        </Form>
+                    </Card>
+                </Content>
+            </div>
+        </GridCol>
+    </GridRow>
 </Layout>
+
+<style>
+    .left-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        background-color: #001529;
+        color: white;
+    }
+
+    .left-inner-content {
+        text-align: center;
+    }
+
+    .title {
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin: 1em 0 .5em;
+        font-family: 'Raleway', sans-serif;
+        font-size: 40px;
+        color: white;
+    }
+
+    .logo {
+        width: 40%;
+    }
+
+    .centered-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .right-content {
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+    }
+
+    .login-card {
+        width: 100%;
+    }
+
+    .submit {
+        width: 100%;
+    }
+</style>

@@ -2,6 +2,8 @@
 @using AntDesign.TableModels
 @using IIOTS.WebRMS.Models
 @page "/Driver/{edgeId}/{ProgressId}/{ClientType}" 
+@page "/Driver/All"
+
 <div>
     <Modal Maximizable=true Title="添加设备"
            Visible="@_editBoxVisible"
@@ -22,7 +24,7 @@
                                                                    SelectTagGroup="@SetTagGroup" />
             </FormItem>
             <FormItem Label="扫描周期">
-                <AntDesign.InputNumber DefaultValue="100" @bind-Value="context.ScanRate" />
+                <AntDesign.InputNumber DefaultValue="500" @bind-Value="context.ScanRate" />
             </FormItem>
             <FormItem Label="备注">
                 <Input @bind-Value="@context.Description" />
@@ -32,8 +34,9 @@
     <Button OnClick="Apply" Disabled="selectedRows.Count()<1" Type="primary" Style="margin-bottom:16px">
         应用配置
     </Button>
-    <Button OnClick="@(()=>{EquConfig=new(); _editBoxVisible = true; })"
+    <Button OnClick="@(()=>{EquConfig=new(); _editBoxVisible = true;  })"
             Type="primary"
+            Disabled="ProgressId==null"
             Style="margin-bottom:16px">
         添加设备驱动
     </Button>
@@ -41,9 +44,7 @@
            @bind-PageIndex="_pageIndex"
            @bind-PageSize="_pageSize"
            @bind-SelectedRows="selectedRows" 
-           Total="(int)_total"
-           OnPageIndexChange="GetPage"
-           OnPageSizeChange="GetPage"
+           Total="(int)_total" 
            ScrollX="max-content"
            DataSource="@EquConfigEntitys" 
            RowKey="x=>x.Id"
@@ -68,13 +69,13 @@
         <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
         <PropertyColumn Title="连接字符串" Property="c=>c.ConnectionString" Sortable />
         <PropertyColumn Title="扫描周期" Property="c=>c.ScanRate" Sortable />
-        <PropertyColumn Title="备注" Property="c=>c.Description" Sortable />
+            <PropertyColumn Title="备注" Property="c=>c.Description" Sortable Filterable />
         <ActionColumn Title="操作">
             <Space>
                 <SpaceItem>
                     <Button Block
                             Type="@ButtonType.Primary"
-                            OnClick='()=>NavigationManager.NavigateTo($"/RealTimeTags/{EdgeId}/{ProgressId}_{ClientType}/{context.EQU}")'>
+                                OnClick='()=>NavigationManager.NavigateTo($"/RealTimeTags/{context.ProgressConfigEntity.Gname}/{context.ProgressId}_{context.ProgressConfigEntity.ClientType}/{context.EQU}")'>
                         查看点位
                     </Button>
                 </SpaceItem>

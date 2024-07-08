@@ -96,7 +96,7 @@
                 <AntDesign.InputNumber @bind-Value="@context.DataLength" />
             </FormItem>
             <FormItem Label="缩放">
-                <AntDesign.InputNumber @bind-Value="@context.Magnification" />
+                <AntDesign.InputNumber DefaultValue="1" @bind-Value="@context.Magnification" />
             </FormItem>
             <FormItem Label="读写权限">
                 <Select DefaultValue="@ClientAccessEnum.RW"

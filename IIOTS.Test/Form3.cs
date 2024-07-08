@@ -35,7 +35,7 @@ namespace IIOTS.Test
         {
             string text = string.Empty;
             bool jin = false;
-            foreach (var item in textBox1.Text.Replace('\'',' '))
+            foreach (var item in textBox1.Text.Replace('\'', ' '))
             {
                 if (item == '\"')
                 {
@@ -107,7 +107,7 @@ namespace IIOTS.Test
                         {
                             Address += "." + column[20].Split("<<")[1].Split("&")[0];
                         }
-                        strings.Add($"'{Address}'"); 
+                        strings.Add($"'{Address}'");
                         strings.Add(column[5]);
                         strings.Add("1");
                         strings.Add($"'{column[6].Replace("ReadWrite", "RW").Replace("ReadOnly", "OR")}'");
@@ -126,5 +126,10 @@ namespace IIOTS.Test
         }
         [GeneratedRegex("^[a-zA-Z0-9]+")]
         private static partial Regex TagAddressMatches();
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

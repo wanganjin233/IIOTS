@@ -43,7 +43,9 @@ namespace IIOTS.WebRMS.Models
         /// 进程ID
         /// </summary>
         [Column(Name = "ProgressId", IsNullable = false)]
-        public long ProgressId { get; set; }
+        public long ProgressId { get; set; } 
+        [Navigate(nameof(ProgressId))]
+        public ProgressConfigEntity ProgressConfigEntity { get; set; } = new();
         /// <summary>
         /// 创建时间
         /// </summary>

@@ -42,7 +42,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         /// <summary>
         /// 进程信息
         /// </summary>
-        private ProgressConfigEntity progressConfig = new(); 
+        private ProgressConfigEntity progressConfig = new();
         /// <summary>
         /// 节点配置数据
         /// </summary>
@@ -57,7 +57,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         bool tableLoad = true;
         EquConfigEntity EquConfig = new();
         bool _editBoxVisible = false;
-        bool _editBoxLoading = false; 
+        bool _editBoxLoading = false;
         /// <summary>
         /// 页面初始化
         /// </summary>
@@ -85,8 +85,11 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         /// <param name="msg"></param>
         private async void ApplicationMessageReceived(string topic, string msg)
         {
-            DriverState[topic.Split("/").Last()] = msg.ToObject<bool>();
-            await InvokeAsync(StateHasChanged);
+            if (DriverState.ContainsKey(topic.Split("/").Last()))
+            { 
+                DriverState[topic.Split("/").Last()] = msg.ToObject<bool>();
+                await InvokeAsync(StateHasChanged);
+            } 
         }
         /// <summary>
         /// 释放
@@ -107,10 +110,13 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
             EquConfigEntitys = await FreeSql
             .Select<EquConfigEntity>()
             .LeftJoin(p => p.TagGroupEntity.Id == p.TagGroupId)
-            .Where(p => p.ProgressId.ToString() == ProgressId)
-            .Count(out _total)
-            .Page(_pageIndex, _pageSize)
+            .LeftJoin(p => p.ProgressConfigEntity.Id == p.ProgressId)
+            .WhereIf(ProgressId != null, p => p.ProgressId.ToString() == ProgressId)
             .ToListAsync();
+            foreach (var equConfig in EquConfigEntitys)
+            {
+                DriverState[equConfig.EQU] = false;
+            }
             tableLoad = false;
         }
         #region 操作节点
@@ -141,7 +147,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         /// <param name="equConfig"></param>
         /// <param name="tags"></param>
         private void SwitchEqu(EquConfigEntity equConfig, List<TagConfig> tags)
-        { 
+        {
             string topic = $"EdgeCore/{progressConfig.Gname}/Equ/DeployEqu;{equConfig.EQU}";
             string id = $"{progressConfig.Id}_{progressConfig.ClientType}";
             if (equConfig.IsUse)

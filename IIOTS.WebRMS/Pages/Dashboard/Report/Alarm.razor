@@ -3,17 +3,17 @@
 @using IIOTS.WebRMS.Models
 @page "/Report/Alarm"
 <div>
-    <Table TItem="EquAlarm" 
-           Total="(int)_total" 
+    <Table TItem="EquAlarm"
+           Total="(int)_total"
            OnChange="OnTableChange"
            ScrollX="max-content"
            DataSource="@EquAlarms"
-           Loading="@tableLoad"> 
+           Loading="@tableLoad">
         <ChildContent>
-            <PropertyColumn Title="报警时间" Property="c=>c._time" Format="yyyy-MM-dd HH:mm:ss" Sortable />
             <PropertyColumn Title="设备号" Property="c=>c.equ" Sortable Filterable />
-            <PropertyColumn Title="报警信息" Property="c=>c.content" Sortable Filterable /> 
-            <PropertyColumn Title="报警状态" Property="c=>c.enable" Sortable Filterable /> 
+            <PropertyColumn Title="报警信息" Property="c=>c.content" Sortable Filterable />
+            <PropertyColumn Title="报警状态" Property="c=>c.enable" Sortable Filterable />
+            <PropertyColumn Title="报警时间" Property="c=>c._time" Format="yyyy-MM-dd HH:mm:ss" Sortable DefaultSortOrder="@SortDirection.Descending" />
         </ChildContent>
         <PaginationTemplate>
             <div style="margin-top: 20px;"></div>

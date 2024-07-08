@@ -59,6 +59,7 @@
             textBox2.ScrollBars = ScrollBars.Vertical;
             textBox2.Size = new Size(505, 447);
             textBox2.TabIndex = 1;
+            textBox2.TextChanged += textBox2_TextChanged;
             // 
             // button1
             // 
