@@ -1,18 +1,19 @@
 ﻿using IIOTS.Enums;
 using IIOTS.Models;
 using IIOTS.Util;
+using System.ComponentModel;
 
 namespace IIOTS.Driver
 {
-    public class ModbusTcp : BaseDriver
-    {
+    public class XINJIE : BaseDriver
+    { 
         #region 初始化  
-        public ModbusTcp(string communicationStr)
+        public XINJIE(string communicationStr)
            : base(communicationStr)
         {
             Communication.DataLengthLocation = 4;
             Communication.DataLengthType = LengthTypeEnum.ReUShort;
-            _DriverType = DriverTypeEnum.ModbusTcp;
+            _DriverType = DriverTypeEnum.XINJIE;
         }
 
         #endregion
@@ -48,7 +49,7 @@ namespace IIOTS.Driver
         protected override byte[]? BatchReadCommand(TagGroup tagGroup, byte StationNumber, object TypeEnumtem)
         {
             Tag firstTag = tagGroup.Tags.First();
-            return ((ushort)firstTag.Location).BatchReadCommand(tagGroup.Length, (byte)(AddressTypeEnum)TypeEnumtem, StationNumber);
+            return firstTag.Location.BatchReadCommand(tagGroup.Length, (AddressTypeEnum)TypeEnumtem, StationNumber);
         }
         /// <summary>
         /// tag点位地址解析
@@ -58,37 +59,11 @@ namespace IIOTS.Driver
         /// <exception cref="Exception"></exception>
         protected override TagProcess TagParsing(TagProcess tag)
         {
-            switch (tag.Address[0])
+            string addressType = Tools.ABCTypeRegex().Matches(tag.Address).Single().Value;
+            if (addressType.ToEnum(out AddressTypeEnum _AddressType))
             {
-                case '0':
-                    tag.Type = AddressTypeEnum.zero;
-                    tag.IsBit = true;
-                    break;
-                case '1':
-                    tag.Type = AddressTypeEnum.one;
-                    tag.ClientAccess = ClientAccessEnum.OR;
-                    tag.IsBit = true;
-                    break;
-                case '3':
-                    tag.Type = AddressTypeEnum.threea;
-                    tag.ClientAccess = ClientAccessEnum.OR;
-                    break;
-                case '4':
-                    tag.Type = AddressTypeEnum.four;
-                    break;
-                default:
-                    throw new Exception("地址错误");
-            }
-            if (tag.Address.Contains('.'))
-            {
-                tag.DataType = TagTypeEnum.Boole;
-                var addressSplit = tag.Address.Split('.');
-                addressSplit[1].ToInt();
-                tag.Location = addressSplit[0][1..].ToUshort();
-            }
-            else
-            {
-                tag.Location = tag.Address[1..].ToUshort();
+                tag.Type = _AddressType;
+                tag.TagAddressTransform(_AddressType);
             }
             return tag;
         }
@@ -106,10 +81,19 @@ namespace IIOTS.Driver
                 tag.ClientAccess == ClientAccessEnum.OW ||
                 tag.ClientAccess == ClientAccessEnum.RW))
             {
-                byte[] command = ((ushort)tag.Location).BatchWriteCommand(tag.TagOnComm(value),
-                    tag.IsBit,
+                var memberInfo = typeof(AddressTypeEnum)
+                    .GetMember(((AddressTypeEnum)Enum.ToObject(typeof(AddressTypeEnum), tag.Type)).ToString());
+                var attributes = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+                var sign = ((DescriptionAttribute)attributes.Single()).Description;
+                byte[] command = tag.Location.BatchWriteCommand(tag.TagOnComm(value),
+                    (AddressTypeEnum)tag.Type,
+                    sign == "Bit",
                     tag.StationNumber);
-                return SendCommand(command) != null;
+                byte[]? reData = base.SendCommand(command);
+                if (reData != null && reData[7] == command[7] && reData[8] == command[8])
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -120,8 +104,12 @@ namespace IIOTS.Driver
         /// <returns></returns>
         public override byte[]? SendCommand(byte[] command)
         {
+            AddressTypeEnum addressType = (AddressTypeEnum)Enum.ToObject(typeof(AddressTypeEnum), BitConverter.ToUInt16([command[8], command[7]]));
+            var memberInfo = typeof(AddressTypeEnum).GetMember(addressType.ToString());
+            var attributes = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var sign = ((DescriptionAttribute)attributes.Single()).Description;
             Communication.HeadBytes = SetIdentifying(command);
-            return base.SendCommand(command).GetBody(command[7] == 2 || command[7] == 1, BitConverter.ToUInt16(command.Reverse().ToArray())); ;
+            return base.SendCommand(command).GetBody(sign == "Bit", BitConverter.ToUInt16(command.Reverse().ToArray()));
         }
         #endregion
     }
