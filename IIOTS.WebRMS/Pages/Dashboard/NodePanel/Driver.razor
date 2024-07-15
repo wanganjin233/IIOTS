@@ -10,7 +10,7 @@
            OnOk="AddEquConfig"
            OnCancel="@(()=>{ _editBoxVisible = false; })"
            ConfirmLoading="@_editBoxLoading"
-    Width="800">
+           Width="800">
         <Form Model="@EquConfig">
             <FormItem Label="设备编号">
                 <Input @bind-Value="@context.EQU" />
@@ -43,68 +43,73 @@
     <Table TItem="EquConfigEntity"
            @bind-PageIndex="_pageIndex"
            @bind-PageSize="_pageSize"
-           @bind-SelectedRows="selectedRows" 
-           Total="(int)_total" 
+           @bind-SelectedRows="selectedRows"
+           Total="(int)_total"
            ScrollX="max-content"
-           DataSource="@EquConfigEntitys" 
+           DataSource="@EquConfigEntitys"
            RowKey="x=>x.Id"
-           Loading="@tableLoad"> 
-             <ChildContent>
-        <Selection Key="@(context.Id.ToString())" />
-        <PropertyColumn Title="设备号" Property="c=>c.EQU" Sortable Filterable />
-        <PropertyColumn Title="驱动类型" Property="c=>c.TagGroupEntity.DriverType" Sortable />
-        <PropertyColumn Title="点位组" Property="c=>c.TagGroupEntity.TagGName" Sortable />
-        <PropertyColumn Title="运行状态" Property="c=>c.EQU">
-            @{
-                bool state = DriverState.GetValueOrDefault(context.EQU);
-                var color = state ? "green" : "red";
-                <Tag Color="@color">@(state ? "在线" : "离线")</Tag>
-            }
-        </PropertyColumn>
-        <PropertyColumn Title="启用" Property="c=>c.IsUse">
-            <Switch Value="context.IsUse"
-                    ValueChanged="p=>SwitchEquConfig(context,p)">
-            </Switch>
-        </PropertyColumn>
-        <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
-        <PropertyColumn Title="连接字符串" Property="c=>c.ConnectionString" Sortable />
-        <PropertyColumn Title="扫描周期" Property="c=>c.ScanRate" Sortable />
+           Loading="@tableLoad">
+        <ChildContent>
+            <Selection Key="@(context.Id.ToString())" />
+            <PropertyColumn Title="设备号" Property="c=>c.EQU" Sortable Filterable />
+            <PropertyColumn Title="驱动类型" Property="c=>c.TagGroupEntity.DriverType" Sortable />
+            <PropertyColumn Title="运行状态" Property="c=>c.EQU">
+                @{
+                    bool state = DriverState.GetValueOrDefault(context.EQU);
+                    var color = state ? "green" : "red";
+                    <Tag Color="@color">@(state ? "在线" : "离线")</Tag>
+                }
+            </PropertyColumn>
+            <PropertyColumn Title="启用" Property="c=>c.IsUse">
+                <Switch Value="context.IsUse"
+                        ValueChanged="p=>SwitchEquConfig(context,p)">
+                </Switch>
+            </PropertyColumn>
+            <PropertyColumn Title="创建时间" Property="c=>c.CreationDate" Format="yyyy-MM-dd HH:mm:ss" Sortable />
+            <PropertyColumn Title="连接字符串" Property="c=>c.ConnectionString" Sortable />
+            <PropertyColumn Title="扫描周期" Property="c=>c.ScanRate" Sortable />
             <PropertyColumn Title="备注" Property="c=>c.Description" Sortable Filterable />
-        <ActionColumn Title="操作">
-            <Space>
-                <SpaceItem>
-                    <Button Block
-                            Type="@ButtonType.Primary"
+            <PropertyColumn Title="点位组" Property="c=>c.TagGroupEntity.TagGName" Sortable>
+                <Button Block
+                        Type="@ButtonType.Primary"
+                        OnClick='()=>NavigationManager.NavigateTo($"/TagList/{context.TagGroupEntity.Id}")'>
+                    @context.TagGroupEntity.TagGName
+                </Button>
+            </PropertyColumn>
+            <ActionColumn Title="操作">
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
                                 OnClick='()=>NavigationManager.NavigateTo($"/RealTimeTags/{context.ProgressConfigEntity.Gname}/{context.ProgressId}_{context.ProgressConfigEntity.ClientType}/{context.EQU}")'>
-                        查看点位
-                    </Button>
-                </SpaceItem>
-            </Space>
-            <Space>
-                <SpaceItem>
-                    <Button Block
-                            Type="@ButtonType.Primary"
-                            OnClick="()=>EditEquConfig(context)">
-                        编辑
-                    </Button>
-                </SpaceItem>
-            </Space>
-            <Space>
-                <SpaceItem>
-                    <Popconfirm Title="确认删除？"
-                                OnConfirm="()=> DetectEquConfig(context)">
-                        <Button Danger Type="@ButtonType.Primary">
-                            删除
+                            查看点位
                         </Button>
-                    </Popconfirm>
-                </SpaceItem>
-            </Space>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Button Block
+                                Type="@ButtonType.Primary"
+                                OnClick="()=>EditEquConfig(context)">
+                            编辑
+                        </Button>
+                    </SpaceItem>
+                </Space>
+                <Space>
+                    <SpaceItem>
+                        <Popconfirm Title="确认删除？"
+                                    OnConfirm="()=> DetectEquConfig(context)">
+                            <Button Danger Type="@ButtonType.Primary">
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                </Space>
             </ActionColumn>
         </ChildContent>
         <PaginationTemplate>
             <div style="margin-top: 20px;"></div>
-            <Pagination 
-                        Total="context.Total"
+            <Pagination Total="context.Total"
                         PageSize="context.PageSize"
                         Current="context.PageIndex"
                         ShowSizeChanger
