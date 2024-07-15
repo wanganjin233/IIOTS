@@ -88,6 +88,10 @@ namespace IIOTS.Driver
             {
                 if ((!OriginalData?.Equals(value)) ?? true)
                 {
+                    if (value == null)
+                    {
+                        timestamp = DateTime.MinValue;
+                    }
                     OriginalData = value;
                     oldValue = _Value;
                     if (DataType == TagTypeEnum.StringArray)
@@ -194,7 +198,7 @@ namespace IIOTS.Driver
                     return QualityTypeEnum.TimeOut;
                 }
             }
-        }
+        } 
         /// <summary>
         /// 私有旧值
         /// </summary>

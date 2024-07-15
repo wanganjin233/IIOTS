@@ -36,12 +36,14 @@ namespace IIOTS.EdgeCore.Service
         /// </summary>
         private readonly SubscriberSocket subscriber;
         private readonly ProgressManage _progressManage;
+        private readonly MQTTConcat MqttConcat;
         /// <summary>
         /// 消息处理方法
         /// </summary>
         private readonly Handler<IHandler> handler;
-        public CoreService(ILogger<CoreService> logger, ILoggerFactory loggerFactory, ProgressManage progressManage)
+        public CoreService(ILogger<CoreService> logger, ILoggerFactory loggerFactory, ProgressManage progressManage, MQTTConcat Concat)
         {
+            MqttConcat = Concat;
             _logger = logger;
             _loggerFactory = loggerFactory;
             _progressManage = progressManage;
@@ -77,9 +79,6 @@ namespace IIOTS.EdgeCore.Service
         /// <returns></returns>
         private async Task ConnectMqtt(CancellationToken cancellationToken = default)
         {
-            //获取MQTT 配置
-            string? MQTTIP = AppConfigurationHelper.Configuration.GetSection("MQTT:IP").Get<string>();
-            int? MQTTPort = AppConfigurationHelper.Configuration.GetSection("MQTT:Port").Get<int>();
             //断开重联
             mqttClient.DisconnectedAsync += a => mqttClient.ReconnectAsync(cancellationToken);
             //连接事件
@@ -145,7 +144,7 @@ namespace IIOTS.EdgeCore.Service
             string willMessage = _progressManage.EdgeLoginInfo.ToJson();
             //连接MQTT服务
             await mqttClient.ConnectAsync(new MqttClientOptionsBuilder()
-               .WithTcpServer(MQTTIP, MQTTPort)
+               .WithTcpServer(MqttConcat.IP, MqttConcat.Port)
                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                .WithWillTopic($"EdgeLoginInfo/{_progressManage.EdgeLoginInfo.EdgeID}")
                .WithWillQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce)

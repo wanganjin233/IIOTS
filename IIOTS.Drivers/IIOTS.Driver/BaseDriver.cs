@@ -197,7 +197,7 @@ namespace IIOTS.Driver
                 AllTagDic.Remove(p, out TagProcess? tag);
             });
             Packet(AllTagDic.Values.ToList());
-        }
+        } 
         /// <summary>
         /// 启动驱动
         /// </summary>
@@ -267,9 +267,16 @@ namespace IIOTS.Driver
                         if (state != State)
                         {
                             State = state;
+                            if (!State)
+                            {
+                                AllTags.ForEach(t =>
+                               {
+                                   t.SetValue = null;
+                               });
+                            }
                             ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
                         }
-                        if (TagGroups.Count == 0)
+                        if (TagGroups.IsEmpty)
                         {
                             await Task.Delay(cycle);
                         }

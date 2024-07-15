@@ -100,8 +100,7 @@ namespace IIOTS.Driver
                                             {
                                                 continue;
                                             }
-                                            byte[]? BodyByte = SendCommand(tagGroup.Command);
-                                            tagGroup.Command.To0XString();
+                                            byte[]? BodyByte = SendCommand(tagGroup.Command); 
                                             if (BodyByte != null)
                                             {
                                                 foreach (var s7Addresses in TagGroupKVs[tagGroup])
@@ -148,12 +147,20 @@ namespace IIOTS.Driver
                                         }
                                         catch (Exception)
                                         {
+                                            state = false;
+                                            break;
                                         }
-                                    }
-
+                                    } 
                                     if (state != State)
                                     {
                                         State = state;
+                                        if (!State)
+                                        {
+                                            AllTags.ForEach(t =>
+                                            {
+                                                t.SetValue = null;
+                                            });
+                                        }
                                         ThreadPool.QueueUserWorkItem(p => DriverStateChange?.Invoke(this));
                                     }
                                     await Task.Delay(cycle);

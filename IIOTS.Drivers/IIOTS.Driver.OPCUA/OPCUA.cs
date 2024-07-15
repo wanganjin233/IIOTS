@@ -47,6 +47,13 @@ namespace IIOTS.Driver
             if (driverState != e.Connected)
             {
                 driverState = e.Connected;
+                if (!driverState)
+                {
+                    AllTags.ForEach(t =>
+                    {
+                        t.SetValue = null;
+                    });
+                }
                 DriverStateChange?.Invoke(this);
             }
             foreach (var tag in AllTags)
