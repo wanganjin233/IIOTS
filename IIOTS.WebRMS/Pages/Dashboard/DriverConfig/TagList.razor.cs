@@ -3,11 +3,14 @@ using IIOTS.WebRMS.Models;
 using Microsoft.AspNetCore.Components;
 using Blazored.LocalStorage;
 using Microsoft.JSInterop;
+using AntDesign;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
 {
-    public partial class TagList
+    public partial class TagList : ComponentBase
     {
+        [Inject]
+        private NotificationService _notice { get; set; } = default!;
         [Inject]
         private ILocalStorageService localStorage { get; set; } = default!;
         [Inject]
@@ -19,7 +22,13 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
         [Parameter]
         public EventCallback<TagGroupEntity> SelectTagGroup { get; set; }
         [Parameter]
-        public bool IsDisabled { get; set; } = false;
+        public bool IsDisabled { get; set; } = false; 
+         /// <summary>
+        /// Tag组Id
+        /// </summary>
+        [Parameter]
+        public string? TagGid{ get; set; }
+
         List<TagGroupEntity> tagGroupEntities = [];
         /// <summary>
         ///初始化
@@ -39,6 +48,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
             tableLoad = true;
             tagGroupEntities = await FreeSql
             .Select<TagGroupEntity>()
+            .WhereIf(TagGid != null,p=>p.Id.ToString()== TagGid)
             .ToListAsync();
             tableLoad = false;
         }
@@ -129,6 +139,11 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
                 List<string>? tabFlowIds = await NodeRedApi.GetTabFlowIdsAsync();
                 if (tabFlowIds == null)
                 {
+                    await _notice.Error(new NotificationConfig()
+                    {
+                        Message = "异常",
+                        Description = "打开流程失败"
+                    }); 
                     return;
                 }
                 else

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
 {
-    public partial class Tags
+    public partial class Tags : ComponentBase 
     {
         /// <summary>
         /// Tag组ID

@@ -1,10 +1,12 @@
-﻿using IIOTS.Util;
+﻿using IIOTS.Models;
+using IIOTS.Util;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Packets;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace IIOTS.WebRMS.Services
 {
@@ -51,7 +53,7 @@ namespace IIOTS.WebRMS.Services
             AsyncHelper.RunSync(() => _MqttClient.ConnectAsync(new MqttClientOptionsBuilder()
                 .WithTcpServer(MQTTIP, MQTTPort)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500) 
-                .Build()));
+                .Build())); 
         }
 
         private Task MqttClient_ApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs arg)
