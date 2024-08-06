@@ -12,7 +12,7 @@ namespace IIOTS.Driver
            : base(communicationStr)
         {
             Communication.DataLengthLocation = 4;
-            Communication.DataLengthType = LengthTypeEnum.ReUShort;
+            Communication.DataLengthType = LengthTypeEnum.Byte;
             _DriverType = DriverTypeEnum.XINJIE;
         }
 

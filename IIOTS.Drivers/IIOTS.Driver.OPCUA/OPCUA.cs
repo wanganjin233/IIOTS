@@ -11,6 +11,10 @@ namespace IIOTS.Driver
         private readonly OpcUaClient opcUaClient = new();
         private bool driverState = false;
         /// <summary>
+        /// 需要订阅的点位
+        /// </summary>
+        private List<string> subTags = [];
+        /// <summary>
         /// 连接状态
         /// </summary>
         public override bool DriverState => driverState;
@@ -44,6 +48,13 @@ namespace IIOTS.Driver
         /// <param name="e"></param>
         private void OpcUaClient_OpcStatusChange(object? sender, OpcUaStatusEventArgs e)
         {
+            if (e.Connected)
+            {
+                foreach (var tag in AllTags)
+                {
+                    tag.Timestamp = DateTime.Now;
+                }
+            }
             if (driverState != e.Connected)
             {
                 driverState = e.Connected;
@@ -54,11 +65,13 @@ namespace IIOTS.Driver
                         t.SetValue = null;
                     });
                 }
+                else
+                {
+                    opcUaClient.RemoveAllSubscription();
+                    //订阅点位
+                    opcUaClient.AddSubscription(Guid.NewGuid().ToString("N"), subTags.ToArray(), SubCallback);
+                }
                 DriverStateChange?.Invoke(this);
-            }
-            foreach (var tag in AllTags)
-            {
-                tag.Timestamp = DateTime.Now;
             }
         }
 
@@ -75,20 +88,6 @@ namespace IIOTS.Driver
                     IsRun = true;
                     try
                     {
-                        while (IsRun)
-                        {
-                            try
-                            {
-                                if (await opcUaClient.ConnectServer(CommunicationStr))
-                                {
-                                    opcUaClient.OpcStatusChange += OpcUaClient_OpcStatusChange;
-                                    break;
-                                }
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
                         addressNames = AllTags.ToDictionary(p => p.TagName, p => p);
                         //获取需要轮询的点位
                         var pollTagGroups = TagGroups
@@ -106,25 +105,40 @@ namespace IIOTS.Driver
                         var subTagGroups = TagGroups
                                 .Where(p => p.UpdateMode == UpdateModeEnum.Sub)
                                 .ToList();
-                        List<string> subTags = [];
                         //合并组
                         foreach (var subTagGroup in subTagGroups)
                         {
                             subTags = subTags.Union(subTagGroup.Tags.Select(p => p.Address)).ToList();
                         }
-                        opcUaClient.RemoveAllSubscription();
-                        //订阅点位
-                        opcUaClient.AddSubscription(Guid.NewGuid().ToString("N"), subTags.ToArray(), SubCallback);
+                        //尝试连接
+                        while (IsRun)
+                        {
+                            try
+                            {
+                                if (await opcUaClient.ConnectServer(CommunicationStr))
+                                {
+                                    opcUaClient.OpcStatusChange += OpcUaClient_OpcStatusChange;
+                                    break;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        //处理轮询点位
                         while (IsRun && tagNodeId.Length > 0)
                         {
                             try
                             {
-                                //读取点位
-                                List<DataValue> nodeDataValues = opcUaClient.ReadNodes(tagNodeId);
-                                for (int i = 0; i < tagNodeId.Length; i++)
+                                if (driverState)
                                 {
-                                    TagProcess tagProcess = (TagProcess)pollTags[i];
-                                    tagProcess.SetValue = nodeDataValues[i].Value;
+                                    //读取点位
+                                    List<DataValue> nodeDataValues = opcUaClient.ReadNodes(tagNodeId);
+                                    for (int i = 0; i < tagNodeId.Length; i++)
+                                    {
+                                        TagProcess tagProcess = (TagProcess)pollTags[i];
+                                        tagProcess.SetValue = nodeDataValues[i].Value;
+                                    }
                                 }
                             }
                             catch (Exception)
@@ -186,11 +200,11 @@ namespace IIOTS.Driver
                     tagProcess.DataType = TagTypeEnum.Boole;
                 }
                 else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Double)
-                { 
+                {
                     tagProcess.DataType = TagTypeEnum.Double;
                 }
                 else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.Float)
-                { 
+                {
                     tagProcess.DataType = TagTypeEnum.Float;
                 }
                 else if (notification?.Value.WrappedValue.TypeInfo == TypeInfo.Scalars.String)
@@ -221,6 +235,7 @@ namespace IIOTS.Driver
                 {
                     tagProcess.DataType = TagTypeEnum.Ulong;
                 }
+                tagProcess.Timestamp = DateTime.Now;
                 tagProcess.SetValue = notification?.Value.WrappedValue.Value;
             }
         }

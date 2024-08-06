@@ -11,8 +11,8 @@ namespace IIOTS.Driver
         /// <returns></returns>
         public static byte[]? GetBody(this byte[]? _byte, bool isBit, int length)
         {
-            if (_byte != null && _byte.Any() && _byte.Take(2).Equalsbytes(new byte[2] { 0, 0 }))
-            { 
+            if (_byte != null && _byte.Length != 0 && _byte.Take(2).Equalsbytes([0, 0]))
+            {
                 _byte = _byte.Skip(2).ToArray();
                 if (isBit)
                 {
@@ -23,8 +23,13 @@ namespace IIOTS.Driver
                     }
                     return result;
                 }
+                return _byte;
             }
-            return _byte;
+            else
+            {
+                return null;
+            }
+
         }
     }
 }

@@ -209,8 +209,7 @@ namespace IIOTS.Driver
         /// <param name="tags"></param>
         /// <returns></returns>
         protected override List<TagGroup>? Packet(List<TagProcess> tags)
-        {
-
+        { 
             //清空分组
             TagGroups.Clear();
             if (tags.Count == 0) { return null; }
@@ -233,8 +232,7 @@ namespace IIOTS.Driver
                     {
                         //点位结束位置小于组最大结束位置添加到组
                         if (tagGroup.Length + tag.Location + tag.DataLength < endTag)
-                        {
-                            //tagGroup.Length +
+                        { 
                             itemTags.Add(tag);
                             tagGroup.Tags.Add(tag);
                         }

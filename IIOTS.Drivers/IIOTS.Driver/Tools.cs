@@ -46,7 +46,13 @@ namespace IIOTS.Driver
             };
             return bytes.DataSequence(tag.Sort);
         }
-
+        /// <summary>
+        /// 点位地址转换
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tag"></param>
+        /// <param name="AddressType"></param>
+        /// <returns></returns>
         public static Tag TagAddressTransform<T>(this Tag tag, T AddressType) where T : notnull
         {
             var addressType = AddressType.ToString();
