@@ -101,7 +101,7 @@ namespace IIOTS.Util
             }
         }
 
-        private Dictionary<string, object?> parameters { get; set; } = new Dictionary<string, object?>();
+        private Dictionary<string, object?> parameters { get; set; } = [];
         private IDbConnection Db { get; set; }
         public IDbTransaction? DbTransaction { get; set; }
         #endregion
@@ -546,7 +546,7 @@ namespace IIOTS.Util
                     }
                     if (_Object != null)
                     {
-                        List<string> whereSqls = new List<string>();
+                        List<string> whereSqls = [];
                         var dic = ModelToDic(_Object);
                         foreach (var item in dic)
                         {
@@ -559,7 +559,7 @@ namespace IIOTS.Util
                                 }
                             }
                         }
-                        if (whereSqls.Any())
+                        if (whereSqls.Count != 0)
                         {
                             return $"({string.Join(" AND ", whereSqls)})";
                         }
@@ -567,7 +567,7 @@ namespace IIOTS.Util
                 }
                 return string.Empty;
             }
-            List<string> joinStr = new List<string>();
+            List<string> joinStr = [];
             var thisItem = itemlist.FirstOrDefault(p => type == p.type);
             if (thisItem != (null, null))
             {
@@ -661,7 +661,7 @@ namespace IIOTS.Util
                     list.Add((unaryExpression.Type, unaryExpression.IsLifted ? item.obj : $"({sign} {item.obj})"));
                 };
             }
-            else if (expression is ParameterExpression parameterExpression)
+            else if (expression is ParameterExpression)
             {
                 list.Add((null, null));
             }

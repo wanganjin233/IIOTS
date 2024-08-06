@@ -39,7 +39,7 @@
             {
                 CacheFileTime.Add(CacheFile, long.Parse(Path.GetFileName(CacheFile)));
             }
-            if (CacheFileTime.Any())
+            if (CacheFileTime.Count != 0)
             {
                 if (Desc)
                 {

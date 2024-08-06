@@ -3,8 +3,8 @@
 @using System.Collections.Concurrent
 @using Title = AntDesign.Charts.Title
 @page "/"
-<PageContainer Title="节点面板"> 
-    <Content> 
+<PageContainer Title="节点面板">
+    <Content>
         <Card>
             <Row Gutter="24">
                 <AntDesign.Col Sm="8" Xs="24">
@@ -47,6 +47,18 @@
                                     OnClick="@(()=>{  NavigationManager.NavigateTo($"/ProgressInfo/{context.EdgeID}");})">
                                 查看进程
                             </Button>
+                        </SpaceItem>
+                    </Space>
+                    <Space>
+                        <SpaceItem>
+                            <Popconfirm Title="确认删除？"
+                                        OnConfirm="@(()=>{
+                                                   Detect(context.EdgeID);
+                                              })">
+                                <Button Disabled="context.State" Danger Type="@ButtonType.Primary">
+                                    删除离线节点
+                                </Button>
+                            </Popconfirm>
                         </SpaceItem>
                     </Space>
                 </ActionColumn>

@@ -53,21 +53,23 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
         private async Task OnTableChange(QueryModel<EquStatus> query)
         {
             try
-            { 
+            {
                 tableLoad = true;
                 var countFlux = Flux
-                 .From("Status")
+                 .From("iiots_Status")
                  .Import("strings")
                  .Import("regexp")
                  .Range("-180d")
-                 .Pivot();
+                 .Pivot()
+                 .Group(Columns.Create("_measurement"));
                 //查询数据
                 var tablesFlux = Flux
-                .From("Status")
+                .From("iiots_Status")
                 .Import("strings")
                 .Import("regexp")
                 .Range("-180d")
-                .Pivot();
+                .Pivot()
+                .Group(Columns.Create("_measurement"));
                 foreach (var filterModel in query.FilterModel)
                 {
                     FnBody fnBody = FnBody.R;
@@ -89,9 +91,10 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
                             "LessThanOrEquals" => FnBody.R.ColumnLessThanOrEquals(filterName, filter.Value?.ToString() ?? ""),
                             _ => throw new NotImplementedException()
                         };
+
                         if (isfirst)
                         {
-                            fnBody.Then($"({filterfnBody})");
+                            fnBody.Then($"({FnBody.R.ColumnExists(filterName)} and {filterfnBody})");
                             isfirst = false;
                         }
                         else if (filter.FilterCondition.ToString() == "And")
@@ -125,12 +128,12 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
 
                 var tables = await Infuxdb.QueryAsync(tablesFlux);
                 //转换到实体
-                EquStatus = tables.Count > 0 ? tables.Single().ToModels<EquStatus>() : []; 
+                EquStatus = tables.Count > 0 ? tables.Single().ToModels<EquStatus>() : [];
             }
             catch (Exception e)
             {
                 EquStatus = [];
-                Message.Error("查询失败"); 
+                _ = Message.Error($"查询失败{e.Message}");
             }
             finally
             {

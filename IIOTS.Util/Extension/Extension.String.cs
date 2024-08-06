@@ -612,8 +612,7 @@ namespace IIOTS.Util
         /// <param name="str"></param>
         /// <returns></returns>
         public static string ArrayToStr(this string[] strList)
-        {
-
+        { 
             return string.Join(",", strList);
         }
 

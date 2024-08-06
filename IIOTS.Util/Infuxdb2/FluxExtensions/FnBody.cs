@@ -174,6 +174,15 @@ namespace IIOTS.Util.Infuxdb2
             return this.Then($@"regexp.matchRegexpString(r: /^{value}.*/, v: r[""{column}""])");
         }
         /// <summary>
+        /// 指定列不为空
+        /// </summary>
+        /// <param name="column">列名</param> 
+        /// <returns></returns>
+        public FnBody ColumnExists(string column )
+        {
+            return this.Then($@"exists r[""{column}""]");
+        } 
+        /// <summary>
         /// 指定列的值结尾是目标值
         /// </summary>
         /// <param name="column">列名</param>

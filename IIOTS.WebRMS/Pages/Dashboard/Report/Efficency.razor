@@ -1,0 +1,40 @@
+﻿@using System.ComponentModel
+@using AntDesign.TableModels
+@using IIOTS.WebRMS.Models
+@page "/Report/Efficency"
+
+<div>
+    <Table DataSource="@EfficencySums" TItem="EfficencySum" >
+        <TitleTemplate>
+            <GridRow>
+                <GridCol Span="4">
+                    <Title Level="3">设备稼动率</Title>
+                </GridCol>
+                <GridCol Span="3" Offset="12">
+                    <DatePicker TValue="DateTime?" @bind-Value="startDateTime" />
+                </GridCol>
+                <GridCol Span="5">
+                    <Search Placeholder="设备号" @bind-Value="Equ" OnSearch="()=> ReloadData()" />
+                </GridCol>
+            </GridRow>
+        </TitleTemplate>
+        <ColumnDefinitions>
+            <PropertyColumn Property="c=>c.STEPNAME" />
+            <PropertyColumn Property="c=>c.Efficency" />
+            <PropertyColumn Property="c=>c.FACTORYNAME" />  
+        </ColumnDefinitions>
+        <ExpandTemplate Context="rowData">
+            <Table TItem="EQU" 
+                   DataSource="@rowData.Data.EQUs" HidePagination>
+                <ColumnDefinitions>
+                    <PropertyColumn Title="设备号" Property="c=>c.DEVICECODE" Sortable Filterable />
+                    <PropertyColumn Title="稼动率" Property="c=>(Math.Round(c.EfficencyData.Efficency * 100, 2)).ToString() + '%'" Sortable />
+                    <PropertyColumn Title="运行时间" Property="c=>(int)c.EfficencyData.RunTime" Sortable />
+                    <PropertyColumn Title="待机时间" Property="c=>(int)c.EfficencyData.StandbyTime" Sortable />
+                    <PropertyColumn Title="报警时间" Property="c=>(int)c.EfficencyData.AlarmTime" Sortable />
+                    <PropertyColumn Title="离线时间" Property="c=>(int)c.EfficencyData.OffLineTime" Sortable />
+                </ColumnDefinitions> 
+            </Table>
+        </ExpandTemplate>
+    </Table>
+</div>

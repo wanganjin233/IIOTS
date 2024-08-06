@@ -2,7 +2,7 @@
 using IIOTS.WebRMS.Models;
 using IIOTS.Util.Infuxdb2;
 using IIOTS.Util;
-using AntDesign.TableModels; 
+using AntDesign.TableModels;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.Report
 {
@@ -29,7 +29,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
         /// <summary>
         /// 报警数据
         /// </summary>
-        private EquAlarm[] EquAlarms = []; 
+        private EquAlarm[] EquAlarms = [];
         long _total = 0;
         bool tableLoad = false;
         /// <summary>
@@ -52,18 +52,20 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
         {
             tableLoad = true;
             var countFlux = Flux
-             .From("Alarms")
+             .From("iiots_Alarms")
              .Import("strings")
              .Import("regexp")
              .Range("-90d")
-             .Pivot();
+             .Pivot()
+             .Group(Columns.Create("_measurement"));
             //查询数据
             var tablesFlux = Flux
-            .From("Alarms")
+            .From("iiots_Alarms")
             .Import("strings")
             .Import("regexp")
             .Range("-90d")
-            .Pivot();
+            .Pivot()
+            .Group(Columns.Create("_measurement"));
             foreach (var filterModel in query.FilterModel)
             {
                 FnBody fnBody = FnBody.R;
@@ -71,7 +73,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
                 bool isfirst = true;
                 foreach (var filter in filterModel.Filters)
                 {
-                    string filterCompareOperator = filter.FilterCompareOperator.ToString(); 
+                    string filterCompareOperator = filter.FilterCompareOperator.ToString();
                     FnBody filterfnBody = filterCompareOperator switch
                     {
                         "Contains" => FnBody.R.ColumnContains(filterName, filter.Value?.ToString() ?? ""),
@@ -87,7 +89,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.Report
                     };
                     if (isfirst)
                     {
-                        fnBody.Then($"({filterfnBody})");
+                        fnBody.Then($"({FnBody.R.ColumnExists(filterName)} and {filterfnBody})");
                         isfirst = false;
                     }
                     else if (filter.FilterCondition.ToString() == "And")

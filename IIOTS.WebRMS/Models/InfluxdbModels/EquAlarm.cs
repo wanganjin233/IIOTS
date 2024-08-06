@@ -3,7 +3,7 @@
 namespace IIOTS.WebRMS.Models
 {
     public class EquAlarm
-    {
+    {  
         /// <summary>
         /// 点位名称
         /// </summary>
@@ -12,9 +12,12 @@ namespace IIOTS.WebRMS.Models
         /// <summary>
         /// 值
         /// </summary>
-        [ColumnType(ColumnType.Field), ColumnName("content")]
+        [ColumnType(ColumnType.Tag), ColumnName("content")]
         public string? content { get; set; }
-        [ColumnType(ColumnType.Field), ColumnName("equ")]
+        /// <summary>
+        /// 设备号
+        /// </summary>
+        [ColumnType(ColumnType.Tag), ColumnName("equ")]
         public string? equ { get; set; }
         /// <summary>
         /// 时间戳

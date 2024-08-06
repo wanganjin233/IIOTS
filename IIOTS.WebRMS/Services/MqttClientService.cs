@@ -1,12 +1,10 @@
-﻿using IIOTS.Models;
-using IIOTS.Util;
+﻿using IIOTS.Util;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Packets;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using System.Collections.Concurrent;
-using System.Threading;
+using System.Collections.Concurrent; 
 
 namespace IIOTS.WebRMS.Services
 {
@@ -69,7 +67,7 @@ namespace IIOTS.WebRMS.Services
         }
 
         public bool Publish(string topic, string? payload, bool retain)
-        {
+        { 
             return AsyncHelper.RunSync(() => _MqttClient.PublishStringAsync(topic
                                                , payload
                                                , MqttQualityOfServiceLevel.ExactlyOnce

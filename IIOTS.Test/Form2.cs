@@ -106,13 +106,13 @@ namespace IIOTS.Test
 
         private void Form2_Load(object sender, EventArgs e)
         {  
-            var config = File.ReadAllText(Application.StartupPath + "OpcUa.json");
+            var config = File.ReadAllText(Application.StartupPath + "MC3E.json");
             if (config.TryToObject(out EquConfig? _EQUValue))
             {
                 string? ConnectionString = _EQUValue?.ConnectionString;
                 if (ConnectionString != null)
                 { 
-                    modbusRtu = new OPCUA(ConnectionString); 
+                    modbusRtu = new FXSerialOverTcp(ConnectionString); 
                     modbusRtu.AddTags(_EQUValue.Tags.ToJson().ToObject<List<Tag>>());
                     this.dataGridView1.AutoGenerateColumns = false;
                     dataGridView1.DataSource = modbusRtu.AllTags.OrderBy(p => p.Address).ToList();

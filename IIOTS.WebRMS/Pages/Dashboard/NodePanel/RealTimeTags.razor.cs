@@ -11,7 +11,7 @@ using IIOTS.Util.Infuxdb2;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
 {
-    public partial class RealTimeTags : IDisposable
+    public partial class RealTimeTags : ComponentBase, IDisposable
     { 
         /// <summary>
         /// 节点id
@@ -112,7 +112,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
             .Filter(FnBody.R.MeasurementEquals(Equ))
             .Filter(FnBody.R.ColumnEquals("tagName", tag.TagName))
             .Pivot()
-            .Sort(Columns.Time, desc: true)
+            .Sort(Columns.Time, desc: true) 
             .Limit(100);
             //查询数据
             var tables = await Infuxdb.QueryAsync(flux);

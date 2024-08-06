@@ -1,6 +1,7 @@
 ﻿@using System.ComponentModel
 @using AntDesign.TableModels
 @using IIOTS.WebRMS.Models
+@using IIOTS.WebRMS.Pages.Dashboard.DriverConfig
 @page "/Driver/{ProgressId}"
 @page "/Driver/All"
 
@@ -20,8 +21,7 @@
             </FormItem>
             <FormItem Label="点位组">
                 <Input Disabled @bind-Value="@EquConfig.TagGroupEntity.TagGName" />
-                <IIOTS.WebRMS.Pages.Dashboard.DriverConfig.TagList IsDisabled="true"
-                                                                   SelectTagGroup="@SetTagGroup" />
+                <TagList IsDisabled="true" SelectTagGroup="@SetTagGroup" />
             </FormItem>
             <FormItem Label="扫描周期">
                 <AntDesign.InputNumber DefaultValue="500" @bind-Value="context.ScanRate" />

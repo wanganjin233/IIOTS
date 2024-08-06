@@ -8,7 +8,7 @@ using IIOTS.WebRMS.Services;
 
 namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
 {
-    public partial class ProgressInfo : IDisposable
+    public partial class ProgressInfo : ComponentBase, IDisposable
     {
         [Parameter]
         public required string EdgeId { get; set; }

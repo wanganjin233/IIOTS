@@ -66,6 +66,18 @@ namespace IIOTS.WebRMS.Pages.Dashboard.NodePanel
         {
             return edgeLoginInfos.Where(p => p.Value.State).ToDictionary();
         }
+        /// <summary>
+        /// 删除离线节点
+        /// </summary>
+        /// <param name="edgeID"></param>
+        private void Detect(string? edgeID)
+        {
+            if (edgeID != null)
+            {
+                MqttClientService.Publish($"EdgeLoginInfo/{edgeID}", null, true);
+                edgeLoginInfos.TryRemove(edgeID, out _);
+            }
+        }
     }
 
 }

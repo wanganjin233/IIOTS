@@ -11,6 +11,10 @@
         /// </summary>
         MC3E,
         /// <summary>
+        /// FX三菱串口转TCP
+        /// </summary>
+        FXSerialOverTcp, 
+        /// <summary>
         /// ModbusRtu协议
         /// </summary>
         ModbusRtu,
