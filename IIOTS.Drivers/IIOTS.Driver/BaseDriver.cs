@@ -44,7 +44,7 @@ namespace IIOTS.Driver
         ///最大 读取长度
         /// </summary>
         public virtual int ReadMaxLength => 124;
-        protected bool State = true;
+        protected bool State = false;
         /// <summary>
         /// 驱动连接状态
         /// </summary>
