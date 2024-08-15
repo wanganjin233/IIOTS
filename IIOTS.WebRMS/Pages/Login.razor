@@ -8,8 +8,8 @@
 @inject NotificationService _notice
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
 @page "/login"
-
 @code {
     /// <summary>
     /// 系统用户
@@ -28,8 +28,6 @@
         public string Password { get; set; } = string.Empty;
     }
     public Sys_LoginUserData SysLoginUserData { get; set; } = new Sys_LoginUserData();
-
-
     public async void HandleSubmit()
     {
         LoginDto model = new LoginDto()
@@ -43,6 +41,7 @@
         if (string.IsNullOrWhiteSpace(result?.Token) == false)
         {
             ((AuthProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
+            NavigationManager.NavigateTo("/", false, true);
         }
         else
         {
@@ -62,7 +61,7 @@
             <Layout>
                 <Content class="left-content">
                     <div class="left-inner-content">
-                        <h1 class="title">工业互联系统</h1>
+                        <h1 class="title">EAP系统</h1>
                         <img class="logo" src="./assets/logo.svg" />
                     </div>
                 </Content>
@@ -102,7 +101,7 @@
         justify-content: center;
         align-items: center;
         height: 100%;
-        background-color: #001529;
+        background-color: #E4F4FD;
         color: white;
     }
 
@@ -116,7 +115,7 @@
         margin: 1em 0 .5em;
         font-family: 'Raleway', sans-serif;
         font-size: 40px;
-        color: white;
+        color: #001529;
     }
 
     .logo {
@@ -128,6 +127,7 @@
         justify-content: center;
         align-items: center;
         height: 100%;
+        background-color: #001529;
     }
 
     .right-content {
