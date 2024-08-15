@@ -22,12 +22,12 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
         [Parameter]
         public EventCallback<TagGroupEntity> SelectTagGroup { get; set; }
         [Parameter]
-        public bool IsDisabled { get; set; } = false;
-        /// <summary>
+        public bool IsDisabled { get; set; } = false; 
+         /// <summary>
         /// Tag组Id
         /// </summary>
         [Parameter]
-        public string? TagGid { get; set; }
+        public string? TagGid{ get; set; }
 
         List<TagGroupEntity> tagGroupEntities = [];
         /// <summary>
@@ -48,7 +48,7 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
             tableLoad = true;
             tagGroupEntities = await FreeSql
             .Select<TagGroupEntity>()
-            .WhereIf(TagGid != null, p => p.Id.ToString() == TagGid)
+            .WhereIf(TagGid != null,p=>p.Id.ToString()== TagGid)
             .ToListAsync();
             tableLoad = false;
         }
@@ -143,14 +143,12 @@ namespace IIOTS.WebRMS.Pages.Dashboard.DriverConfig
                     {
                         Message = "异常",
                         Description = "打开流程失败"
-                    });
+                    }); 
                     return;
                 }
                 else
                 {
-                    var hiddenTabs = tabFlowIds
-                        .Where(p => p != tagGroup.FlowId)
-                        .ToDictionary(p => p, _ => true);
+                    var hiddenTabs = tabFlowIds.ToDictionary(p => p, _ => true);
                     await localStorage.SetItemAsync("hiddenTabs", hiddenTabs);
                     NavigationManager.NavigateTo($"/Flow/{tagGroup.FlowId}");
                 }

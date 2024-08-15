@@ -82,11 +82,11 @@ namespace IIOTS.Driver
             {
                 if (IsRun == false)
                 {
-                    IsRun = true;
-                    while (IsRun)
+                    while (true)
                     {
                         if (LogIn())
-                        { 
+                        {
+                            IsRun = true;
                             Task.Factory.StartNew(async () =>
                             {
                                 bool state = true;
