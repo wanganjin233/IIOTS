@@ -1,10 +1,16 @@
 ﻿using Blazored.LocalStorage;
-using IIOTS.WebRMS.Models; 
-using Microsoft.AspNetCore.Components.Authorization; 
+using IIOTS.WebRMS.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq; 
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
-using System.Security.Claims; 
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Ubiety.Dns.Core.Common;
 
 namespace IIOTS.WebRMS
 {
@@ -87,7 +93,7 @@ namespace IIOTS.WebRMS
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", access_token);
                     }
                 }
-            } 
+            }
             //获得用户登录状态 
             var claims = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"api/Auth/GetUser");
             if (claims?.Count == 0)
