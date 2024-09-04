@@ -82,11 +82,11 @@ namespace IIOTS.Driver
             {
                 if (IsRun == false)
                 {
-                    while (true)
+                    IsRun = true;
+                    while (IsRun)
                     {
                         if (LogIn())
                         {
-                            IsRun = true;
                             Task.Factory.StartNew(async () =>
                             {
                                 bool state = true;
@@ -100,7 +100,7 @@ namespace IIOTS.Driver
                                             {
                                                 continue;
                                             }
-                                            byte[]? BodyByte = SendCommand(tagGroup.Command); 
+                                            byte[]? BodyByte = SendCommand(tagGroup.Command);
                                             if (BodyByte != null)
                                             {
                                                 foreach (var s7Addresses in TagGroupKVs[tagGroup])
@@ -150,7 +150,7 @@ namespace IIOTS.Driver
                                             state = false;
                                             break;
                                         }
-                                    } 
+                                    }
                                     if (state != State)
                                     {
                                         State = state;
@@ -209,7 +209,7 @@ namespace IIOTS.Driver
         /// <param name="tags"></param>
         /// <returns></returns>
         protected override List<TagGroup>? Packet(List<TagProcess> tags)
-        { 
+        {
             //清空分组
             TagGroups.Clear();
             if (tags.Count == 0) { return null; }
@@ -232,7 +232,7 @@ namespace IIOTS.Driver
                     {
                         //点位结束位置小于组最大结束位置添加到组
                         if (tagGroup.Length + tag.Location + tag.DataLength < endTag)
-                        { 
+                        {
                             itemTags.Add(tag);
                             tagGroup.Tags.Add(tag);
                         }

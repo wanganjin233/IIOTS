@@ -1,74 +1,13 @@
 ﻿using Blazored.LocalStorage;
-using IIOTS.WebRMS.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.IdentityModel.Tokens;
+using IIOTS.WebRMS.Models; 
+using Microsoft.AspNetCore.Components.Authorization; 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json.Linq; 
 using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Ubiety.Dns.Core.Common;
+using System.Security.Claims; 
 
 namespace IIOTS.WebRMS
-{
-
-
-    // public class AuthProvider : AuthenticationStateProvider
-    // {
-    //     private readonly HttpClient HttpClient;
-    //     private ClaimsPrincipal _currentUser = new ClaimsPrincipal(new ClaimsIdentity());
-    //     public AuthProvider(HttpClient httpClient)
-    //     {
-    //         HttpClient = httpClient;
-    //     }
-    //     public async override Task<AuthenticationState> GetAuthenticationStateAsync()
-    //     {
-    //         return await Task.FromResult(new AuthenticationState(_currentUser));
-    //     }
-    //     public void NotifyUserAuthentication(string username)
-    //     {
-    //         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", GetToken(username));
-    //         var identity = new ClaimsIdentity(
-    //     [
-    //         new Claim(ClaimTypes.Name, username) 
-    //     ], "Authentication");
-    //
-    //         _currentUser = new ClaimsPrincipal(identity);
-    //         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_currentUser)));
-    //     }
-    //     public string GetToken(string name)
-    //     {
-    //         //此处加入账号密码验证代码
-    //
-    //         var claims = new Claim[]
-    //         {
-    //         new Claim(ClaimTypes.Name,name),
-    //         new Claim(ClaimTypes.Role,"Admin"),
-    //         };
-    //
-    //         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("123456789012345678901234567890123456789"));
-    //         var expires = DateTime.Now.AddDays(30);
-    //         var token = new JwtSecurityToken(
-    //             issuer: "guetServer",
-    //             audience: "guetClient",
-    //             claims: claims,
-    //             notBefore: DateTime.Now,
-    //             expires: expires,
-    //             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-    //
-    //         return new JwtSecurityTokenHandler().WriteToken(token);
-    //     }
-    //     public void NotifyUserLogout()
-    //     {
-    //         HttpClient.DefaultRequestHeaders.Authorization = null;
-    //         var identity = new ClaimsIdentity();
-    //         _currentUser = new ClaimsPrincipal(identity);
-    //         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_currentUser)));
-    //     }
-    // }
+{ 
     public class AuthProvider(HttpClient httpClient, ILocalStorageService localStorage) : AuthenticationStateProvider
     {
         public AuthenticationState? AuthState { get; set; }
