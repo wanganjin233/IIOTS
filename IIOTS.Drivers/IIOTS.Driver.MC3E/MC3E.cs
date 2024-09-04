@@ -9,7 +9,9 @@ namespace IIOTS.Driver
         public MC3E(string communicationStr)
            : base(communicationStr)
         {
+            //设置socket报文数据长度标识位置，从第7位开始取
             Communication.DataLengthLocation = 7;
+            //长度标识数据类型
             Communication.DataLengthType = LengthTypeEnum.UShort;
             _DriverType = DriverTypeEnum.MC3E;
         }

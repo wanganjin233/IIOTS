@@ -135,8 +135,7 @@ namespace IIOTS.Driver
                             tagGroup.StartAddress = (ushort)firstTag.Location;
                         }
                         //获取结束位置 
-                        int GetEndPosition(Tag tag) => (int)(tag.Location + ReadMaxLength);
-                        int endTag = GetEndPosition(tagsList.First());
+                        int endTag = (int)tagsList.First().Location + ReadMaxLength;
                         foreach (var tag in tagsList)
                         {
                             if (tag.Location + tag.DataLength / 2 < endTag)
@@ -152,7 +151,7 @@ namespace IIOTS.Driver
                                     IsBit = tagGByBit.Key
                                 };
                                 tagGroup.Tags.Add(tag);
-                                endTag = GetEndPosition(tag);
+                                endTag = (int)tag.Location + ReadMaxLength;
                             }
                         }
                         TagGroups.Add(tagGroup);
@@ -173,7 +172,7 @@ namespace IIOTS.Driver
             return tag;
         }
         /// <summary>
-        /// 添加节点
+        /// 添加点位
         /// </summary>
         /// <param name="tags"></param>
         public virtual void AddTags(List<Tag> tags)
@@ -187,7 +186,7 @@ namespace IIOTS.Driver
             Packet(AllTagDic.Values.ToList());
         }
         /// <summary>
-        /// 删除节点
+        /// 删除点位
         /// </summary>
         /// <param name="tags"></param>
         public void RemoveTags(List<string> tags)
@@ -197,7 +196,7 @@ namespace IIOTS.Driver
                 AllTagDic.Remove(p, out TagProcess? tag);
             });
             Packet(AllTagDic.Values.ToList());
-        } 
+        }
         /// <summary>
         /// 启动驱动
         /// </summary>

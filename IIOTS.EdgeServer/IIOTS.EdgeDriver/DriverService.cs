@@ -63,9 +63,7 @@ namespace IIOTS.EdgeDriver
                 //接收信息
                 string message = v.Socket.ReceiveFrameString();
                 await Task.Run(() =>
-                   {
-
-
+                   { 
                        try
                        {
                            //消息处理方法
