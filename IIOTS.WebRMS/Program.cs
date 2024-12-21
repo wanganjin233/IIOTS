@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
+using System.Text; 
 LocaleProvider.DefaultLanguage = "zh-CN";
 var builder = WebApplication.CreateBuilder(args);
 builder.UseIdHelper().UseCache();

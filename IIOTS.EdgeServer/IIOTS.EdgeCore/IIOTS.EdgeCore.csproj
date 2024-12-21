@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-IIOTS.EdgeCore-21470cc2-fc1e-4ef9-94dd-248abe1ad216</UserSecretsId>
@@ -25,10 +25,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="MQTTnet" />
+    <PackageReference Include="System.Drawing.Common" />
+    <PackageReference Include="System.Formats.Asn1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IIOTS.Models\IIOTS.Models.csproj" />

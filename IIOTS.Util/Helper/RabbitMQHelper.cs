@@ -21,14 +21,13 @@ namespace IIOTS.Util
                 SocketReadTimeout = TimeSpan.FromSeconds(3),
                 SocketWriteTimeout = TimeSpan.FromSeconds(3),
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(0.5),
-                UseBackgroundThreadsForIO = true,
                 RequestedHeartbeat = TimeSpan.FromSeconds(6)
             };
             while (true)
             {
                 try
                 {
-                    connection = factory.CreateConnection(connections);
+                    connection = factory.CreateConnectionAsync(connections).Result;
                     Console.WriteLine("连接消息队列服务器成功");
                     break;
                 }
@@ -44,12 +43,17 @@ namespace IIOTS.Util
         /// </summary>
         /// <param name="Exchange"></param>
         /// <param name="data"></param>
-        public void PubMessage(string Exchange, string data)
+        public async void PubMessage(string Exchange, string data)
         {
-            using (var channel = connection.CreateModel())
+            using (var channel = await connection.CreateChannelAsync())
             {
                 var body = Encoding.UTF8.GetBytes(data);
-                channel.BasicPublish(Exchange, string.Empty, null, body);
+                await channel.BasicPublishAsync(
+                    Exchange, string.Empty, true, new BasicProperties
+                    {
+                        ContentType = "application/json",
+                        Persistent = true
+                    }, body);
             }
         }
         /// <summary>
@@ -58,27 +62,27 @@ namespace IIOTS.Util
         /// <param name="Exchange"></param>
         /// <param name="Queue"></param>
         /// <param name="receive"></param>
-        public void CreationConsumer(string Exchange, string Queue, Action<string> receive)
+        public async void CreationConsumer(string Exchange, string Queue, Action<string> receive)
         {
-            var channel = connection.CreateModel();
-            channel.QueueDeclare(Queue, true, false, false, null);
-            channel.QueueBind(Queue, Exchange, "#");
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            var channel = await connection.CreateChannelAsync();
+            await channel.QueueDeclareAsync(Queue, true, false, false, null);
+            await channel.QueueBindAsync(Queue, Exchange, "#");
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body.ToArray());
                     receive.Invoke(message);
-                    channel.BasicAck(ea.DeliveryTag, false);
+                    await channel.BasicAckAsync(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"消息队列接收出错{ex.Message}");
                 }
             };
-            channel.BasicConsume(Queue, false, consumer);
+            await channel.BasicConsumeAsync(Queue, false, consumer);
 
         }
     }

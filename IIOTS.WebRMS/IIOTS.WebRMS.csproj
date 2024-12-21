@@ -1,42 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>0577c465-a87e-421c-88dd-7d5badb2678c</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
-  <ItemGroup>
-    <_WebToolingArtifacts Remove="Properties\PublishProfiles\http___10.164.19.22_1080_imsc.pubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AntDesign" Version="0.19.4" />
-    <PackageReference Include="AntDesign.Charts" Version="0.5.2" />
-    <PackageReference Include="AntDesign.ProLayout" Version="0.19.4" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="FreeRedis" Version="1.3.0" />
-    <PackageReference Include="FreeRedis.DistributedCache" Version="1.3.0" />
-    <PackageReference Include="FreeSql" Version="3.2.832" />
-    <PackageReference Include="FreeSql.Provider.MySql" Version="3.2.832" />
-    <PackageReference Include="FreeSql.Repository" Version="3.2.832" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
-    <PackageReference Include="SharpCifs.Core" Version="0.2.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IIOTS.Util\IIOTS.Util.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\assets\403.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\assets\logo.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>0577c465-a87e-421c-88dd-7d5badb2678c</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	</PropertyGroup>
+	<ItemGroup>
+		<_WebToolingArtifacts Remove="Properties\PublishProfiles\http___10.164.19.22_1080_imsc.pubxml" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AntDesign" />
+		<PackageReference Include="AntDesign.Charts" />
+		<PackageReference Include="AntDesign.ProLayout" />
+		<PackageReference Include="Blazored.LocalStorage" />
+		<PackageReference Include="BouncyCastle.Cryptography" />
+		<PackageReference Include="FreeRedis" />
+		<PackageReference Include="FreeRedis.DistributedCache" />
+		<PackageReference Include="FreeSql" />
+		<PackageReference Include="FreeSql.Provider.MySql" />
+		<PackageReference Include="FreeSql.Repository" />
+		<PackageReference Include="Google.Protobuf" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" />
+		<PackageReference Include="MQTTnet" />
+		<PackageReference Include="SharpCifs.Core" />
+		<PackageReference Include="System.Formats.Asn1" />
+		<PackageReference Include="System.Private.Uri" />
+		<PackageReference Include="System.Text.Json" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" />
+		<PackageReference Include="System.Windows.Extensions" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\IIOTS.Util\IIOTS.Util.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\assets\403.svg">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\assets\logo.svg">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>
