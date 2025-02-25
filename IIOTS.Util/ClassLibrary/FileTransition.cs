@@ -19,7 +19,7 @@ namespace IIOTS.Util
             FileInfo fi = new FileInfo(Path);
             byte[] buff = new byte[fi.Length];
             FileStream fs = fi.OpenRead();
-            fs.Read(buff, 0, Convert.ToInt32(fs.Length));
+            fs.ReadExactly(buff, 0, Convert.ToInt32(fs.Length));
             fs.Close();
             return buff;
         }

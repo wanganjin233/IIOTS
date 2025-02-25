@@ -1,7 +1,6 @@
 ﻿using IIOTS.Util.Infuxdb2;
 using IIOTS.Util.Infuxdb2.Implementations;
-using Microsoft.Extensions.Options;
-using System;
+using Microsoft.Extensions.Options; 
 
 namespace Microsoft.Extensions.DependencyInjection
 {

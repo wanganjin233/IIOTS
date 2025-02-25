@@ -1,9 +1,6 @@
 ﻿using IIOTS.Enums;
-using IIOTS.Interface;
 using IIOTS.Models;
 using IIOTS.Util;
-using System.Net;
-using System.Text;
 
 namespace IIOTS.Driver
 {

@@ -1,7 +1,7 @@
 ﻿using IIOTS.Util.Infuxdb2;
 
-namespace IIOTS.WebRMS.Models
-{
+namespace IIOTS.Models
+{ 
     public class EquTag
     {
         /// <summary>

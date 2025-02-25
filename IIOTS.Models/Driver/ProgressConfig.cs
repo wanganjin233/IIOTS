@@ -13,11 +13,11 @@
         /// <summary>
         /// 处理类
         /// </summary>
-        public List<string> Operations { get; set; } = new List<string>();
+        public List<string> Operations { get; set; } = [];
         /// <summary>
         /// 设备配置组
         /// </summary>
-        public List<EquConfig> EquConfigs { get; set; } = new List<EquConfig>();
+        public List<EquConfig> EquConfigs { get; set; } = [];
 
 
     }

@@ -52,9 +52,14 @@ namespace IIOTS.EdgeDriver.Handler
                     //创建实例
                     if (Activator.CreateInstance(type, [equInfo.ConnectionString], null) is BaseDriver baseDriver)
                     {
-                        //新增
-                        DriverManage.Add(equInfo.EQU, baseDriver);
-                        baseDriver.AddTags(equInfo.Tags.ChangeType<List<Tag>>());
+                        List<Tag>? tags = equInfo.Tags.ChangeType<List<Tag>>();
+                        if (tags == null)
+                        {
+                            logger.LogError($"初始化【{equInfo.EQU}】驱动【{DLLName}】失败,Tags为空");
+                            baseDriver?.Dispose();
+                            return false;
+                        }
+                        baseDriver.AddTags(tags);
                         baseDriver.AllTags.ForEach(p =>
                         {
                             p.ValueChangeEvent += (Tag tag) =>
@@ -63,6 +68,8 @@ namespace IIOTS.EdgeDriver.Handler
                             };
                         });
                         baseDriver.Start(equInfo.ScanRate);
+                        //新增
+                        DriverManage.Add(equInfo.EQU, baseDriver);
                         logger.LogInformation($"启动【{equInfo.EQU}】驱动成功,驱动类型【{equInfo.DriverType}】连接字符串【{equInfo.ConnectionString}】");
                         return true;
                     }

@@ -47,7 +47,7 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
 builder.Services.AddTransient<IMqttClientService, MqttClientService>();
 var dbOptions = builder.Configuration.GetSection("Database:BaseDb").Get<DatabaseOptions>();
-IFreeSql fsql = new FreeSql.FreeSqlBuilder()
+IFreeSql fsql = new FreeSql.FreeSqlBuilder()    
         .UseConnectionString(dbOptions.DatabaseType, dbOptions.ConnectionString)
         .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
         .UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。

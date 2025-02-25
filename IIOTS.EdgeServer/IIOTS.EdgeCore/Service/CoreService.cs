@@ -10,6 +10,7 @@ using IIOTS.Models;
 using System.Text;
 using MQTTnet.Server;
 using IIOTS.EdgeCore.Command;
+using IIOTS.Util.Infuxdb2;
 
 namespace IIOTS.EdgeCore.Service
 {
@@ -37,12 +38,14 @@ namespace IIOTS.EdgeCore.Service
         private readonly SubscriberSocket subscriber;
         private readonly ProgressManage _progressManage;
         private readonly MQTTConcat MqttConcat;
+        private readonly IInfuxdb _Infuxdb;
         /// <summary>
         /// 消息处理方法
         /// </summary>
         private readonly Handler<IHandler> handler;
-        public CoreService(ILogger<CoreService> logger, ILoggerFactory loggerFactory, ProgressManage progressManage, MQTTConcat Concat)
+        public CoreService(IInfuxdb Infuxdb, ILogger<CoreService> logger, ILoggerFactory loggerFactory, ProgressManage progressManage, MQTTConcat Concat)
         {
+            _Infuxdb = Infuxdb;
             MqttConcat = Concat;
             _logger = logger;
             _loggerFactory = loggerFactory;
@@ -264,6 +267,18 @@ namespace IIOTS.EdgeCore.Service
                     //点位变化主题发送至MQTT
                     if (topic.StartsWith("ValueChange"))
                     {
+                        Tag? tag = message.ToObject<Tag>();
+                        if (tag != null)
+                        {
+                            EquTag equTag = new()
+                            {
+                                tagName = tag.TagName,
+                                Value = tag.Value?.ToString(),
+                                Description = tag.Description
+                            };
+                            await _Infuxdb.WriteAsync(equTag);
+                        }
+
                         await mqttClient.PublishAsync(new MqttApplicationMessage()
                         {
                             Topic = topic,

@@ -10,6 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IIOTS.Enums\IIOTS.Enums.csproj" />
-    <ProjectReference Include="..\IIOTS.Models\IIOTS.Models.csproj" />
   </ItemGroup>
 </Project>

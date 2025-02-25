@@ -23,7 +23,7 @@ namespace IIOTS.EdgeDriver
         , SubscriberSocket subscriber) : BackgroundService
     {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
+        { 
             AutoResetEvent AutoResetEvent = new(false);
             subscriber.Subscribe($"{_driverSignInInfo.ClientId}");
             var handler = new Handler<IHandler>(_driverSignInInfo.ClientId, loggerFactory, publisher, AutoResetEvent);

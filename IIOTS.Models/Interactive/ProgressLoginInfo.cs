@@ -22,6 +22,8 @@
         /// 配置名称
         /// </summary>
         public string Name { get; set; } = string.Empty;
+
+        public InfuxdbInfo? infuxdbInfo { get; set; }
         /// <summary>
         /// 设备驱动配置信息
         /// </summary>

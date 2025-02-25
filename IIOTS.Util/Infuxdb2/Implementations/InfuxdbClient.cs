@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using System;
-using System.Net.Http;
+﻿using Microsoft.Extensions.Options; 
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+using System.Text.Json; 
 
 namespace IIOTS.Util.Infuxdb2.Implementations
 {

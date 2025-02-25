@@ -34,6 +34,7 @@
 		<PackageReference Include="System.Windows.Extensions" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\IIOTS.Models\IIOTS.Models.csproj" />
 		<ProjectReference Include="..\IIOTS.Util\IIOTS.Util.csproj" />
 	</ItemGroup>
 	<ItemGroup>

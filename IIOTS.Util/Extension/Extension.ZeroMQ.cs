@@ -1,5 +1,4 @@
-﻿using IIOTS.Models;
-using NetMQ;
+﻿using NetMQ;
 using NetMQ.Sockets;
 
 namespace IIOTS.Util
